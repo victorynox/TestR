@@ -10,7 +10,7 @@ namespace App\Action;
 
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Expressive\ZendView\ZendViewRenderer;
+
 
 
 class HelloActionFactory
@@ -18,7 +18,7 @@ class HelloActionFactory
 
     public function __invoke(ContainerInterface $interface)
     {
-        return new HelloAction($interface->get(ZendViewRenderer::class));
+        return new HelloAction($interface->get(TemplateRendererInterface::class));
     }
 
 }

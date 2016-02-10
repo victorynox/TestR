@@ -13,33 +13,31 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Expressive\ZendView\ZendViewRenderer;
+use Zend\Stratigility\MiddlewarePipe;
 
 
 class HelloAction
 {
 
-    /*private $renderer;
-
-    public function __construct(ZendViewRenderer $renderer)
-    {
-        $this->renderer = $renderer;
-    }*/
-
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         // TODO: Implement __invoke() method.
+
         $query = $request->getQueryParams();
         $target = isset($query['target']) ? $query['target'] : 'World';
 
+        $file = fopen(__DIR__ . '/../../../public/csv/views.csv', 'r+');
 
-        /*return new HtmlResponse(
-            $this->renderer->render('app/hello', ['target' => $target]
-            ));*/
-        
+        while(($csv = fgetcsv($file)) !== FALSE){
+            $response->getBody()->write($csv[0]);
+        }
 
-        $response->getBody()->write("csv or img");
-        return $response->withHeader("Content-Type", 'text/html');
+
+        //return $response->withHeader("Content-Type", 'text/csv');
+
+
     }
+
 
 
 }

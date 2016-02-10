@@ -7,7 +7,7 @@ return [
         ],
         // Map middleware -> factories here
         'factories' => [
-         //   App\Action\HelloAction::class => App\Action\HelloActionFactory::class,
+            App\Action\HelloAction::class => App\Action\HelloActionFactory::class,
         ],
     ],
 
