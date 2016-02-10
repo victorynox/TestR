@@ -24,6 +24,14 @@ return [
             'path' => '/',
             'middleware' => App\Action\HelloAction::class,
             'allowed_method' => ['GET'],
+        ],
+        [
+            'name' => 'api',
+            'path' => '/api/{script_name:[a-zA-Z]{1,40}}',
+            'middleware' => [
+                App\Middleware\RScriptMiddleware::class,
+            ],
+            'allowed_method' => ['GET'],
         ]
     ],
 ];
