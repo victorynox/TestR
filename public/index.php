@@ -37,11 +37,14 @@ $server = Server::createServer($app, $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES)
 // Landing page
 $app->pipe('/', function (Request $req, Response $res, $next) {
     if (! in_array($req->getUri()->getPath(), ['/', ''], true)) {
+
         //$file = fopen(__DIR__ . 'csv/views.csv', 'r+');
 
-       // while(($csv = fgetcsv($file)) !== FALSE){
-            $res->getBody()->write("hello");
-       // }
+        //while(($csv = fgetcsv($file)) !== FALSE){
+        //
+        //$res->getBody()->write($csv[0]);
+        $res->getBody()->write('hello');
+        //}
         return $next($req, $res);
     }
     return $res->end('Hello world!');
@@ -50,13 +53,12 @@ $app->pipe('/', function (Request $req, Response $res, $next) {
 // Another page
 $app->pipe('/foo', function (Request $req, Response $res, $next) {
     throw new Exception();
-
     return $res->withHeader("Content-Type", 'text/html');
 });
 
-$app->pipe('/d', function($error, Request $req, Response $res, $next){
-    $res->getBody()->write($error);
-    return $res->withHeader("Content-Type", 'text/text');
+$app->pipe(function($error, Request $req, Response $res, $next){
+    $res->getBody()->write("test: " . $error);
+    return $res->withHeader("Content-Type", 'text/html');
 });
 
 $server->listen();
