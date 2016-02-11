@@ -19,8 +19,6 @@ class HelloAction
     public function __invoke(Request $request, Response $response, callable $next)
     {
 
-
-
     }
 
 }

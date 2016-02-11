@@ -18,15 +18,29 @@ class RScriptMiddleware
         $scriptName = $request->getAttribute('script_name') . '.R';
         $query = $request->getQueryParams();
         $pathToRScript = __DIR__ . '/../../../public/r_script/';
-        $dbConfig = 'root 123qew321 127.0.0.1 TEST_R ';
+        $pathToCSV = __DIR__ . '/../../../public/csv/';
+        $dbConfig = 'root 123qwe321 127.0.0.1 TEST_R ';
         $scriptExec = 'Rscript '. $pathToRScript . $scriptName. ' ' . $dbConfig;
 
         foreach($query as $item){
             $scriptExec .= $item . ' ';
         }
 
-        $response->getBody()->write($scriptExec);
-        return $response->withHeader("Content-Type", 'text/html');
+
+        exec($scriptExec, $out);
+
+        $csvFileName = explode('"',  $out[1]);
+        $csvFileName = $csvFileName[1] . '.csv';
+        $response->getBody()->write($csvFileName);
+
+
+        $csvFile = fopen($pathToCSV .$csvFileName,'r+');
+
+        while(($csv = fgetcsv($csvFile)) !== FALSE){
+            $response->getBody()->write($csv[0] . "\n");
+        }
+
+        return $response->withHeader("Content-Type", 'text/csv');
 
     }
 
