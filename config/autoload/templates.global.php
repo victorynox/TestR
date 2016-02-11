@@ -1,5 +1,6 @@
 <?php
 
+
 return [
     'dependencies' => [
         'factories' => [
@@ -7,33 +8,25 @@ return [
                 Zend\Expressive\Container\TemplatedErrorHandlerFactory::class,
 
             Zend\Expressive\Template\TemplateRendererInterface::class =>
-                Zend\Expressive\ZendView\ZendViewRendererFactory::class,
-
-            Zend\View\HelperPluginManager::class =>
-                Zend\Expressive\ZendView\HelperPluginManagerFactory::class,
+                Zend\Expressive\Twig\TwigRendererFactory::class,
         ],
     ],
 
     'templates' => [
-        'layout' => 'layout/default',
-        'map' => [
-            'layout/default' => 'templates/layout/default.phtml',
-            'error/error'    => 'templates/error/error.phtml',
-            'error/404'      => 'templates/error/404.phtml',
-        ],
-        'paths' => [
+        'extension' => 'html.twig',
+        'paths'     => [
             'app'    => ['templates/app'],
             'layout' => ['templates/layout'],
             'error'  => ['templates/error'],
         ],
     ],
 
-    'view_helpers' => [
-        // zend-servicemanager-style configuration for adding view helpers:
-        // - 'aliases'
-        // - 'invokables'
-        // - 'factories'
-        // - 'abstract_factories'
-        // - etc.
+    'twig' => [
+        'cache_dir'      => 'data/cache/twig',
+        'assets_url'     => '/',
+        'assets_version' => null,
+        'extensions'     => [
+            // extension service names or instances
+        ],
     ],
 ];
