@@ -14,9 +14,9 @@ class Math
 
     /**
      * divide a / b;
-     * @param $a float
-     * @param $b float
-     * @return float
+     * @param $a float divided
+     * @param $b float divider
+     * @return float the result of the division
      * @throws \Exception
      */
     public function divide($a, $b){
