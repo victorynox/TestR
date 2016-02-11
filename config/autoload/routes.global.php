@@ -7,7 +7,8 @@ return [
         ],
         // Map middleware -> factories here
         'factories' => [
-            App\Action\HelloAction::class => App\Action\HelloActionFactory::class,
+            App\Action\HelloAction::class => App\Action\Factory\HelloActionFactory::class,
+            App\Middleware\RScriptValidatorMiddleware::class =>  App\Middleware\Factory\RScriptValidatorFactory::class,
         ],
     ],
 
@@ -29,9 +30,19 @@ return [
             'name' => 'api',
             'path' => '/api/{script_name:[a-zA-Z]{1,40}}',
             'middleware' => [
+                App\Middleware\RScriptValidatorMiddleware::class,
+                App\Middleware\RScriptMiddleware::class,
+                //App\Middleware\
+            ],
+            'allowed_method' => ['GET'],
+        ],
+        /*[
+            'name' => 'api',
+            'path' => '/api/{script_name:[a-zA-Z]{1,40}}',
+            'middleware' => [
                 App\Middleware\RScriptMiddleware::class,
             ],
             'allowed_method' => ['GET'],
-        ]
+        ]*/
     ],
 ];

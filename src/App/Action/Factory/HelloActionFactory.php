@@ -6,11 +6,11 @@
  * Time: 12:07
  */
 
-namespace App\Action;
+namespace App\Action\Factory;
 
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-
+use App\Action\HelloAction;
 
 
 class HelloActionFactory
