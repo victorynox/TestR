@@ -17,20 +17,36 @@ class MathTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-
      * @throws \Exception
-
+     * @var Math
      */
-    public function testDivide(){
+    private $object;
 
-        $math =new Math();
-
-        $this->assertEquals(1, $math->divide(2, 2));
-        $this->assertEquals(3, $math->divide(9, 3));
-        $this->assertEquals(0.5, $math->divide(1, 2));
+    public function setUp()
+    {
+        $this->object = new Math();
+        parent::setUp();
     }
 
+    /**
+     * @param $a
+     * @param $b
+     * @param $c
+     * @dataProvider provider
+     */
+    public function testDivide($a, $b, $c){
 
+        $this->assertEquals($c, $this->object->divide($a, $b));
+
+    }
+
+    public function provider(){
+        return[
+            [2 ,2 ,1],
+            [9 ,3 ,3],
+            [1 ,2 ,0.5],
+        ];
+    }
     /**
      * @expectedException Exception
      */

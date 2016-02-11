@@ -20,10 +20,15 @@ class Math
      * @throws \Exception
      */
     public function divide($a, $b){
-        if(!(boolean)$b){
-            throw new \Exception("Division by zero");
+        if((isset($b) and isset($a)) and ((is_float($b) or is_int($b) and ((is_float($a) or is_int($a)))) and $b != 0)){
+            return $a/$b;
+        }else{
+            throw new \Exception("error by divide");
         }
-        return $a/$b;
+        /*if(){
+
+        }*/
+
     }
 
 
