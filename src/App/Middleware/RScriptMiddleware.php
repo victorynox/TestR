@@ -27,7 +27,7 @@ class RScriptMiddleware
         }
 
 
-        exec($scriptExec, $out);
+        /*exec($scriptExec, $out);
 
         $csvFileName = explode('"',  $out[1]);
         $csvFileName = $csvFileName[1] . '.csv';
@@ -40,7 +40,9 @@ class RScriptMiddleware
             $response->getBody()->write($csv[0] . "\n");
         }
 
-        return $response->withHeader("Content-Type", 'text/csv');
+        return $response->withHeader("Content-Type", 'text/csv');*/
+        $response->getBody()->write($scriptExec . "\n");
+        return $response->withHeader("Content-Type", 'text/html');
 
     }
 

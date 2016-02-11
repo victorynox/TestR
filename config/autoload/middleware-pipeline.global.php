@@ -9,10 +9,6 @@ return [
             Helper\UrlHelperMiddleware::class => Helper\UrlHelperMiddlewareFactory::class,
             'RScriptMiddleware' => App\Middleware\RScriptMiddleware::class
         ],
-        'delegator_factories' => [
-            'ApiResourceMiddleware' => [
-                'ApiResourcePipelineDelegatorFactory',
-            ]],
     ],
     // This can be used to seed pre- and/or post-routing middleware
     'middleware_pipeline' => [
@@ -48,14 +44,6 @@ return [
                 Helper\ServerUrlMiddleware::class,
             ],
             'priority' => 10000,
-        ],
-        'api' =>[
-            'path' => '/api[/{scriptName:[a-zA-Z]}]',
-            'middleware' => [
-                'RScriptMiddleware',
-            ],
-            'allowed_methods' => ['GET'],
-            'priority' => 1,
         ],
 
 
