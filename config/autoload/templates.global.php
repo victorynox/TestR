@@ -1,6 +1,5 @@
 <?php
 
-
 return [
     'dependencies' => [
         'factories' => [
@@ -16,8 +15,9 @@ return [
         'extension' => 'html.twig',
         'paths'     => [
             'app'    => ['templates/app'],
-            'layout' => ['templates/layout'],
+            //'layout' => ['templates/layout'],
             'error'  => ['templates/error'],
+            'macros' => ['templates/macros'],
         ],
     ],
 

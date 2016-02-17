@@ -10,10 +10,9 @@ namespace App\Action;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use App\Util\Math;
+use Zend\Diactoros\Stream;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Diactoros\Response\HtmlResponse;
-
 
 class HelloAction
 {
@@ -26,14 +25,14 @@ class HelloAction
 
     public function __invoke(Request $request, Response $response, callable $next)
     {
+        $render = $this->template->render('app::hello', ['message' => null]);
 
-        $math = new Math();
-        $query = $request->getQueryParams();
+        $query = $request->getParsedBody();
+        $query['view']['render'] = $render;
+        $query['view']['code'] = 200;
 
-        $results =$math->divide((float)$query['a'], (float)$query['b']);
-        //return $response->withHeader("Content-Type", 'text/html');
-        return new HtmlResponse($this->template->render('app::hello', ['result' => $results]), 200);
-
+        $request = $request->withParsedBody($query);
+        return $next($request, $response);
     }
 
 }

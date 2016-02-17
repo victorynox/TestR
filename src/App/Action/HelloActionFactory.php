@@ -6,7 +6,7 @@
  * Time: 12:07
  */
 
-namespace App\Action\Factory;
+namespace App\Action;
 
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;

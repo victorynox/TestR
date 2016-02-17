@@ -6,8 +6,8 @@
  * Time: 14:50
  */
 
-namespace App\Middleware\Factory;
-use App\Middleware\RScriptValidatorMiddleware;
+namespace App\Middleware;
+
 use Interop\Container\ContainerInterface;
 
 class RScriptValidatorFactory

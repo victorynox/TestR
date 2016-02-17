@@ -40,6 +40,7 @@ class RScriptValidatorMiddleware
         $query = $request->getQueryParams();
         $validQuery = array();
 
+
         if(!isset($this->rscriptConfig[$scriptName])){
             $this->isValid = false;
             throw new \Exception('invalid script name:' . $scriptName);

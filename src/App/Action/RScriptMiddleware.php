@@ -6,7 +6,7 @@
  * Time: 16:46
  */
 
-namespace App\Middleware;
+namespace App\Action;
 
 use Zend\Stratigility\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -26,13 +26,11 @@ class RScriptMiddleware
             $scriptExec .= $item . ' ';
         }
 
-
         /*exec($scriptExec, $out);
 
         $csvFileName = explode('"',  $out[1]);
         $csvFileName = $csvFileName[1] . '.csv';
         $response->getBody()->write($csvFileName);
-
 
         $csvFile = fopen($pathToCSV .$csvFileName,'r+');
 
@@ -42,7 +40,7 @@ class RScriptMiddleware
 
         return $response->withHeader("Content-Type", 'text/csv');*/
         $response->getBody()->write($scriptExec . "\n");
-        return $response->withHeader("Content-Type", 'text/html');
+        return $response->withAddedHeader("Content-Type", 'text/html');
 
     }
 

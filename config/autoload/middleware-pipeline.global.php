@@ -4,15 +4,32 @@ use Zend\Expressive\Helper;
 
 return [
     'dependencies' => [
+        'invokables' => [
+            Util\Redirect::class => Util\Redirect::class,
+            App\Middleware\ViewMiddleware::class
+        ],
         'factories' => [
             Helper\ServerUrlMiddleware::class => Helper\ServerUrlMiddlewareFactory::class,
             Helper\UrlHelperMiddleware::class => Helper\UrlHelperMiddlewareFactory::class,
-            'RScriptMiddleware' => App\Middleware\RScriptMiddleware::class
+            Auth\AuthErrorHandlerMiddleware::class => Auth\AuthErrorHandlerFactory::class,
         ],
     ],
     // This can be used to seed pre- and/or post-routing middleware
     'middleware_pipeline' => [
-
+        'view' => [
+            'middleware' => [
+                App\Middleware\ViewMiddleware::class,
+            ],
+            'priority' => -10,
+        ],
+        'auth' => [
+            'middleware' => [
+                Auth\IdentificationMiddleware::class,
+                //Auth\AuthenticationMiddleware::class,
+                Auth\AuthorizationMiddleware::class,
+            ],
+            'priority' => 2,
+        ],
         // An array of middleware to register. Each item is of the following
         // specification:
         //
@@ -36,6 +53,7 @@ return [
         // middleware, and error middleware.
         'always' => [
             'middleware' => [
+                //Util\Redirect::class,
                 // Add more middleware here that you want to execute on
                 // every request:
                 // - bootstrapping
@@ -64,6 +82,7 @@ return [
         'error' => [
             'middleware' => [
                 // Add error middleware here.
+                //Auth\AuthErrorHandlerMiddleware::class,
             ],
             'error'    => true,
             'priority' => -10000,

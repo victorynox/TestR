@@ -6,7 +6,7 @@
  * Time: 10:45
  */
 
-namespace App\Util;
+namespace Util;
 
 
 class Math
