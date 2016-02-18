@@ -8,13 +8,49 @@
  */
 return [
     'rscript_config' => [
+        'path' =>[
+            'tables' => __DIR__ . '/../../../public/csv/',
+            'plot' => __DIR__ . '/../../../public/img/',
+            'script' => __DIR__ . '/../../../public/r_script/',
+        ],
         'tableProduct' => [
             'get' => [
-                'prob' => 'float',
-                'count' => 'int'
+                'prob' => [
+                    'type' => 'float',
+                    'required' => false,
+                ],
+                'count' => [
+                    'type' => 'int',
+                    'required' => false,
+                ]
             ],
             'return' => [
-                ''
+                'csv'
+            ],
+
+        ],
+        'plotTime' => [
+            'get' => [
+                'numberOfCategory' => [
+                    'type' => 'float',
+                    'required' => false,
+                ],
+                'minPrice' => [
+                    'type' => 'float',
+                    'required' => false,
+                ],
+                'maxPrice' => [
+                    'type' => 'float',
+                    'required' => false,
+                ],
+                'brand' => [
+                    'type' => 'string',
+                    'required' => false,
+                ],
+
+            ],
+            'return' => [
+                'plot'
             ],
 
         ],

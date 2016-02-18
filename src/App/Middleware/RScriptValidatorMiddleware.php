@@ -38,7 +38,7 @@ class RScriptValidatorMiddleware
 
         $scriptName = $request->getAttribute('script_name');
         $query = $request->getQueryParams();
-        $validQuery = array();
+        $validBodyQuery = array();
 
 
         if(!isset($this->rscriptConfig[$scriptName])){
@@ -47,7 +47,7 @@ class RScriptValidatorMiddleware
         }else{
             foreach($this->rscriptConfig[$scriptName]['get'] as $key => $value){
                 if(isset($query[$key])){
-                    switch ($value){
+                    switch ($value['type']){
                         case 'int':{
                             if((float)$query[$key] == 0 or !is_int((int)$query[$key])){
                                 $this->isValid = false;
@@ -68,18 +68,22 @@ class RScriptValidatorMiddleware
                         }
                     }
                 }else{
-                    $this->isValid = false;
+                    if($value['required']){
+                        $this->isValid = false;
+                    }
                 }
 
                 if($this->isValid){
-                    $validQuery[$key] = $value;
+                    $validBodyQuery['data'][$key] = isset($query[$key]) ? $query[$key] : 'NA';
                 }else{
                     throw new \Exception('invalid value: [' . $key .']=>' . $value);
                 }
             }
         }
 
-        $request->withQueryParams($validQuery);
+        $validBodyQuery['path']['outPutFolder'] = $this->rscriptConfig['path'][$this->rscriptConfig[$scriptName]['return'][0]];
+        $validBodyQuery['path']['scriptFolder'] = $this->rscriptConfig['path']['script'];
+        $request = $request->withParsedBody($validBodyQuery);
         return $next($request, $response);
 
     }

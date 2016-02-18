@@ -16,23 +16,21 @@ class RScriptMiddleware
 {
     public function __invoke(Request $request, Response $response, callable $next){
         $scriptName = $request->getAttribute('script_name') . '.R';
-        $query = $request->getQueryParams();
-        $pathToRScript = __DIR__ . '/../../../public/r_script/';
-        $pathToCSV = __DIR__ . '/../../../public/csv/';
+        $query = $request->getParsedBody();
+        #$pathToRScript = __DIR__ . '/../../../public/r_script/';
         $dbConfig = 'root 123qwe321 127.0.0.1 TEST_R ';
-        $scriptExec = 'Rscript '. $pathToRScript . $scriptName. ' ' . $dbConfig;
+        $scriptExec = 'Rscript '. $query['path']['scriptFolder'] . $scriptName. ' ' . $dbConfig;
 
-        foreach($query as $item){
+        foreach($query['data'] as $item){
             $scriptExec .= $item . ' ';
         }
 
         /*exec($scriptExec, $out);
-
         $csvFileName = explode('"',  $out[1]);
         $csvFileName = $csvFileName[1] . '.csv';
         $response->getBody()->write($csvFileName);
 
-        $csvFile = fopen($pathToCSV .$csvFileName,'r+');
+        $File = fopen($query['path']['outPutFolder'] .$csvFileName,'r+');
 
         while(($csv = fgetcsv($csvFile)) !== FALSE){
             $response->getBody()->write($csv[0] . "\n");
