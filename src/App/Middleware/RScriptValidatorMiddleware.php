@@ -83,6 +83,10 @@ class RScriptValidatorMiddleware
 
         $validBodyQuery['path']['outPutFolder'] = $this->rscriptConfig['path'][$this->rscriptConfig[$scriptName]['return'][0]];
         $validBodyQuery['path']['scriptFolder'] = $this->rscriptConfig['path']['script'];
+
+        $validBodyQuery['path']['local'] = $this->rscriptConfig['path']['local'][$this->rscriptConfig[$scriptName]['return'][0]];
+
+        $validBodyQuery['return'] = $this->rscriptConfig[$scriptName]['return'][0];
         $request = $request->withParsedBody($validBodyQuery);
         return $next($request, $response);
 

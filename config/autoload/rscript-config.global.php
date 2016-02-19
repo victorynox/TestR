@@ -9,9 +9,13 @@
 return [
     'rscript_config' => [
         'path' =>[
-            'tables' => __DIR__ . '/../../../public/csv/',
-            'plot' => __DIR__ . '/../../../public/img/',
-            'script' => __DIR__ . '/../../../public/r_script/',
+            'tables' => __DIR__ . '/../../public/csv/',
+            'plot' => __DIR__ . '/../../public/img/',
+            'script' => __DIR__ . '/../../public/r_script/',
+            'local' => [
+                'tables' => 'csv/',
+                'plot' => 'img/',
+            ],
         ],
         'tableProduct' => [
             'get' => [
@@ -25,29 +29,32 @@ return [
                 ]
             ],
             'return' => [
-                'csv'
+                'plot'
             ],
 
         ],
-        'plotTime' => [
+        'plotPrice' => [
             'get' => [
+                'prof' => [
+                    'type' => 'float',
+                    'required' => true,
+                ],
                 'numberOfCategory' => [
-                    'type' => 'float',
-                    'required' => false,
-                ],
-                'minPrice' => [
-                    'type' => 'float',
-                    'required' => false,
-                ],
-                'maxPrice' => [
-                    'type' => 'float',
+                    'type' => 'int',
                     'required' => false,
                 ],
                 'brand' => [
                     'type' => 'string',
                     'required' => false,
                 ],
-
+                /*'minPrice' => [
+                    'type' => 'float',
+                    'required' => false,
+                ],
+                'maxPrice' => [
+                    'type' => 'float',
+                    'required' => false,
+                ],*/
             ],
             'return' => [
                 'plot'
