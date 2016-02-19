@@ -4,3 +4,4 @@ composer.lock
 phpunit.xml
 vendor/
 /public/csv/*.csv
+/public/img/*.png

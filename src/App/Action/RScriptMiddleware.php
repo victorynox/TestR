@@ -26,16 +26,25 @@ class RScriptMiddleware
         }
         $out = [];
         exec($scriptExec, $out);
-        foreach($out as $item){
-            $item = explode('"', $item);
-            $item = $item[1];
-            //$files['path'] = $query['path']['outPutFolder'] . $item;
-            if($query['return'] === 'plot'){
-                $response->getBody()->write("<img src='/". $query['path']['local'] . $item .".png' width='400' />");
-            }else{
-                $response->getBody()->write("<a href='/". $query['path']['local'] . $item. ".csv'>" . $item . "</>");
+        if(count($out) == 1){
+            $out =  explode('"', $out);
+            $out = $out[1];
+            if($out === 'error'){
+                throw new \Exception("Data not found", 404);
+            }
+        }else{
+            foreach ($out as $item) {
+                $item = explode('"', $item);
+                $item = $item[1];
+                //$files['path'] = $query['path']['outPutFolder'] . $item;
+                if ($query['return'] === 'plot') {
+                    $response->getBody()->write("<img src='/" . $query['path']['local'] . $item . ".png' width='960' />");
+                } else {
+                    $response->getBody()->write("<a href='/" . $query['path']['local'] . $item . ".csv'>" . $item . "</>");
+                }
             }
         }
+
         /*
         $csvFileName = explode('"',  $out[1]);
         $csvFileName = $csvFileName[1] . '.csv';
