@@ -1,12 +1,11 @@
 {
-    "name": "zendframework/zend-expressive-skeleton",
+    "name": "TestR",
     "type": "project",
-    "homepage": "https://github.com/zendframework/zend-expressive-skeleton",
+    "homepage": "https://github.com/victorynox/TestR",
     "license": "BSD-3-CLAUSE",
     "authors": [
         {
-            "name": "Geert Eltink",
-            "homepage": "https://xtreamwayz.com/"
+            "name": "Victorynox"
         }
     ],
     "extra": {
