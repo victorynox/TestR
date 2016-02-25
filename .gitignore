@@ -5,3 +5,4 @@ phpunit.xml
 vendor/
 /public/csv/*.csv
 /public/img/*.png
+/public/img/*.*
