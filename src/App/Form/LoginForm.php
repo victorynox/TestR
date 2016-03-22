@@ -16,8 +16,8 @@ class LoginForm extends Form
 {
     public function __construct($name=null, array $options = array())
     {
-        parent::__construct("loginForm", $options);
-        $this->setAttribute('method', 'post');
+        parent::__construct("test", $options);
+        $this->setAttribute('method', 'get');
         $this->add(array(
             'name' => 'user_name',
             'type' => 'Zend\Form\Element\Text',

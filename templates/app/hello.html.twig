@@ -1,5 +1,168 @@
-<h1>hello world</h1>
-{% if message %}
-    <h2>{{ message }}</h2>
-{% endif %}
+{% import '@macros/forms.html.twig' as forms %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Tutorial: Hello Dojo!</title>
+</head>
+<link href="/scripts/dojo/dojo/resources/dojo.css" rel="stylesheet">
+<link href="/scripts/dojo/dijit/themes/claro/claro.css" rel="stylesheet">
+<link rel="stylesheet" href="/scripts/dojo/dojox/highlight/resources/highlight.css"/>
+<link rel="stylesheet" href="/scripts/dojo/dojox/highlight/resources/pygments/colorful.css"/>
+<link rel="stylesheet" href="/scripts/dojo/dgrid/css/dgrid.css"/>
+<link rel="stylesheet" href="/scripts/dojo/dgrid/css/skins/claro.css"/>
+<link rel="stylesheet" href="/scripts/dojo/dgrid/css/skins/claro.css"/>
+<link rel="stylesheet" href="/scripts/dojo/dojox/grid/enhanced/resources/claro/EnhancedGrid.css"/>
+<link rel="stylesheet" href="/scripts/dojo/dojox/grid/enhanced/resources/EnhancedGrid_rtl.css"/>
 
+<style>
+    div.main {
+        width: 80%;
+        margin: auto;
+        padding: 25px;
+    }
+
+    div.dgrid {
+        width: 70%;
+        margin: auto;
+    }
+
+    div#selectScript {
+        float: left;
+        padding-left: 25%;
+        padding-right: 35px;
+    }
+</style>
+<body class="claro">
+<div id="messages"></div>
+<div class="main">
+    <div id="selectScript"></div>
+    <div class="control-button">
+        <button id="filterButton">addFilter</button>
+        <button id="doubleFilterButton">double Filter Button</button>
+        <button id="cleanFilterButton">clear Filter</button>
+    </div>
+</div>
+
+<script>
+    var dojoConfig = {
+        async: true,
+        isDebug: true,
+        // This code registers the correct location of the "demo"
+        // package so we can load Dojo from the CDN whilst still
+        // being able to load local modules
+        packages: [
+            {
+                name: "Rscript",
+                location: '/scripts'
+            }
+        ]
+    };
+</script>
+<script src="/scripts/dojo/dojo/dojo.js"></script>
+{#
+<h1 id="greeting">{% if scriptName != false %} {{ scriptName }} {% else %} hello {% endif %}</h1>
+<div>
+    <div class="scriptList">
+        <div>
+            <form method="{{ scriptsSelectForm.attributes.method }}" action="{{ url('hello') }}" id="scriptsSelectForm">
+                {% for element in scriptsSelectForm %}
+                    {% if element.attributes.type == 'select' %}
+                        {{ forms.input(element.attributes.name, element.value, element.attributes.type, element.label, 20, element.messages, element.valueOptions) }}
+                    {% else %}
+                        {{ forms.input(element.attributes.name, element.value, element.attributes.type, element.label, 20, element.messages) }}
+                    {% endif %}
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+    {% if scriptSettingForm != false %}
+        <div>
+            <form method="{{ scriptSettingForm.attributes.method }}" id="scriptSettingForm">
+                {% for element in scriptSettingForm %}
+                    {{ forms.input(element.attributes.name, element.value, element.attributes.type, element.label, 20, element.messages) }}
+                {% endfor %}
+            </form>
+        </div>
+
+    {% endif %}
+</div>
+#}
+<div id="output2"></div>
+
+<h2 id="reportName"></h2>
+<div id="simplechart" style="width: 1200px; height: 500px; margin: 5px auto 0px auto;"></div>
+<div id="grid"></div>
+
+<script>
+    require([
+        "dojo/dom",
+        'dojo/_base/array',
+        'dojo/json',
+        "Rscript/scriptSetup",
+        "Rscript/scriptListConfig",
+        "Rscript/plotCreate",
+        'dstore/RequestMemory',
+        "dstore/Rest",
+        'dstore/Trackable',
+        "dojo/on",
+        "dojo/_base/declare",
+        'dojo/request',
+        'dojo/_base/lang',
+        "dojo/domReady!"
+    ], function (dom,
+                 array,
+                 json,
+                 ScriptSetup,
+                 scriptListConfig,
+                 plotCreate,
+                 RequestMemory,
+                 Rest,
+                 Trackable,
+                 on,
+                 declare,
+                 request,
+                 lang) {
+
+        //var scriptsList = '{{ scriptsListJson|raw }}';
+        var scriptsList = scriptListConfig;
+        //scriptsList = json.parse(scriptsList);
+
+        var myStore = new declare([Rest, RequestMemory, Trackable])({
+            target: 'rest/rdata/',
+
+            query: function (options) {
+                var headers = lang.mixin({Accept: this.accepts}, this.headers);
+                var store = this;
+                var query = '';
+                array.forEach(options, function (item) {
+                    var begReg = new RegExp("^beg([a-zA-Z0-9\_]+)");
+                    var endReg = new RegExp("^end([a-zA-Z0-9\_]+)");
+
+                    if (begReg.exec(item.name)) {
+                        var name = begReg.exec(item.name);
+                        query += name[1] + ">=" + item.value + "&";
+                    } else if (endReg.exec(item.name)) {
+                        var name = endReg.exec(item.name);
+                        query += name[1] + "<=" + item.value + "&";
+                    } else {
+                        query += item.name + "=" + item.value + "&";
+                    }
+
+                });
+                query = query.replace(/\&$/, "");
+                return request(this.target, {
+                    headers: headers,
+                    query: query,
+                }).then(function (response) {
+                    return store._restore(store.parse(response), true);
+                });
+            }
+        });
+
+        var rsript = new ScriptSetup(scriptsList, 'selectScript', myStore);
+
+    });
+</script>
+</body>
+</html>

@@ -26,7 +26,7 @@ return [
             'name' => 'hello',
             'path' => '/',
             'middleware' => App\Action\HelloAction::class,
-            'allowed_method' => ['GET'],
+            'allowed_method' => ['GET', 'POST'],
         ],
         [
             'name' => 'auth',
@@ -47,7 +47,7 @@ return [
                 App\Middleware\RScriptValidatorMiddleware::class,
                 App\Action\RScriptMiddleware::class,
             ],
-            'allowed_method' => ['GET'],
+            'allowed_method' => ['GET', 'POST'],
         ],
         /*[
             'name' => 'api',

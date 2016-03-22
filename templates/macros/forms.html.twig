@@ -1,4 +1,4 @@
-{% macro input(name, value, type, label, size, messages, value_option) %}
+{% macro input(name, value, type, label, size, messages, value_options) %}
     {% if type != 'hidden' %}
         <div class="form-element-{{ name }}">
     {% endif %}
@@ -15,14 +15,15 @@
         <input type="{{ type }}" multiple name="{{ name }}" value="{{ value|e }}"  {% if messages|length > 0 %}class="error"{% endif %}/>
     {% elseif type == 'select' %}
         <select name="{{ name }}">
-            {% if value_option != 'false' %}
-                {% for value in value_option %}
-                    <option value="{{ loop.index }}">{{ value }}</option>
+            {% if value_options != false %}
+                <div></div>
+                {% for value in value_options %}
+                    <option value="{{ value }}">{{ value }}</option>
                 {% endfor %}
             {% endif %}
         </select>
     {% else %}
-        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" {% if messages|length > 0 %}class="error"{% endif %}/>
+        <input id="{{ name }}" type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" {% if messages|length > 0 %}class="error"{% endif %}/>
     {% endif %}
 
     {% if type != 'hidden' %}

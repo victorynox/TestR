@@ -20,5 +20,13 @@ return [
             Application::class => ApplicationFactory::class,
             Helper\UrlHelper::class => Helper\UrlHelperFactory::class,
         ],
+        'abstract_factories' => [
+            'zaboy\res\Middlewares\Factory\MiddlewareStoreAbstractFactory',
+            'zaboy\res\DataStores\Factory\DbTableStoresAbstractFactory',
+            'zaboy\res\DataStores\Factory\MemoryStoresAbstractFactory',
+            'zaboy\res\TableGateway\Factory\TableGatewayAbstractFactory',
+            'zaboy\res\DataStores\Factory\HttpClientStoresAbstractFactory',
+            'Zend\Db\Adapter\AdapterAbstractServiceFactory'
+        ]
     ],
 ];

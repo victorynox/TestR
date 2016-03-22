@@ -18,7 +18,7 @@ class HelloActionFactory
 
     public function __invoke(ContainerInterface $interface)
     {
-        return new HelloAction($interface->get(TemplateRendererInterface::class));
+        return new HelloAction($interface->get(TemplateRendererInterface::class), $interface->get('config'));
     }
 
 }

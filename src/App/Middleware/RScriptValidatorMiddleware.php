@@ -37,15 +37,19 @@ class RScriptValidatorMiddleware
     {
 
         $scriptName = $request->getAttribute('script_name');
+        #$query = $request->getParsedBody();
         $query = $request->getQueryParams();
+
         $validBodyQuery = array();
 
 
-        if(!isset($this->rscriptConfig[$scriptName])){
+        if(!isset($this->rscriptConfig['scripts'][$scriptName])){
             $this->isValid = false;
             throw new \Exception('invalid script name:' . $scriptName);
         }else{
-            foreach($this->rscriptConfig[$scriptName]['get'] as $key => $value){
+            $validBodyQuery['data']['name'] = $scriptName;
+
+            foreach($this->rscriptConfig['scripts'][$scriptName]['get'] as $key => $value){
                 if(isset($query[$key])){
                     switch ($value['type']){
                         case 'int':{
@@ -76,17 +80,19 @@ class RScriptValidatorMiddleware
                 if($this->isValid){
                     $validBodyQuery['data'][$key] = isset($query[$key]) ? $query[$key] : 'NA';
                 }else{
-                    throw new \Exception('invalid value: [' . $key .']=>' . $value);
+                    throw new \Exception('invalid value: [' . $key .']=>' . $value['label']);
                 }
             }
         }
 
-        $validBodyQuery['path']['outPutFolder'] = $this->rscriptConfig['path'][$this->rscriptConfig[$scriptName]['return'][0]];
+        $validBodyQuery['path']['outPutFolder'] = $this->rscriptConfig['path'][$this->rscriptConfig['scripts'][$scriptName]['return'][0]];
         $validBodyQuery['path']['scriptFolder'] = $this->rscriptConfig['path']['script'];
+        $validBodyQuery['path']['configForScript'] = $this->rscriptConfig['path']['configForScript'];
 
-        $validBodyQuery['path']['local'] = $this->rscriptConfig['path']['local'][$this->rscriptConfig[$scriptName]['return'][0]];
 
-        $validBodyQuery['return'] = $this->rscriptConfig[$scriptName]['return'][0];
+        $validBodyQuery['path']['local'] = $this->rscriptConfig['path']['local'][$this->rscriptConfig['scripts'][$scriptName]['return'][0]];
+
+        $validBodyQuery['return'] = $this->rscriptConfig['scripts'][$scriptName]['return'][0];
         $request = $request->withParsedBody($validBodyQuery);
         return $next($request, $response);
 
