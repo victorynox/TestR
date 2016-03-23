@@ -25,24 +25,26 @@ define(['dojo/dom',
         return declare(null, {
             __dGrid: null,
             __memoryStore: null,
-            //__filter: null,
-            //__filteredMemoryStore: null,
             __data: null,
             __store: null,
             constructor: function (store, settings) {
                 var self = this;
                 self.__store = store;
-                
-                var columns3 = {
-                    id: 'id',
+
+                var columns = {
+                    /*id: 'id',
                     x: settings.axis.xAxis ? settings.axis.xAxis : 'x',
-                    y: settings.axis.yAxis ? settings.axis.yAxis : 'y'
+                    y: settings.axis.yAxis ? settings.axis.yAxis : 'y'*/
                 };
+
+                array.forEach(settings.return.fieldNames, function (name) {
+                    columns[name] = settings.return.fieldLabel[name];
+                });
 
                 self.__dGrid = new OnDemandGrid({
                     title: settings.title,
                     collection:  self.__store ,//CacheStore.cachingStore,
-                    columns: columns3,
+                    columns: columns,
                     selectionMode: "single"
                 }, "grid");
 
@@ -63,9 +65,9 @@ define(['dojo/dom',
                     //self.__filter = self.__memoryStore.Filter().lg('x', 1.6);\
                     self.__filter = null;
                     self.__dGrid.set('collection',  self.__store);
-                });*/
+                });
 
-                //self.__dGrid.startup();
+                //self.__dGrid.startup();*/
             }
         });
 

@@ -3,7 +3,6 @@ define(["dojox/charting/Chart",
         'dstore/charting/StoreSeries',
         "dojox/charting/themes/MiamiNice",
         "dojox/charting/axis2d/Default",
-        "dojox/charting/plot2d/ClusteredColumns",
         "dojox/charting/plot2d/Columns",
         "dojox/charting/plot2d/Lines",
         'dojo/_base/declare',
@@ -17,7 +16,6 @@ define(["dojox/charting/Chart",
               StoreSeries,
               MiamiNice,
               Default,
-              ClusteredColumns,
               Columns,
               Lines,
               declare,
@@ -30,54 +28,6 @@ define(["dojox/charting/Chart",
             _store: null,
             constructor: function (name, store, settings) {
                 var self = this;
-                var ClusterColumnsW = new declare("ClusterColumnsW", ClusteredColumns, {
-                    calculateBarSize: function (/* Number */ availableSize, /* Object */ opt, /* Number? */ clusterSize) {
-                        if (!clusterSize) {
-                            clusterSize = 1;
-                        }
-
-                        var gap = opt.gap, size = (availableSize - 2 * gap) / clusterSize;
-                        if ("minBarSize" in opt) {
-                            size = Math.max(size, opt.minBarSize);
-                        }
-
-                        if ("maxBarSize" in opt) {
-                            size = Math.min(size, opt.maxBarSize);
-                        }
-                        size = Math.max(size, 1);
-                        gap = (availableSize - size * clusterSize) / 2;
-                        return {size: size, gap: gap};	// Object
-                    },
-
-                    getBarProperties: function () {
-                        var length = this.series.length;
-                        var availableSize = 0;
-                        var offset = 0;
-                        array.forEach(this.series, function (serie) {
-                            if (serie.hidden) {
-                                length--;
-                            }
-                        });
-                        if (this.series[0].data.length > 0) {
-                            var dx = 1;
-                            if (this.series[0].data.length > 1) {
-                                dx = this.series[0].data[this.series[0].data.length - 1].x - this.series[0].data[this.series[0].data.length - 2].x;
-                            }
-                            offset = (this._hScaler.bounds.upper - this.series[0].data[this.series[0].data.length - 1].x) / dx;
-                            availableSize = this._hScaler.bounds.span / (this.series[0].data.length + offset);
-                        }
-                        var f = this.calculateBarSize(availableSize, this.opt, length);
-                        return {gap: f.gap, width: f.size, thickness: f.size, clusterSize: length};
-                    },
-                    getSeriesStats: function () {
-                        // summary:
-                        //		Calculate the min/max on all attached series in both directions.
-                        // returns: Object
-                        //		{hmin, hmax, vmin, vmax} min/max in both directions.
-                        var stats = common.collectSimpleStats(this.series);
-                        return stats; // Object
-                    },
-                });
 
                 this._chart = new Chart(name, {
                     title: settings.title,
@@ -142,16 +92,10 @@ define(["dojox/charting/Chart",
             },
             render: function () {
                 this._chart.render();
-                //var plot = this._chart.getPlot("default");
-                //var barProperys = plot.getBarProperties();
-                //var seriesState = plot.getSeriesStats();
+     
 
 
-            },
-            zoom: function (x1, x2) {
-                this._chart.zoomIn('x', [x1, x2]);
             }
-
         });
 
     });

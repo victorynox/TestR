@@ -20,6 +20,7 @@ define([
     'dstore/Filter',
     "dojox/layout/TableContainer",
     "dojo/Deferred",
+    "dojo/dom-style",
 
 
 ], function (declare,
@@ -42,7 +43,8 @@ define([
              formCreate,
              Filter,
              TableContainer,
-             Deferred) {
+             Deferred,
+             domStyle) {
     return declare(null, {
 
         __scriptsList: {},
@@ -61,37 +63,27 @@ define([
             this.__scriptsList = scriptsList;
             this.__store = store;
             var self = this;
-            var list = [];
+            var listForSelect = [];
             array.forEach(this.__scriptsList.names, function (name) {
-                list.push({label: name, value: name})
+                listForSelect.push({label: name, value: name})
             });
-            this.__createSelectionForm(list, divId);
+            this.__createSelectionForm(listForSelect, divId);
 
-
-            on(document.getElementById("filterButton"), "click", function () {
+            var temp;
+            on(document.getElementById("newFilter"), "click", function () {
+                temp = null;
                 self.__createFilterForm();
             });
 
-            on(document.getElementById("doubleFilterButton"), "click", function () {
 
-                var chartDiv = dom.byId("simplechart");
-                var gridDiv = dom.byId("grid");
-                chartDiv.innerHTML = "";
-                gridDiv.innerHTML = "";
+            on(document.getElementById("addFilter"), "click", function () {
+                if(!(temp instanceof Memory)){
+                    temp = self.__cashStore.filter(self.__filter);
+                }else{
+                    temp = temp.filter(self.__filter);
+                }
 
-                var setting = {
-                    axis: {xAxis: 'x', yAxis: 'y'},
-                    title: "asd"
-                };
-
-                var temp = self.__cashStore.filter(self.__filter);
-                var doubleFilter = new Filter().lt('y', 2000);
-
-                self.plot = new plotCreate('simplechart', temp.filter(doubleFilter), setting);
-
-                self.plot.render();
-
-                self.__dgrid = new dgredCreate(temp.filter(doubleFilter), setting);
+                self.__createFilterForm(temp);
             });
 
             on(document.getElementById("cleanFilterButton"), "click", function () {
@@ -101,7 +93,7 @@ define([
 
         },
 
-        __createFilterForm: function () {
+        __createFilterForm: function (store) {
             var self = this;
 
 
@@ -120,17 +112,14 @@ define([
                 );
 
                 var selectParamsList = [];
-                array.forEach(self.__scriptsList["scripts"][self.__name]["paramsName"], function (param, i) {
-                    selectParamsList.push({id: i, label:param, value:param });
+                array.forEach(self.__scriptsList["scripts"][self.__name]["return"]['fieldNames'], function (names, i) {
+                    selectParamsList.push({id: i, label:names, value:names });
                 });
 
                 var selectParams = new Select({
                     label: "Поле",
                     name: "field",
-                    options: [
-                        {id: 0, label: "x", value: "x"},
-                        {id: 0, label: "y", value: "y"}
-                    ],
+                    options: selectParamsList,
                     required: false
                 });
 
@@ -201,7 +190,7 @@ define([
                                 break;
                             }
                         }
-                        self.__renderPlotWithGrid(self.__filter);
+                        self.__renderPlotWithGrid(self.__filter, store);
                     }
                 });
 
@@ -213,7 +202,7 @@ define([
 
         },
 
-        __createSelectionForm: function (list, divId) {
+        __createSelectionForm: function (listForSelect, divId) {
             this.__scriptSelectionForm = new Form({
                 id: 'scriptSelectionForm',
                 doLayout: true
@@ -222,7 +211,7 @@ define([
             new Select({
                 label: "select Script",
                 name: "select",
-                options: list
+                options: listForSelect
 
             }).placeAt(this.__scriptSelectionForm.containerNode);
 
@@ -232,30 +221,22 @@ define([
                 id: 'ButtonSelectSubmit'
             }).placeAt(this.__scriptSelectionForm.containerNode);
 
-            var sl = this.__scriptsList;
-            var configList = [];
             var self = this;
             on(button, "click", function () {
-                configList = [];
-                var scriptList = sl;
                 var f = query("#scriptSelectionForm")[0];
-                var scriptName = f['select'].value;
-                self.__name = scriptName;
-                array.forEach(scriptList.scripts[scriptName]['paramsName'], function (paramsName) {
-                    configList.push({name: paramsName, get: scriptList.scripts[scriptName]['get'][paramsName]})
-                });
-                //
-                //console.log(configList)
-                self.__createConfigDialog(configList);
+                self.__name = f['select'].value;
+                self.__createConfigDialog();
             });
 
             var divForm = dom.byId(divId);
             this.__scriptSelectionForm.placeAt(divForm);
         },
 
-        __renderPlotWithGrid: function (filter) {
+        __renderPlotWithGrid: function (filter, store) {
             var self = this;
-
+            if(!(store instanceof  Memory)){
+                store = self.__cashStore;
+            }
             var chartDiv = dom.byId("simplechart");
             var gridDiv = dom.byId("grid");
             chartDiv.innerHTML = "";
@@ -263,27 +244,35 @@ define([
 
             var setting = {
                 axis: self.__scriptsList.scripts[self.__name]['axis'],
-                title: self.__scriptsList.scripts[self.__name]['reportName']
+                title: self.__scriptsList.scripts[self.__name]['reportName'],
+                return: {
+                    fieldNames: self.__scriptsList["scripts"][self.__name]["return"]['fieldNames'],
+                    fieldLabel: self.__scriptsList["scripts"][self.__name]["return"]['fieldLabel']
+                }
             };
+            if(self.__scriptsList["scripts"][self.__name]["return"]['type'] === "plot"){
+                domStyle.set(chartDiv, {
+                    width: "1200px",
+                    height: "500px",
+                    margin: "5px auto 0px auto"
+                });
+                self.plot = new plotCreate('simplechart', store.filter(filter), setting);
+                self.plot.render();
+            }
 
-            self.plot = new plotCreate('simplechart', self.__cashStore.filter(filter), setting);
-
-            self.plot.render();
-
-            self.__dgrid = new dgredCreate(self.__cashStore.filter(filter), setting);
+            self.__dgrid = new dgredCreate(store.filter(filter), setting);
         },
 
-        __createConfigDialog: function (configList) {
+        __createConfigDialog: function () {
             var self = this;
             var data = [];
             var store = this.__store;
-            var dataForPlot = [];
 
             var formCreator = new formCreate(store);
 
-            var asy = formCreator.getForm(self.__name);
+            var asyFCreate = formCreator.getForm(self.__name);
 
-            asy.then(function (form) {
+            asyFCreate.then(function (form) {
                 self.__scriptConfigDialogForm = form;
                 self.__scriptConfigDialog = new confirmDialog({
                     id: 'scriptConfigDialog',
@@ -304,11 +293,10 @@ define([
                                 var f = query("#scriptConfigDialogForm")[0];
                                 data.push({name: "scriptName", value: self.__name});
 
-                                array.forEach(configList, function (params) {
-                                    var item = f[params.name];
+                                array.forEach(self.__scriptsList["scripts"][self.__name]["paramsName"], function (name) {
+                                    var item = f[name];
                                     if (item.value != "") {
-                                        data.push({name: params.name, value: item.value});
-                                        //data[params.name] = item.value;
+                                        data.push({name: name, value: item.value});
                                     }
                                 });
 
@@ -317,9 +305,8 @@ define([
                                         setTimeout(function () {
                                             deferred.reject("Not valid sent data");
                                         }, 2);
-
                                     }
-
+                                    
                                     self.__cashStore = new (declare([Memory, Trackable]))({data: items});
 
                                     self.__renderPlotWithGrid(self.__filter);

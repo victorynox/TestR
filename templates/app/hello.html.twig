@@ -38,8 +38,8 @@
 <div class="main">
     <div id="selectScript"></div>
     <div class="control-button">
-        <button id="filterButton">addFilter</button>
-        <button id="doubleFilterButton">double Filter Button</button>
+        <button id="newFilter">new Filter</button>
+        <button id="addFilter">add Filter</button>
         <button id="cleanFilterButton">clear Filter</button>
     </div>
 </div>
@@ -91,7 +91,8 @@
 <div id="output2"></div>
 
 <h2 id="reportName"></h2>
-<div id="simplechart" style="width: 1200px; height: 500px; margin: 5px auto 0px auto;"></div>
+{# style="width: 1200px; height: 500px; margin: 5px auto 0px auto;"#}
+<div id="simplechart"></div>
 <div id="grid"></div>
 
 <script>
@@ -100,7 +101,7 @@
         'dojo/_base/array',
         'dojo/json',
         "Rscript/scriptSetup",
-        "Rscript/scriptListConfig",
+        "Rscript/scriptListConfigNew",
         "Rscript/plotCreate",
         'dstore/RequestMemory',
         "dstore/Rest",
