@@ -42,6 +42,10 @@
         <button id="addFilter">add Filter</button>
         <button id="cleanFilterButton">clear Filter</button>
     </div>
+    <div id="output2"></div>
+    <h2 id="reportName"></h2>
+    <div id="simplechart"></div>
+    <div id="grid"></div>
 </div>
 
 <script>
@@ -88,21 +92,17 @@
     {% endif %}
 </div>
 #}
-<div id="output2"></div>
 
-<h2 id="reportName"></h2>
-{# style="width: 1200px; height: 500px; margin: 5px auto 0px auto;"#}
-<div id="simplechart"></div>
-<div id="grid"></div>
 
 <script>
     require([
         "dojo/dom",
         'dojo/_base/array',
         'dojo/json',
-        "Rscript/scriptSetup",
+        /*"Rscript/scriptSetup",
+        "Rscript/plotCreate",*/
         "Rscript/scriptListConfigNew",
-        "Rscript/plotCreate",
+        "Rscript/RDataWidget/RDataWidget",
         'dstore/RequestMemory',
         "dstore/Rest",
         'dstore/Trackable',
@@ -114,9 +114,10 @@
     ], function (dom,
                  array,
                  json,
-                 ScriptSetup,
+                 /*ScriptSetup,
+                 plotCreate,*/
                  scriptListConfig,
-                 plotCreate,
+                 RDataWidget,
                  RequestMemory,
                  Rest,
                  Trackable,
@@ -125,9 +126,7 @@
                  request,
                  lang) {
 
-        //var scriptsList = '{{ scriptsListJson|raw }}';
         var scriptsList = scriptListConfig;
-        //scriptsList = json.parse(scriptsList);
 
         var myStore = new declare([Rest, RequestMemory, Trackable])({
             target: 'rest/rdata/',
@@ -160,8 +159,12 @@
                 });
             }
         });
+        var rDataWidget = new RDataWidget({
+            store: myStore,
+            scriptList: scriptsList,
+        });
+        //var rsript = new ScriptSetup(scriptsList, 'selectScript', myStore);
 
-        var rsript = new ScriptSetup(scriptsList, 'selectScript', myStore);
 
     });
 </script>

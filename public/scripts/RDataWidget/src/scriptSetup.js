@@ -14,9 +14,9 @@ define([
     "dijit/form/DateTextBox",
     "dijit/form/Button",
     "dijit/form/Select",
-    "Rscript/plotCreate",
-    "Rscript/dgredCreate",
-    "Rscript/formCreate",
+    "./plotCreate",
+    "./formCreate",
+    "./dgredCreate",
     'dstore/Filter',
     "dojox/layout/TableContainer",
     "dojo/Deferred",
@@ -39,8 +39,8 @@ define([
              Button,
              Select,
              plotCreate,
-             dgredCreate,
              formCreate,
+             dgredCreate,
              Filter,
              TableContainer,
              Deferred,
@@ -59,7 +59,7 @@ define([
         __filter: {},
         __filterDialog: null,
 
-        constructor: function (scriptsList, divId, store) {
+        constructor: function (scriptsList, store) {
             this.__scriptsList = scriptsList;
             this.__store = store;
             var self = this;
@@ -67,7 +67,7 @@ define([
             array.forEach(this.__scriptsList.names, function (name) {
                 listForSelect.push({label: name, value: name})
             });
-            this.__createSelectionForm(listForSelect, divId);
+            this.__createSelectionForm(listForSelect);
 
             var temp;
             on(document.getElementById("newFilter"), "click", function () {
@@ -202,7 +202,7 @@ define([
 
         },
 
-        __createSelectionForm: function (listForSelect, divId) {
+        __createSelectionForm: function (listForSelect) {
             this.__scriptSelectionForm = new Form({
                 id: 'scriptSelectionForm',
                 doLayout: true
@@ -228,7 +228,7 @@ define([
                 self.__createConfigDialog();
             });
 
-            var divForm = dom.byId(divId);
+            var divForm = dom.byId("selectScript");
             this.__scriptSelectionForm.placeAt(divForm);
         },
 
@@ -306,7 +306,7 @@ define([
                                             deferred.reject("Not valid sent data");
                                         }, 2);
                                     }
-                                    
+
                                     self.__cashStore = new (declare([Memory, Trackable]))({data: items});
 
                                     self.__renderPlotWithGrid(self.__filter);
