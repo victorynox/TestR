@@ -21,6 +21,7 @@ define([
     "dojox/layout/TableContainer",
     "dojo/Deferred",
     "dojo/dom-style",
+    "dijit/ProgressBar",
 
 
 ], function (declare,
@@ -44,7 +45,8 @@ define([
              Filter,
              TableContainer,
              Deferred,
-             domStyle) {
+             domStyle,
+             ProgressBar) {
     return declare(null, {
 
         __scriptsList: {},
@@ -250,6 +252,7 @@ define([
                     fieldLabel: self.__scriptsList["scripts"][self.__name]["return"]['fieldLabel']
                 }
             };
+
             if(self.__scriptsList["scripts"][self.__name]["return"]['type'] === "plot"){
                 domStyle.set(chartDiv, {
                     width: "1200px",
@@ -269,7 +272,6 @@ define([
             var store = this.__store;
 
             var formCreator = new formCreate(store);
-
             var asyFCreate = formCreator.getForm(self.__name);
 
             asyFCreate.then(function (form) {
@@ -285,7 +287,7 @@ define([
                             var deferred = new Deferred();
 
                             setTimeout(function () {
-                                deferred.progress("In progress...");
+                                deferred.progress("in progress...");
                             }, 2);
 
                             try {
@@ -298,6 +300,7 @@ define([
                                     if (item.value != "") {
                                         data.push({name: name, value: item.value});
                                     }
+
                                 });
 
                                 self.__store.query(data).then(function (items) {

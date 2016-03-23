@@ -33,9 +33,9 @@
         padding-right: 35px;
     }
 </style>
-<body class="claro">
-<div id="messages"></div>
-<div class="main">
+<body id="windowBody" class="claro">
+
+{#<div class="main">
     <div id="selectScript"></div>
     <div class="control-button">
         <button id="newFilter">new Filter</button>
@@ -46,7 +46,7 @@
     <h2 id="reportName"></h2>
     <div id="simplechart"></div>
     <div id="grid"></div>
-</div>
+</div>#}
 
 <script>
     var dojoConfig = {
@@ -99,14 +99,13 @@
         "dojo/dom",
         'dojo/_base/array',
         'dojo/json',
-        /*"Rscript/scriptSetup",
-        "Rscript/plotCreate",*/
         "Rscript/scriptListConfigNew",
         "Rscript/RDataWidget/RDataWidget",
         'dstore/RequestMemory',
         "dstore/Rest",
         'dstore/Trackable',
         "dojo/on",
+        "dojo/_base/window",
         "dojo/_base/declare",
         'dojo/request',
         'dojo/_base/lang',
@@ -114,14 +113,13 @@
     ], function (dom,
                  array,
                  json,
-                 /*ScriptSetup,
-                 plotCreate,*/
                  scriptListConfig,
                  RDataWidget,
                  RequestMemory,
                  Rest,
                  Trackable,
                  on,
+                 window,
                  declare,
                  request,
                  lang) {
@@ -138,7 +136,6 @@
                 array.forEach(options, function (item) {
                     var begReg = new RegExp("^beg([a-zA-Z0-9\_]+)");
                     var endReg = new RegExp("^end([a-zA-Z0-9\_]+)");
-
                     if (begReg.exec(item.name)) {
                         var name = begReg.exec(item.name);
                         query += name[1] + ">=" + item.value + "&";
@@ -148,7 +145,6 @@
                     } else {
                         query += item.name + "=" + item.value + "&";
                     }
-
                 });
                 query = query.replace(/\&$/, "");
                 return request(this.target, {
@@ -162,8 +158,7 @@
         var rDataWidget = new RDataWidget({
             store: myStore,
             scriptList: scriptsList,
-        });
-        //var rsript = new ScriptSetup(scriptsList, 'selectScript', myStore);
+        }).placeAt(document.body).startup();
 
 
     });

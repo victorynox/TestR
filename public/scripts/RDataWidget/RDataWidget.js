@@ -23,8 +23,9 @@ define([
         store: null,
         scriptList: null,
 
-        postCreate: function () {
+        startup: function () {
             var rsript = new scriptSetup(this.scriptList, this.store);
+            //this.inherited(arguments);
         }
 
     });
