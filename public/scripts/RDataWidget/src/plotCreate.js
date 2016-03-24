@@ -26,75 +26,72 @@ define(["dojox/charting/Chart",
             _chart: null,
             _data: null,
             _store: null,
+            isError: false,
             constructor: function (name, store, settings) {
-                var self = this;
+                try{
+                    var self = this;
 
-                this._chart = new Chart(name, {
-                    title: settings.title,
-                    titlePos: "top",
-                    titleGap: 25,
-                    titleFont: "normal normal normal 15pt Arial",
-                    titleFontColor: "orange"
-                });
+                    this._chart = new Chart(name, {
+                        title: settings.title,
+                        titlePos: "top",
+                        titleGap: 25,
+                        titleFont: "normal normal normal 15pt Arial",
+                        titleFontColor: "orange"
+                    });
 
-                this._store = store;
+                    this._store = store;
 
-                this._chart.addPlot("columnsPlot", {
-                    type: Columns,
-                    lines: true,
-                    areas: true,
-                    markers: true,
-                    //tension: "S",
-                    minBarSize: 10,
-                    maxBarSize: 500,
-                    gap: 0.1
-                });
+                    this._chart.addPlot("columnsPlot", {
+                        type: Columns,
+                        lines: true,
+                        areas: true,
+                        markers: true,
+                        //tension: "S",
+                        minBarSize: 10,
+                        maxBarSize: 500,
+                        gap: 0.1
+                    });
 
-                this._chart.setTheme(MiamiNice);
+                    this._chart.setTheme(MiamiNice);
 
-                this._chart.addAxis("x", {
-                    majorTickStep: 1, minorTicks: false, title:  settings.axis.xAxis, titleOrientation: "away",
-                    labelFunc: function (index) {
-                        var column;
-                        self._store.fetchRange({start: index-1, end: index}).then(function (item) {
-                            column = item[0].x
-                        });
-                        while(!column){
-                            sleep(10);
+                    this._chart.addAxis("x", {
+                        majorTickStep: 1, minorTicks: false, title:  settings.axis.xAxis, titleOrientation: "away",
+                        labelFunc: function (index) {
+                            var column;
+                            self._store.fetchRange({start: index-1, end: index}).then(function (item) {
+                                column = item[0].x
+                            });
+                            return column;
                         }
-                        return column;
-                    }
-                });
+                    });
 
-                this._chart.addAxis("y", {vertical: true, min: 0, title: settings.axis.yAxis});
-                
-                this._chart.addSeries("Series 1", new StoreSeries(this._store,
-                    function (item) {
-                        //return {x: item.x, y: item.y};
-                        return item.y
-                    }), {
-                    plot: "columnsPlot",
-                    stroke: {
-                        color: "red",
-                        width: 1
-                    },
-                    fill: [255, 128, 0, 0.7]
-                });
+                    this._chart.addAxis("y", {vertical: true, min: 0, title: settings.axis.yAxis});
 
-                new Tooltip(this._chart, "columnsPlot", {
-                    text: function (chartItem) {
-                        return "id: " + chartItem.run.source.objects[chartItem.index].id + '<br>' + "Value: " + chartItem.y + '<br>' +"Log10: " + chartItem.run.source.objects[chartItem.index].x;
-                    }
-                });
-                new Highlight(this._chart, "columnsPlot");
+                    this._chart.addSeries("Series 1", new StoreSeries(this._store,
+                        function (item) {
+                            //return {x: item.x, y: item.y};
+                            return item.y
+                        }), {
+                        plot: "columnsPlot",
+                        stroke: {
+                            color: "red",
+                            width: 1
+                        },
+                        fill: [255, 128, 0, 0.7]
+                    });
 
-
+                    new Tooltip(this._chart, "columnsPlot", {
+                        text: function (chartItem) {
+                            return "id: " + chartItem.run.source.objects[chartItem.index].id + '<br>' + "Value: " + chartItem.y + '<br>' + settings.axis.xAxis +": " + chartItem.run.source.objects[chartItem.index].x;
+                        }
+                    });
+                    new Highlight(this._chart, "columnsPlot");
+                }catch (e){
+                    this.isError = true
+                }
             },
             render: function () {
                 this._chart.render();
-     
-
-
             }
         });
 

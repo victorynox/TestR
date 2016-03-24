@@ -27,47 +27,28 @@ define(['dojo/dom',
             __memoryStore: null,
             __data: null,
             __store: null,
+            isError: false,
+
             constructor: function (store, settings) {
-                var self = this;
-                self.__store = store;
+                try {
+                    var self = this;
+                    self.__store = store;
 
-                var columns = {
-                    /*id: 'id',
-                    x: settings.axis.xAxis ? settings.axis.xAxis : 'x',
-                    y: settings.axis.yAxis ? settings.axis.yAxis : 'y'*/
-                };
+                    var columns = {};
 
-                array.forEach(settings.return.fieldNames, function (name) {
-                    columns[name] = settings.return.fieldLabel[name];
-                });
+                    array.forEach(settings.return.fieldNames, function (name) {
+                        columns[name] = settings.return.fieldLabel[name];
+                    });
 
-                self.__dGrid = new OnDemandGrid({
-                    title: settings.title,
-                    collection:  self.__store ,//CacheStore.cachingStore,
-                    columns: columns,
-                    selectionMode: "single"
-                }, "grid");
-
-
-                /*on(document.getElementById("filterButton"), "click", function () {
-                    if(!self.__filter){
-                        self.__filter  = new Filter().gt('x', 1.6);
-                        self.__filteredMemoryStore = self.__store.filter(self.__filter )
-                    }else{
-                        self.__filter = self.__filter.lt('x', 2);
-                        self.__filteredMemoryStore = self.__filteredMemoryStore.filter(self.__filter )
-                    }
-
-                    self.__dGrid.set('collection', self.__filteredMemoryStore);
-                });
-
-                on(document.getElementById("cleanFilterButton"), "click", function () {
-                    //self.__filter = self.__memoryStore.Filter().lg('x', 1.6);\
-                    self.__filter = null;
-                    self.__dGrid.set('collection',  self.__store);
-                });
-
-                //self.__dGrid.startup();*/
+                    self.__dGrid = new OnDemandGrid({
+                        title: settings.title,
+                        collection:  self.__store ,//CacheStore.cachingStore,
+                        columns: columns,
+                        selectionMode: "single"
+                    }, "grid");
+                }catch (e){
+                    this.isError = true
+                }
             }
         });
 

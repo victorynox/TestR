@@ -30,7 +30,7 @@
         "zendframework/zend-authentication": "^2.5",
         "zendframework/zend-inputfilter": "^2.6",
         "zendframework/zend-hydrator": "^1.1 || ^2.1",
-        "avz-cmf/bigdata": "^4.0",
+        "avz-cmf/bigdata": "^4.1",
         "zendframework/zend-http": "^2.5",
         "avz-cmf/zaboy-res": "^1.1.8",
         "zendframework/zend-db": "^2.7",

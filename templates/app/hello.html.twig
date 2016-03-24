@@ -15,24 +15,6 @@
 <link rel="stylesheet" href="/scripts/dojo/dojox/grid/enhanced/resources/claro/EnhancedGrid.css"/>
 <link rel="stylesheet" href="/scripts/dojo/dojox/grid/enhanced/resources/EnhancedGrid_rtl.css"/>
 
-<style>
-    div.main {
-        width: 80%;
-        margin: auto;
-        padding: 25px;
-    }
-
-    div.dgrid {
-        width: 70%;
-        margin: auto;
-    }
-
-    div#selectScript {
-        float: left;
-        padding-left: 25%;
-        padding-right: 35px;
-    }
-</style>
 <body id="windowBody" class="claro">
 
 {#<div class="main">
@@ -156,8 +138,14 @@
             }
         });
         var rDataWidget = new RDataWidget({
+
             store: myStore,
             scriptList: scriptsList,
+
+            newFilterButton:"Новый фильтр",
+            addFilterButton:"Добавить фильтр",
+            cleanFilterButton:"Удалить фильтры",
+
         }).placeAt(document.body).startup();
 
 

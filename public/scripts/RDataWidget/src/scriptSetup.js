@@ -18,10 +18,10 @@ define([
     "./formCreate",
     "./dgredCreate",
     'dstore/Filter',
+    'dstore/Store',
     "dojox/layout/TableContainer",
     "dojo/Deferred",
-    "dojo/dom-style",
-    "dijit/ProgressBar",
+    "dojo/dom-style"
 
 
 ], function (declare,
@@ -43,10 +43,11 @@ define([
              formCreate,
              dgredCreate,
              Filter,
+             Store,
              TableContainer,
              Deferred,
-             domStyle,
-             ProgressBar) {
+             domStyle
+) {
     return declare(null, {
 
         __scriptsList: {},
@@ -60,39 +61,50 @@ define([
         __name: null,
         __filter: {},
         __filterDialog: null,
+        __chart: {
+            width: "100%",
+            height: "500px",
+            margin: "5px auto 0px auto"
+        },
+        constructor: function (scriptsList, store, chart) {
+            if(scriptsList != null && store instanceof Store){
+                this.__scriptsList = scriptsList;
+                this.__store = store;
 
-        constructor: function (scriptsList, store) {
-            this.__scriptsList = scriptsList;
-            this.__store = store;
-            var self = this;
-            var listForSelect = [];
-            array.forEach(this.__scriptsList.names, function (name) {
-                listForSelect.push({label: name, value: name})
-            });
-            this.__createSelectionForm(listForSelect);
-
-            var temp;
-            on(document.getElementById("newFilter"), "click", function () {
-                temp = null;
-                self.__createFilterForm();
-            });
+                this.__chart.margin = chart.margin != null ? chart.margin : this.__chart.margin;
+                this.__chart.width = chart.width != null ? chart.width : this.__chart.width;
+                this.__chart.height = chart.height != null ? chart.height : this.__chart.height;
 
 
-            on(document.getElementById("addFilter"), "click", function () {
-                if(!(temp instanceof Memory)){
-                    temp = self.__cashStore.filter(self.__filter);
-                }else{
-                    temp = temp.filter(self.__filter);
-                }
+                var self = this;
+                var listForSelect = [];
+                array.forEach(this.__scriptsList.names, function (name) {
+                    listForSelect.push({label: name, value: name})
+                });
+                this.__createSelectionForm(listForSelect);
 
-                self.__createFilterForm(temp);
-            });
+                var temp;
+                on(document.getElementById("newFilter"), "click", function () {
+                    temp = null;
+                    self.__createFilterForm();
+                });
 
-            on(document.getElementById("cleanFilterButton"), "click", function () {
-                self.__filter = {};
-                self.__renderPlotWithGrid(self.__filter);
-            });
 
+                on(document.getElementById("addFilter"), "click", function () {
+                    if(!(temp instanceof Memory)){
+                        temp = self.__cashStore.filter(self.__filter);
+                    }else{
+                        temp = temp.filter(self.__filter);
+                    }
+
+                    self.__createFilterForm(temp);
+                });
+
+                on(document.getElementById("cleanFilter"), "click", function () {
+                    self.__filter = {};
+                    self.__renderPlotWithGrid(self.__filter);
+                });
+            }
         },
 
         __createFilterForm: function (store) {
@@ -231,6 +243,7 @@ define([
             });
 
             var divForm = dom.byId("selectScript");
+
             this.__scriptSelectionForm.placeAt(divForm);
         },
 
@@ -239,13 +252,14 @@ define([
             if(!(store instanceof  Memory)){
                 store = self.__cashStore;
             }
+
             var chartDiv = dom.byId("simplechart");
             var gridDiv = dom.byId("grid");
+
             chartDiv.innerHTML = "";
             gridDiv.innerHTML = "";
 
             var setting = {
-                axis: self.__scriptsList.scripts[self.__name]['axis'],
                 title: self.__scriptsList.scripts[self.__name]['reportName'],
                 return: {
                     fieldNames: self.__scriptsList["scripts"][self.__name]["return"]['fieldNames'],
@@ -255,15 +269,33 @@ define([
 
             if(self.__scriptsList["scripts"][self.__name]["return"]['type'] === "plot"){
                 domStyle.set(chartDiv, {
-                    width: "1200px",
+                    /*width: "1200px",
                     height: "500px",
-                    margin: "5px auto 0px auto"
+                    margin: "5px auto 0px auto"*/
+                    width: self.__chart.width,
+                    height: self.__chart.height,
+                    margin: self.__chart.margin
                 });
+                setting.axis = self.__scriptsList.scripts[self.__name]['axis'];
                 self.plot = new plotCreate('simplechart', store.filter(filter), setting);
+                if(self.plot.isError){
+                    return false;
+                }
                 self.plot.render();
+            }else{
+                domStyle.set(chartDiv, {
+                    /*width: "1200px",
+                     height: "500px",
+                     margin: "5px auto 0px auto"*/
+                    width: 0,
+                    height: 0,
+                    margin: 0
+                });
             }
 
             self.__dgrid = new dgredCreate(store.filter(filter), setting);
+            return !self.__dgrid.isError;
+
         },
 
         __createConfigDialog: function () {
@@ -271,8 +303,16 @@ define([
             var data = [];
             var store = this.__store;
 
+            if(self.__scriptConfigDialogForm instanceof Form){
+                self.__scriptConfigDialogForm.destroyRecursive(true);
+            }
+            if(self.__scriptConfigDialog instanceof confirmDialog){
+                self.__scriptConfigDialog.destroyRecursive(true);
+            }
+
             var formCreator = new formCreate(store);
             var asyFCreate = formCreator.getForm(self.__name);
+
 
             asyFCreate.then(function (form) {
                 self.__scriptConfigDialogForm = form;
@@ -304,17 +344,26 @@ define([
                                 });
 
                                 self.__store.query(data).then(function (items) {
-                                    if (!items || items[0] === "ERROR") {
+                                    if(!items || items.length < 1){
                                         setTimeout(function () {
-                                            deferred.reject("Not valid sent data");
-                                        }, 2);
+                                            deferred.reject("Data were not returned");
+                                        }, 1);
+                                    }else if(items[0] === "ERROR"){
+                                        setTimeout(function () {
+                                            deferred.reject("Sent invalid data or data is not enough for the report");
+                                        }, 1);
+                                    }else{
+                                        self.__cashStore = new (declare([Memory, Trackable]))({data: items});
+
+                                        if(!self.__renderPlotWithGrid(self.__filter)){
+                                            setTimeout(function () {
+                                                deferred.reject("error by rendering report");
+                                            }, 2);
+                                        }else{
+                                            deferred.resolve('finish');
+                                        }
+
                                     }
-
-                                    self.__cashStore = new (declare([Memory, Trackable]))({data: items});
-
-                                    self.__renderPlotWithGrid(self.__filter);
-
-                                    deferred.resolve('finish');
                                 });
                             } catch (err) {
                                 setTimeout(function () {
@@ -328,11 +377,11 @@ define([
 
                         exec.then(
                             function (result) {
-                                dom.byId("output2").innerHTML = "plot create: " + result;
+                                dom.byId("output2").innerHTML = "Report create: " + result;
                             }, function (error) {
-                                dom.byId("output2").innerHTML = "Plot create stop! Errored out with: " + error;
+                                dom.byId("output2").innerHTML = "Report create stop! Errored out with: " + error;
                             }, function (progress) {
-                                dom.byId("output2").innerHTML = "Plot create: " + progress;
+                                dom.byId("output2").innerHTML = "Report create: " + progress;
                             });
                     }
                 });

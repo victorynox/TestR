@@ -1,16 +1,16 @@
 <div class="main">
+    <style data-dojo-attach-point="styleNode">${style}</style>
     <div id="messages"></div>
     <div class="controlPanel">
         <div id="selectScript"></div>
         <div class="control-button">
-            <button id="newFilter">new Filter</button>
-            <button id="addFilter">add Filter</button>
-            <button id="cleanFilterButton">clear Filter</button>
+            <button id="newFilter" data-dojo-attach-point="newFilterButtonNode">${newFilterButton}</button>
+            <button id="addFilter" data-dojo-attach-point="addFilterButtonNode">${addFilterButton}</button>
+            <button id="cleanFilter" data-dojo-attach-point="cleanFilterButtonNode">${cleanFilterButton}</button>
         </div>
     </div>
-    <h2 id="reportName"></h2>
     <div id="output2"></div>
-    <div id="statusBar"></div>
+    <h2 id="reportName"></h2>
     <div id="simplechart"></div>
     <div id="grid"></div>
 </div>

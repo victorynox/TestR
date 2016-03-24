@@ -12,6 +12,7 @@ define(['dojo/dom',
         "dijit/form/Select",
         "dojox/layout/TableContainer",
         "dojo/Deferred",
+        "dojo/dom-construct",
         "dojo/domReady!"],
     function (dom,
               on,
@@ -26,35 +27,70 @@ define(['dojo/dom',
               Button,
               Select,
               TableContainer,
-              Deferred) {
+              Deferred,
+              domConstruct) {
         return declare(null, {
-            form: null,
             _myStore: null,
-            //amount of elements received data asynchronously
-            _asyDataElementAmount: 0,
-            _asyDataCurrentlyElementAmount: 0,
             constructor: function (myStore) {
                 var self = this;
                 self._myStore = myStore;
             },
             getForm: function (name) {
+                domConstruct.destroy("scriptConfigDialogForm");
                 switch (name) {
                     case "plotPublishPrice":
+                    case "plotSoldPrice":
+                    case "plotProbPrice":
+                    case "plotProfPrice":
+                    case "plotPublishDay":
+                    case "plotSoldDay":
+                    case "plotProbDay":
+                    case "plotCreatedDay":
+                    case "plotPublishTime":
+                    case "plotSoldTime":
+                    case "plotProbTime":
+                    case "plotCreatedTime":
+                    case "plotCreatedTimeWithTZ":
+                    case "tableCategoryPrice":
+                    case "tableCategoryID":
+                    case "tableProduct":
                     {
                         return this.__plotPublishPrice();
+                    }
+                    default:
+                    {
+                        return this.__notForm();
                     }
                 }
             },
 
+            __notForm: function () {
+                var self = this;
+                var asyForm = function () {
+                    var deferred = new Deferred();
+
+
+
+                    var form = new Form({
+                        id: "scriptConfigDialogForm",
+                        doLayout: true
+                    });
+
+                    setTimeout(function () {
+                        deferred.resolve(form)
+                    }, 2);
+
+                    return deferred.promise;
+                };
+                return asyForm();
+            },
             __plotPublishPrice: function () {
                 var self = this;
-                self._asyDataElementAmount = 1;
 
                 var asyForm = function () {
                     var deferred = new Deferred();
                     var list = [];
 
-                    dojo.destroy("scriptConfigDialogForm");
 
                     var form = new Form({
                         id: "scriptConfigDialogForm",
@@ -96,7 +132,7 @@ define(['dojo/dom',
                         array.forEach(items, function (item) {
                             list.push({id: item.id, label: item.label, value: item.value});
                         });
-                        
+
                         var brand = new Select({
                             label: "Бренд",
                             name: "brand",
