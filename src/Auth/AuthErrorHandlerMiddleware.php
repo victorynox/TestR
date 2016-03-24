@@ -37,7 +37,7 @@ class AuthErrorHandlerMiddleware
 
             $query = $request->getParsedBody();
             $query['view']['render'] = $render;
-            $query['view']['errorCode'] = 403;
+            $query['view']['code'] = 403;
 
             $request = $request->withParsedBody($query);
         }

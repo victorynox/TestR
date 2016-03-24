@@ -35,6 +35,7 @@ return [
                 Auth\IdentificationMiddleware::class,
                 //Auth\AuthenticationMiddleware::class,
                 Auth\AuthorizationMiddleware::class,
+                //Auth\AuthErrorHandlerMiddleware::class,
             ],
             'priority' => 2,
         ],
@@ -90,10 +91,10 @@ return [
         'error' => [
             'middleware' => [
                 // Add error middleware here.
-                //Auth\AuthErrorHandlerMiddleware::class,
+                Auth\AuthErrorHandlerMiddleware::class,
             ],
             'error'    => true,
-            'priority' => -10000,
+            'priority' => -9,
         ],
     ],
 ];
