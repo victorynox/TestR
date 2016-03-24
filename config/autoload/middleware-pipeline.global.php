@@ -21,7 +21,7 @@ return [
             'middleware' => [
                 App\Middleware\ViewMiddleware::class,
             ],
-            'priority' => -10,
+            'priority' => -12,
         ],
         [
             'middleware' => [

@@ -68,6 +68,11 @@ define([
         },
         constructor: function (scriptsList, store, chart) {
             if(scriptsList != null && store instanceof Store){
+
+                domStyle.set("alertBlock", {
+                    display: "none"
+                });
+
                 this.__scriptsList = scriptsList;
                 this.__store = store;
 
@@ -103,6 +108,12 @@ define([
                 on(document.getElementById("cleanFilter"), "click", function () {
                     self.__filter = {};
                     self.__renderPlotWithGrid(self.__filter);
+                });
+
+                on(document.getElementById("closeAlert"), "click", function () {
+                    domStyle.set("alertBlock", {
+                        display: "none"
+                    });
                 });
             }
         },
@@ -377,10 +388,19 @@ define([
 
                         exec.then(
                             function (result) {
+                                domStyle.set("alertBlock", {
+                                    display: "block"
+                                });
                                 dom.byId("output2").innerHTML = "Report create: " + result;
                             }, function (error) {
+                                domStyle.set("alertBlock", {
+                                    display: "block"
+                                });
                                 dom.byId("output2").innerHTML = "Report create stop! Errored out with: " + error;
                             }, function (progress) {
+                                domStyle.set("alertBlock", {
+                                    display: "block"
+                                });
                                 dom.byId("output2").innerHTML = "Report create: " + progress;
                             });
                     }

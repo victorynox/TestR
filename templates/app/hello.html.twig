@@ -17,7 +17,9 @@
 
 <body id="windowBody" class="claro">
 
-{#<div class="main">
+{#
+
+<div class="main">
     <div id="selectScript"></div>
     <div class="control-button">
         <button id="newFilter">new Filter</button>
@@ -28,7 +30,9 @@
     <h2 id="reportName"></h2>
     <div id="simplechart"></div>
     <div id="grid"></div>
-</div>#}
+</div>
+#}
+
 
 <script>
     var dojoConfig = {
@@ -46,36 +50,6 @@
     };
 </script>
 <script src="/scripts/dojo/dojo/dojo.js"></script>
-{#
-<h1 id="greeting">{% if scriptName != false %} {{ scriptName }} {% else %} hello {% endif %}</h1>
-<div>
-    <div class="scriptList">
-        <div>
-            <form method="{{ scriptsSelectForm.attributes.method }}" action="{{ url('hello') }}" id="scriptsSelectForm">
-                {% for element in scriptsSelectForm %}
-                    {% if element.attributes.type == 'select' %}
-                        {{ forms.input(element.attributes.name, element.value, element.attributes.type, element.label, 20, element.messages, element.valueOptions) }}
-                    {% else %}
-                        {{ forms.input(element.attributes.name, element.value, element.attributes.type, element.label, 20, element.messages) }}
-                    {% endif %}
-                {% endfor %}
-            </form>
-        </div>
-    </div>
-    {% if scriptSettingForm != false %}
-        <div>
-            <form method="{{ scriptSettingForm.attributes.method }}" id="scriptSettingForm">
-                {% for element in scriptSettingForm %}
-                    {{ forms.input(element.attributes.name, element.value, element.attributes.type, element.label, 20, element.messages) }}
-                {% endfor %}
-            </form>
-        </div>
-
-    {% endif %}
-</div>
-#}
-
-
 <script>
     require([
         "dojo/dom",

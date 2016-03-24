@@ -3,14 +3,14 @@
 return [
     'dependencies' => [
         'invokables' => [
-            Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\FastRouteRouter::class,
-            Auth\Action\LogoutAction::class =>   Auth\Action\LogoutAction::class,
+            Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\FastRouteRouter::class
         ],
         // Map middleware -> factories here
         'factories' => [
             App\Action\HelloAction::class => App\Action\HelloActionFactory::class,
             App\Middleware\RScriptValidatorMiddleware::class =>  App\Middleware\RScriptValidatorFactory::class,
-            Auth\AuthenticationMiddleware::class => Auth\AuthenticationFactory::class
+            Auth\AuthenticationMiddleware::class => Auth\AuthenticationFactory::class,
+            Auth\Action\LogoutAction::class =>   Auth\Action\LogoutActionFactory::class,
         ],
     ],
 

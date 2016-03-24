@@ -67,9 +67,9 @@ define([
         /**
         * подписи к кнопкам управления фильтрами
         */
-        newFilterButton: "new Filter",
+        /*newFilterButton: "new Filter",
         addFilterButton: "add Filter",
-        cleanFilterButton: "clear Filter",
+        cleanFilterButton: "clear Filter",*/
 
         /**
          * стили для графига
@@ -81,15 +81,15 @@ define([
         /**
          * общее стили виджета
          */
-        style: "div.main {width: 80%;margin: auto;padding: 25px;}div.dgrid {margin-top: 45px;}div#selectScript {float: left;padding-left: 25%;padding-right: 35px;}",
+        //style: "div.main {width: 80%;margin: auto;padding: 25px;}div.dgrid {margin-top: 45px;}div#selectScript {float: left;padding-left: 25%;padding-right: 35px;}",
 
-        startup: function () {
+        postCreate: function () {
             var rsript = new scriptSetup(this.scriptList, this.store, {
                 width: this.chartWidth,
                 height: this.chartHeight,
                 margin: this.chartMargin
             });
-            //this.inherited(arguments);
+            this.inherited(arguments);
         }
 
     });

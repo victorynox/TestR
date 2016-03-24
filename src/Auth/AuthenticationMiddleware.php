@@ -55,8 +55,7 @@ class AuthenticationMiddleware
             } else {
 
                 if ($request->getUri()->getPath() === '/auth') {
-                    $message = "Auth completed.\n";
-                    $render = $this->template->render('app::hello', ['message' => $message]);
+                    $render = $this->template->render('app::homepage');
                     $query = $request->getParsedBody();
                     $query['view']['render'] = $render;
                     $query['view']['code'] = 200;

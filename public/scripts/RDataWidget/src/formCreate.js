@@ -118,7 +118,7 @@ define(['dojo/dom',
                     });
 
                     var endAddDate = new DateTextBox({
-                        label: "Дата начала выборки",
+                        label: "Дата конца выборки",
                         name: "endadd_date",
                         required: false
                     });

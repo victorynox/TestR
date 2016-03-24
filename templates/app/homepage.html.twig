@@ -1,0 +1,142 @@
+{% extends '@layout/layout.html.twig' %}
+
+{% block stylesheets %}
+    <link href="/scripts/dojo/dojo/resources/dojo.css" rel="stylesheet">
+    <link href="/scripts/dojo/dijit/themes/claro/claro.css" rel="stylesheet">
+    <link rel="stylesheet" href="/scripts/dojo/dojox/highlight/resources/highlight.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dojox/highlight/resources/pygments/colorful.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dgrid/css/dgrid.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dgrid/css/skins/claro.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dgrid/css/skins/claro.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dojox/grid/enhanced/resources/claro/EnhancedGrid.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dojox/grid/enhanced/resources/EnhancedGrid_rtl.css"/>
+{% endblock stylesheets %}
+
+{% block javascripts %}
+
+    <script>
+        var dojoConfig = {
+            async: true,
+            isDebug: true,
+            // This code registers the correct location of the "demo"
+            // package so we can load Dojo from the CDN whilst still
+            // being able to load local modules
+            packages: [
+                {
+                    name: "Rscript",
+                    location: '/scripts'
+                }
+            ]
+        };
+    </script>
+    <script src="/scripts/dojo/dojo/dojo.js"></script>
+    <script>
+        require([
+            "dojo/dom",
+            'dojo/_base/array',
+            'dojo/json',
+            "Rscript/scriptListConfigNew",
+            "Rscript/RDataWidget/RDataWidget",
+            'dstore/RequestMemory',
+            "dstore/Rest",
+            'dstore/Trackable',
+            "dojo/on",
+            "dojo/_base/window",
+            "dojo/_base/declare",
+            'dojo/request',
+            'dojo/_base/lang',
+            "dojo/dom-style",
+            "dojo/domReady!"
+        ], function (dom,
+                     array,
+                     json,
+                     scriptListConfig,
+                     RDataWidget,
+                     RequestMemory,
+                     Rest,
+                     Trackable,
+                     on,
+                     window,
+                     declare,
+                     request,
+                     lang,
+                     domStyle) {
+
+            var scriptsList = scriptListConfig;
+
+            var myStore = new declare([Rest, RequestMemory, Trackable])({
+                target: 'rest/rdata/',
+
+                query: function (options) {
+                    var headers = lang.mixin({Accept: this.accepts}, this.headers);
+                    var store = this;
+                    var query = '';
+                    array.forEach(options, function (item) {
+                        var begReg = new RegExp("^beg([a-zA-Z0-9\_]+)");
+                        var endReg = new RegExp("^end([a-zA-Z0-9\_]+)");
+                        if (begReg.exec(item.name)) {
+                            var name = begReg.exec(item.name);
+                            query += name[1] + ">=" + item.value + "&";
+                        } else if (endReg.exec(item.name)) {
+                            var name = endReg.exec(item.name);
+                            query += name[1] + "<=" + item.value + "&";
+                        } else {
+                            query += item.name + "=" + item.value + "&";
+                        }
+                    });
+                    query = query.replace(/\&$/, "");
+                    return request(this.target, {
+                        headers: headers,
+                        query: query,
+                    }).then(function (response) {
+                        return store._restore(store.parse(response), true);
+                    });
+                }
+            });
+            var rDataWidget = new RDataWidget({
+
+                store: myStore,
+                scriptList: scriptsList
+
+            }).placeAt(document.body);
+
+        });
+    </script>
+{% endblock javascripts %}
+
+
+{% block informMessages %}
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
+
+        <div id="alertBlock" class="alert alert-success alert-dismissable">
+            <div id="output2"></div>
+            <button type="button" class="close" id="closeAlert" >&times;</button>
+        </div>
+
+    </div>
+{% endblock informMessages %}
+
+
+ {% block mainSideMenu %}
+
+     <li><a id="newFilter" href="#">Новый фильтр</a></li>
+
+     <li><a id="addFilter" href="#">Добавить фильр</a></li>
+
+     <li><a id="cleanFilter" href="#">Удалить фильтр</a></li>
+
+     <li id="selectScript"></li>
+
+ {% endblock mainSideMenu %}
+
+{% block centralBlockName %} График {% endblock centralBlockName %}
+
+{% block contentHeader %}
+    <div id="simplechart"></div>
+{% endblock contentHeader %}
+
+{% block contentBodyName %} Таблица {% endblock contentBodyName %}
+
+{% block contentBody %}
+    <div id="grid"></div>
+{% endblock contentBody %}

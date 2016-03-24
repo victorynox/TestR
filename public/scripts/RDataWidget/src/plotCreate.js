@@ -82,7 +82,7 @@ define(["dojox/charting/Chart",
 
                     new Tooltip(this._chart, "columnsPlot", {
                         text: function (chartItem) {
-                            return "id: " + chartItem.run.source.objects[chartItem.index].id + '<br>' + "Value: " + chartItem.y + '<br>' + settings.axis.xAxis +": " + chartItem.run.source.objects[chartItem.index].x;
+                            return "id: " + chartItem.run.source.objects[chartItem.index].id + '<br>' +  settings.axis.yAxis +": " + chartItem.y + '<br>' + settings.axis.xAxis +": " + chartItem.run.source.objects[chartItem.index].x;
                         }
                     });
                     new Highlight(this._chart, "columnsPlot");

@@ -32,19 +32,7 @@ class HelloAction
     public function __invoke(Request $request, Response $response, callable $next)
     {
 
-        $scriptsList = [];
-        foreach ($this->rscriptConfig['scripts'] as $key => $value) {
-            $paramsName = [];
-            foreach($value['get'] as $name => $item){
-                $paramsName[] = $name;
-            }
-            $scriptsList['scripts'][$key]['get'] = $value['get'];
-            $scriptsList['scripts'][$key]['paramsName'] = $paramsName;
-            $scriptsList['names'][] = $key;
-            unset($temp);
-        }
-        $scriptsListJson = json_encode($scriptsList, JSON_UNESCAPED_UNICODE);
-        $render = $this->template->render('app::hello', ['scriptsListJson' => $scriptsListJson]);
+        $render = $this->template->render('app::homepage');
         $query['view']['render'] = $render;
         $query['view']['code'] = 200;
         $request = $request->withParsedBody($query);

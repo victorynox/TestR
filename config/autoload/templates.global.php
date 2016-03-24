@@ -18,6 +18,7 @@ return [
             //'layout' => ['templates/layout'],
             'error'  => ['templates/error'],
             'macros' => ['templates/macros'],
+            'layout' => ['templates/layout'],
         ],
     ],
 
