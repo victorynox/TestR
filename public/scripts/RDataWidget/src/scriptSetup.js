@@ -46,8 +46,7 @@ define([
              Store,
              TableContainer,
              Deferred,
-             domStyle
-) {
+             domStyle) {
     return declare(null, {
 
         __scriptsList: {},
@@ -67,7 +66,7 @@ define([
             margin: "5px auto 0px auto"
         },
         constructor: function (scriptsList, store, chart) {
-            if(scriptsList != null && store instanceof Store){
+            if (scriptsList != null && store instanceof Store) {
 
                 domStyle.set("alertBlock", {
                     display: "none"
@@ -96,9 +95,9 @@ define([
 
 
                 on(document.getElementById("addFilter"), "click", function () {
-                    if(!(temp instanceof Memory)){
+                    if (!(temp instanceof Memory)) {
                         temp = self.__cashStore.filter(self.__filter);
-                    }else{
+                    } else {
                         temp = temp.filter(self.__filter);
                     }
 
@@ -121,109 +120,118 @@ define([
         __createFilterForm: function (store) {
             var self = this;
 
+            if (self.__name) {
+                if(self.__store) {
+                    if (!self.__filterDialog) {
+                        var form = new Form({
+                            id: "filterCreateDialogForm",
+                            doLayout: true
+                        });
 
-            if (!self.__filterDialog) {
-                var form = new Form({
-                    id: "filterCreateDialogForm",
-                    doLayout: true
-                });
+                        var formContainer = new TableContainer(
+                            {
+                                cols: 1,
+                                customClass: "labelsAndFields",
+                                "labelWidth": "200"
+                            }
+                        );
 
-                var formContainer = new TableContainer(
-                    {
-                        cols: 1,
-                        customClass: "labelsAndFields",
-                        "labelWidth": "200"
+                        var selectParamsList = [];
+                        array.forEach(self.__scriptsList["scripts"][self.__name]["return"]['fieldNames'], function (name, i) {
+                            selectParamsList.push({
+                                id: i,
+                                value: name,
+                                label: self.__scriptsList["scripts"][self.__name]["return"]['fieldLabel'][name]
+                            });
+                        });
+
+                        var selectParams = new Select({
+                            label: "Поле",
+                            name: "field",
+                            options: selectParamsList,
+                            required: false
+                        });
+
+                        var selectFilter = new Select({
+                            label: "Фильтр",
+                            name: "filter",
+                            options: [
+                                {id: 0, label: "=", value: "eq"},
+                                {id: 0, label: ">", value: "gt"},
+                                {id: 0, label: "<", value: "lt"},
+                                {id: 0, label: ">=", value: "gte"},
+                                {id: 0, label: "<=", value: "lte"},
+                                {id: 0, label: "!=", value: "ne"}
+                            ],
+                            required: false
+                        });
+                        var value = new TextBox({
+                            label: "Значение",
+                            name: "value",
+                        });
+
+                        formContainer.addChild(selectFilter);
+                        formContainer.addChild(selectParams);
+                        formContainer.addChild(value);
+                        formContainer.placeAt(form);
+
+                        self.__filterDialog = new confirmDialog({
+                            id: 'filterCreateDialog',
+                            title: "Фильтр",
+                            style: 'width:600px;',
+                            content: form,
+                            execute: function () {
+
+
+                                var f = query("#filterCreateDialogForm")[0];
+
+                                var filter = f["filter"];
+                                var field = f["field"];
+                                var value = f["value"];
+                                self.__filter = new Filter();
+                                switch (filter.value) {
+                                    case "eq":
+                                    {
+                                        self.__filter = self.__filter.eq(field.value, parseFloat(value.value));
+                                        break;
+                                    }
+                                    case "gt":
+                                    {
+                                        self.__filter = self.__filter.gt(field.value, parseFloat(value.value));
+                                        break;
+                                    }
+                                    case "lt":
+                                    {
+                                        self.__filter = self.__filter.lt(field.value, parseFloat(value.value));
+                                        break;
+                                    }
+                                    case "gte":
+                                    {
+                                        self.__filter = self.__filter.gte(field.value, parseFloat(value.value));
+                                        break;
+                                    }
+                                    case "lte":
+                                    {
+                                        self.__filter = self.__filter.lte(field.value, parseFloat(value.value));
+                                        break;
+                                    }
+                                    case "ne":
+                                    {
+                                        self.__filter = self.__filter.ne(field.value, parseFloat(value.value));
+                                        break;
+                                    }
+                                }
+                                self.__renderPlotWithGrid(self.__filter, store);
+                            }
+                        });
+
+
+                        form.startup();
+                        //self.__filterDialog.show();
                     }
-                );
-
-                var selectParamsList = [];
-                array.forEach(self.__scriptsList["scripts"][self.__name]["return"]['fieldNames'], function (names, i) {
-                    selectParamsList.push({id: i, label:names, value:names });
-                });
-
-                var selectParams = new Select({
-                    label: "Поле",
-                    name: "field",
-                    options: selectParamsList,
-                    required: false
-                });
-
-                var selectFilter = new Select({
-                    label: "Фильтр",
-                    name: "filter",
-                    options: [
-                        {id: 0, label: "=", value: "eq"},
-                        {id: 0, label: ">", value: "gt"},
-                        {id: 0, label: "<", value: "lt"},
-                        {id: 0, label: ">=", value: "gte"},
-                        {id: 0, label: "<=", value: "lte"},
-                        {id: 0, label: "!=", value: "ne"}
-                    ],
-                    required: false
-                });
-                var value = new TextBox({
-                    label: "Значение",
-                    name: "value",
-                });
-
-                formContainer.addChild(selectFilter);
-                formContainer.addChild(selectParams);
-                formContainer.addChild(value);
-                formContainer.placeAt(form);
-
-                self.__filterDialog = new confirmDialog({
-                    id: 'filterCreateDialog',
-                    title: 'test dialog',
-                    style: 'width:600px;',
-                    content: form,
-                    execute: function () {
-                        var f = query("#filterCreateDialogForm")[0];
-
-                        var filter = f["filter"];
-                        var field = f["field"];
-                        var value = f["value"];
-                        self.__filter = new Filter();
-                        switch (filter.value) {
-                            case "eq":
-                            {
-                                self.__filter = self.__filter.eq(field.value, parseFloat(value.value));
-                                break;
-                            }
-                            case "gt":
-                            {
-                                self.__filter = self.__filter.gt(field.value, parseFloat(value.value));
-                                break;
-                            }
-                            case "lt":
-                            {
-                                self.__filter = self.__filter.lt(field.value, parseFloat(value.value));
-                                break;
-                            }
-                            case "gte":
-                            {
-                                self.__filter = self.__filter.gte(field.value, parseFloat(value.value));
-                                break;
-                            }
-                            case "lte":
-                            {
-                                self.__filter = self.__filter.lte(field.value, parseFloat(value.value));
-                                break;
-                            }
-                            case "ne":
-                            {
-                                self.__filter = self.__filter.ne(field.value, parseFloat(value.value));
-                                break;
-                            }
-                        }
-                        self.__renderPlotWithGrid(self.__filter, store);
-                    }
-                });
-
-
-                form.startup();
-                //self.__filterDialog.show();
+                    self.__filterDialog.show();
+                }
             }
-            self.__filterDialog.show();
 
         },
 
@@ -250,6 +258,7 @@ define([
             on(button, "click", function () {
                 var f = query("#scriptSelectionForm")[0];
                 self.__name = f['select'].value;
+                dom.byId("reportName").innerHTML = self.__scriptsList['scripts'][self.__name].reportName;
                 self.__createConfigDialog();
             });
 
@@ -260,7 +269,7 @@ define([
 
         __renderPlotWithGrid: function (filter, store) {
             var self = this;
-            if(!(store instanceof  Memory)){
+            if (!(store instanceof Memory)) {
                 store = self.__cashStore;
             }
 
@@ -278,22 +287,22 @@ define([
                 }
             };
 
-            if(self.__scriptsList["scripts"][self.__name]["return"]['type'] === "plot"){
+            if (self.__scriptsList["scripts"][self.__name]["return"]['type'] === "plot") {
                 domStyle.set(chartDiv, {
                     /*width: "1200px",
-                    height: "500px",
-                    margin: "5px auto 0px auto"*/
+                     height: "500px",
+                     margin: "5px auto 0px auto"*/
                     width: self.__chart.width,
                     height: self.__chart.height,
                     margin: self.__chart.margin
                 });
                 setting.axis = self.__scriptsList.scripts[self.__name]['axis'];
                 self.plot = new plotCreate('simplechart', store.filter(filter), setting);
-                if(self.plot.isError){
+                if (self.plot.isError) {
                     return false;
                 }
                 self.plot.render();
-            }else{
+            } else {
                 domStyle.set(chartDiv, {
                     /*width: "1200px",
                      height: "500px",
@@ -314,10 +323,10 @@ define([
             var data = [];
             var store = this.__store;
 
-            if(self.__scriptConfigDialogForm instanceof Form){
+            if (self.__scriptConfigDialogForm instanceof Form) {
                 self.__scriptConfigDialogForm.destroyRecursive(true);
             }
-            if(self.__scriptConfigDialog instanceof confirmDialog){
+            if (self.__scriptConfigDialog instanceof confirmDialog) {
                 self.__scriptConfigDialog.destroyRecursive(true);
             }
 
@@ -329,7 +338,7 @@ define([
                 self.__scriptConfigDialogForm = form;
                 self.__scriptConfigDialog = new confirmDialog({
                     id: 'scriptConfigDialog',
-                    title: 'test dialog',
+                    title: self.__scriptsList['scripts'][self.__name].reportName,
                     style: 'width:600px;',
                     content: self.__scriptConfigDialogForm,
                     execute: function () {
@@ -355,22 +364,22 @@ define([
                                 });
 
                                 self.__store.query(data).then(function (items) {
-                                    if(!items || items.length < 1){
+                                    if (!items || items.length < 1) {
                                         setTimeout(function () {
                                             deferred.reject("Data were not returned");
                                         }, 1);
-                                    }else if(items[0] === "ERROR"){
+                                    } else if (items[0] === "ERROR") {
                                         setTimeout(function () {
                                             deferred.reject("Sent invalid data or data is not enough for the report");
                                         }, 1);
-                                    }else{
+                                    } else {
                                         self.__cashStore = new (declare([Memory, Trackable]))({data: items});
 
-                                        if(!self.__renderPlotWithGrid(self.__filter)){
+                                        if (!self.__renderPlotWithGrid(self.__filter)) {
                                             setTimeout(function () {
                                                 deferred.reject("error by rendering report");
                                             }, 2);
-                                        }else{
+                                        } else {
                                             deferred.resolve('finish');
                                         }
 

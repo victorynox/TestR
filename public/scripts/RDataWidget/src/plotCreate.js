@@ -1,5 +1,6 @@
 define(["dojox/charting/Chart",
         'dojo/_base/array',
+        "dojox/timing",
         'dstore/charting/StoreSeries',
         "dojox/charting/themes/MiamiNice",
         "dojox/charting/axis2d/Default",
@@ -13,6 +14,7 @@ define(["dojox/charting/Chart",
         "dojo/domReady!"],
     function (Chart,
               array,
+              timing,
               StoreSeries,
               MiamiNice,
               Default,
@@ -27,8 +29,9 @@ define(["dojox/charting/Chart",
             _data: null,
             _store: null,
             isError: false,
+            wordInAxis: 3,
             constructor: function (name, store, settings) {
-                try{
+                try {
                     var self = this;
 
                     this._chart = new Chart(name, {
@@ -55,17 +58,35 @@ define(["dojox/charting/Chart",
                     this._chart.setTheme(MiamiNice);
 
                     this._chart.addAxis("x", {
-                        majorTickStep: 1, minorTicks: false, title:  settings.axis.xAxis, titleOrientation: "away",
+                        majorTickStep: 1, minorTicks: false, title: settings.axis.xAxis, titleOrientation: "away",
                         labelFunc: function (index) {
-                            var column;
-                            self._store.fetchRange({start: index-1, end: index}).then(function (item) {
+                            var column = "NULL";
+                            self._store.fetchRange({start: index - 1, end: index}).then(function (item) {
                                 column = item[0].x
                             });
+                            
                             return column;
-                        }
+                        },
+                        font: "normal normal normal 10pt Arial"
                     });
 
-                    this._chart.addAxis("y", {vertical: true, min: 0, title: settings.axis.yAxis});
+                    var yAxisLabel = "";
+
+                    var words = settings.axis.yAxis.split(" ");
+
+                    for(var i =0; i < words.length; ++i){
+                        yAxisLabel += " " + words[i] ;
+                        if(i%3 == 0){
+                            yAxisLabel += "\n";
+                        }
+                    }
+
+                    this._chart.addAxis("y", {
+                        vertical: true,
+                        min: 0,
+                        title: yAxisLabel,
+                        titleFont: "normal normal normal 9pt Arial"
+                    });
 
                     this._chart.addSeries("Series 1", new StoreSeries(this._store,
                         function (item) {
@@ -82,11 +103,11 @@ define(["dojox/charting/Chart",
 
                     new Tooltip(this._chart, "columnsPlot", {
                         text: function (chartItem) {
-                            return "id: " + chartItem.run.source.objects[chartItem.index].id + '<br>' +  settings.axis.yAxis +": " + chartItem.y + '<br>' + settings.axis.xAxis +": " + chartItem.run.source.objects[chartItem.index].x;
+                            return "id: " + chartItem.run.source.objects[chartItem.index].id + '<br>' + settings.axis.yAxis + ": " + chartItem.y + '<br>' + settings.axis.xAxis + ": " + chartItem.run.source.objects[chartItem.index].x;
                         }
                     });
                     new Highlight(this._chart, "columnsPlot");
-                }catch (e){
+                } catch (e) {
                     this.isError = true
                 }
             },

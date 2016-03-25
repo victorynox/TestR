@@ -52,7 +52,7 @@ define(['dojo/dom',
                     case "plotCreatedTime":
                     case "plotCreatedTimeWithTZ":
                     case "tableCategoryPrice":
-                    case "tableCategoryID":
+                    case "tableCategory":
                     case "tableProduct":
                     {
                         return this.__plotPublishPrice();
@@ -130,7 +130,7 @@ define(['dojo/dom',
                         list.push({id: 0, label: "По всем брендам", value: ""});
 
                         array.forEach(items, function (item) {
-                            list.push({id: item.id, label: item.label, value: item.value});
+                            list.push({id: item.id, label: item.name, value: item.value});
                         });
 
                         var brand = new Select({

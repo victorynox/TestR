@@ -132,3 +132,12 @@ body {
     background-color: rgba(71, 255, 0, 0.7);
     border-radius: 14%;
 }
+
+.tableContainer-table{
+    border-spacing: 0px 7px;
+    border-collapse: separate;
+}
+
+.dijitSelect .dijitButtonContents {
+    min-width: 50px;
+}
