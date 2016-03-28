@@ -141,3 +141,8 @@ body {
 .dijitSelect .dijitButtonContents {
     min-width: 50px;
 }
+
+span.dijitReset.dijitInline.dijitSelectLabel.dijitValidationTextBoxLabel{
+    max-width: 160px;
+    overflow-x: hidden;
+}

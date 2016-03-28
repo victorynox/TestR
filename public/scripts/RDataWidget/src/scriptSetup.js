@@ -21,7 +21,8 @@ define([
     'dstore/Store',
     "dojox/layout/TableContainer",
     "dojo/Deferred",
-    "dojo/dom-style"
+    "dojo/dom-style",
+    "dojo/dom-class"
 
 
 ], function (declare,
@@ -46,7 +47,8 @@ define([
              Store,
              TableContainer,
              Deferred,
-             domStyle) {
+             domStyle,
+             domClass) {
     return declare(null, {
 
         __scriptsList: {},
@@ -83,7 +85,7 @@ define([
                 var self = this;
                 var listForSelect = [];
                 array.forEach(this.__scriptsList.names, function (name) {
-                    listForSelect.push({label: name, value: name})
+                    listForSelect.push({label: self.__scriptsList['scripts'][name].reportName, value: name})
                 });
                 this.__createSelectionForm(listForSelect);
 
@@ -364,7 +366,7 @@ define([
                                 });
 
                                 self.__store.query(data).then(function (items) {
-                                    if (!items || items.length < 1) {
+                                    if (!items || !Array.isArray(items) || items.length < 1) {
                                         setTimeout(function () {
                                             deferred.reject("Data were not returned");
                                         }, 1);
@@ -384,7 +386,13 @@ define([
                                         }
 
                                     }
-                                });
+
+                                }, function (error) {
+                                    setTimeout(function () {
+                                        deferred.reject("Script timeout !!!");
+                                    }, 1);
+                                    }
+                                );
                             } catch (err) {
                                 setTimeout(function () {
                                     deferred.reject(err.message);
@@ -397,19 +405,28 @@ define([
 
                         exec.then(
                             function (result) {
-                                domStyle.set("alertBlock", {
-                                    display: "block"
-                                });
+
+                                domStyle.set("alertBlock", {display: "block"});
+                                domClass.remove("alertBlock", "alert-danger");
+                                domClass.remove("alertBlock", "alert-info");
+                                domClass.add("alertBlock", "alert-success");
+
                                 dom.byId("output2").innerHTML = "Report create: " + result;
                             }, function (error) {
-                                domStyle.set("alertBlock", {
-                                    display: "block"
-                                });
+
+                                domStyle.set("alertBlock", {display: "block"});
+                                domClass.remove("alertBlock", "alert-success");
+                                domClass.remove("alertBlock", "alert-info");
+                                domClass.add("alertBlock", "alert-danger");
+
                                 dom.byId("output2").innerHTML = "Report create stop! Errored out with: " + error;
                             }, function (progress) {
-                                domStyle.set("alertBlock", {
-                                    display: "block"
-                                });
+                                domStyle.set("alertBlock", {display: "block"});
+
+                                domClass.remove("alertBlock", "alert-success");
+                                domClass.remove("alertBlock", "alert-danger");
+                                domClass.add("alertBlock", "alert-info");
+
                                 dom.byId("output2").innerHTML = "Report create: " + progress;
                             });
                     }
