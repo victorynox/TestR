@@ -366,15 +366,19 @@ define([
                                 });
 
                                 self.__store.query(data).then(function (items) {
-                                    if (!items || !Array.isArray(items) || items.length < 1) {
+                                    if(items.status == 202){
                                         setTimeout(function () {
-                                            deferred.reject("Data were not returned");
+                                            deferred.reject("Script working... But data not return because timeout ending");
+                                        }, 1);
+                                    } else if (!items || !Array.isArray(items) || items.length < 1) {
+                                        setTimeout(function () {
+                                            deferred.reject("Data was not returned");
                                         }, 1);
                                     } else if (items[0] === "ERROR") {
                                         setTimeout(function () {
                                             deferred.reject("Sent invalid data or data is not enough for the report");
                                         }, 1);
-                                    } else {
+                                    } else  {
                                         self.__cashStore = new (declare([Memory, Trackable]))({data: items});
 
                                         if (!self.__renderPlotWithGrid(self.__filter)) {
@@ -384,12 +388,10 @@ define([
                                         } else {
                                             deferred.resolve('finish');
                                         }
-
                                     }
-
                                 }, function (error) {
                                     setTimeout(function () {
-                                        deferred.reject("Script timeout !!!");
+                                        deferred.reject("Script timeout end");
                                     }, 1);
                                     }
                                 );

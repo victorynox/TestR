@@ -53,19 +53,19 @@ class RScriptValidatorMiddleware
                 if(isset($query[$key])){
                     switch ($value['type']){
                         case 'int':{
-                            if((float)$query[$key] == 0 or !is_int((int)$query[$key])){
+                            if(!is_numeric($query[$key])){
                                 $this->isValid = false;
                             }
                             break;
                         }
                         case  'string':{
-                            if((string)$query[$key] == '' or !is_string((string)$query[$key])){
+                            if(!$query[$key]){
                                 $this->isValid = false;
                             }
                             break;
                         }
                         case 'float':{
-                        if((float)$query[$key] == 0 or !is_float((float)$query[$key])){
+                        if(!is_numeric($query[$key])){
                             $this->isValid = false;
                         }
                             break;
