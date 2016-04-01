@@ -65,7 +65,7 @@
             var scriptsList = scriptListConfig;
 
             var myStore = new declare([Rest, RequestMemory, Trackable])({
-                target: 'rest/rdata/',
+                target: 'rest/rdata',
 
                 query: function (options) {
                     var headers = lang.mixin({Accept: this.accepts}, this.headers);
