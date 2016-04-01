@@ -12,8 +12,8 @@ namespace App\DataStore\Cashable\CashableStores;
 interface GetAllInterface
 {
     /**
-     * return 
-     * @return mixed
+     * return array or iterator 
+     * @return array
      */
     public function getAll();
 }

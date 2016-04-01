@@ -10,6 +10,7 @@ namespace App\DataStore\Cashable\CashableStores;
 
 
 use Traversable;
+use Xiag\Rql\Parser\Query;
 use zaboy\res\DataStore\Memory;
 use zaboy\res\DataStores\DataStoresInterface;
 
@@ -22,6 +23,11 @@ abstract class CashableStoreAbstract implements RefreshableInterface, DataStores
     /** @var  GetAllInterface */
     private $getAll;
 
+    public function query(Query $query){
+        return $this->cashStore->query($query);
+    }
+
+
     public function __construct(GetAllInterface $getAll, DataStoresInterface $cashStore = null)
     {
         $this->getAll = $getAll;
@@ -30,7 +36,6 @@ abstract class CashableStoreAbstract implements RefreshableInterface, DataStores
         } else {
             $this->cashStore = new Memory();
         }
-        $this->refresh();
     }
 
     /**
@@ -64,7 +69,7 @@ abstract class CashableStoreAbstract implements RefreshableInterface, DataStores
      * Return Item by id
      *
      * Method return null if item with that id is absent.
-     * Format of Item - Array("id"=>123, "fild1"=value1, ...)
+     * Format of Item - Array("id"=>123, "field1"=value1, ...)
      *
      * @param int|string $id PrimaryKey
      * @return array|null
@@ -103,9 +108,9 @@ abstract class CashableStoreAbstract implements RefreshableInterface, DataStores
      * Example:
      * <code>
      * find(
-     *    array('fild2' => 2, 'fild5' => 'something'), // 'fild2' === 2 && 'fild5 === 'something'
+     *    array('field2' => 2, 'field5' => 'something'), // 'field2' === 2 && 'field5 === 'something'
      *    array(self::DEF_ID), // return only identifiers
-     *    array(self::DEF_ID => self::DESC),  // Sorting in reverse order by 'id" fild
+     *    array(self::DEF_ID => self::DESC),  // Sorting in reverse order by 'id" field
      *    10, // not more then 10 items
      *    5 // from 6th items in result set (offset of the first item is 0)
      * )
@@ -117,8 +122,8 @@ abstract class CashableStoreAbstract implements RefreshableInterface, DataStores
      *
      * @see ASC
      * @see DESC
-     * @param Array|null $where
-     * @param array|null $filds What filds will be included in result set. All by default
+     * @param array|null $where
+     * @param array|null $fields What fields will be included in result set. All by default
      * @param array|null $order
      * @param int|null $limit
      * @param int|null $offset
@@ -126,27 +131,23 @@ abstract class CashableStoreAbstract implements RefreshableInterface, DataStores
      */
     public function find(
         $where = null,
-        $filds = null,
+        $fields = null,
         $order = null,
         $limit = null,
         $offset = null
     )
     {
-        return $this->cashStore->find($where, $filds, $order, $limit, $offset);
-
+        return $this->cashStore->find($where, $fields, $order, $limit, $offset);
     }
 
     public function refresh()
     {
         $this->cashStore->deleteAll();
         $all = $this->getAll->getAll();
-        if (isset($all)) {
-            if ($all instanceof Traversable or is_array($all)) {
-                foreach ($all as $item) {
-                    $this->cashStore->create($item);
-                }
-            } else {
-                throw new \Exception("Not return refreshed all");
+
+        if ($all instanceof Traversable or is_array($all)) {
+            foreach ($all as $item) {
+                $this->cashStore->create($item, true);
             }
         } else {
             throw new \Exception("Not return refreshed all");
@@ -165,7 +166,7 @@ abstract class CashableStoreAbstract implements RefreshableInterface, DataStores
      */
     public function count()
     {
-        $this->cashStore->count();
+        return $this->cashStore->count();
 
     }
 
@@ -173,35 +174,34 @@ abstract class CashableStoreAbstract implements RefreshableInterface, DataStores
      * By default, insert new (by create) Item.
      *
      * It can't overwrite existing item by default.
-     * You can get item "id" for creatad item us result this function.
+     * You can get item "id" for created item us result this function.
      *
      * If  $item["id"] !== null, item set with that id.
      * If item with same id already exist - method will throw exception,
-     * but if $rewriteIfExist = true item will be rewrited.<br>
+     * but if $rewriteIfExist = true item will be rewrites.<br>
      *
      * If $item["id"] is not set or $item["id"]===null,
-     * item will be insert with autoincrement PrimryKey.<br>
+     * item will be insert with autoincrement PrimaryKey.<br>
      *
      * @param array $itemData associated array with or without PrimaryKey
      * @param bool $rewriteIfExist
-     * @return int|null|string "id" for creatad item or null if item wasn't created
+     * @return int|null|string "id" for created item or null if item wasn't created
      * @throws \Exception
      */
     public function create($itemData, $rewriteIfExist = false)
     {
-        if ($this->getAll instanceof DataStoresInterface) {
-            $this->getAll->create($itemData, $rewriteIfExist);
+        if (method_exists($this->getAll, "create")) {
+            return $this->getAll->create($itemData, $rewriteIfExist);
         } else {
-            throw new \Exception("Refreshable dont implement DataStoresInterface");
+            throw new \Exception("Refreshable don't haw method create");
         }
-
     }
 
     /**
      * By default, update existing Item.
      *
-     * If item with PrimaryKey == $item["id"] is existing in store, item will updete.
-     * Filds wich don't present in $item will not change in item in store.<br>
+     * If item with PrimaryKey == $item["id"] is existing in store, item will update.
+     * Fields which don't present in $item will not change in item in store.<br>
      * Method will return updated item<br>
      * <br>
      * If $item["id"] isn't set - method will throw exception.<br>
@@ -217,12 +217,11 @@ abstract class CashableStoreAbstract implements RefreshableInterface, DataStores
      */
     public function update($itemData, $createIfAbsent = false)
     {
-        if ($this->getAll instanceof DataStoresInterface) {
-            $this->getAll->update($itemData, $createIfAbsent);
+        if (method_exists($this->getAll, "update")) {
+            return $this->getAll->update($itemData, $createIfAbsent);
         } else {
-            throw new \Exception("Refreshable dont implement DataStoresInterface");
+            throw new \Exception("Refreshable don't haw method delete");
         }
-
     }
 
     /**
@@ -234,12 +233,11 @@ abstract class CashableStoreAbstract implements RefreshableInterface, DataStores
      */
     public function delete($id)
     {
-        if ($this->getAll instanceof DataStoresInterface) {
-            $this->getAll->delete($id);
+        if (method_exists($this->getAll, "delete") ) {
+            return $this->getAll->delete($id);
         } else {
-            throw new \Exception("Refreshable dont implement DataStoresInterface");
+            throw new \Exception("Refreshable don't haw method delete");
         }
-
     }
 
     /**
@@ -249,12 +247,11 @@ abstract class CashableStoreAbstract implements RefreshableInterface, DataStores
      */
     public function deleteAll()
     {
-        if ($this->getAll instanceof DataStoresInterface) {
-            $this->getAll->deleteAll();
+        if (method_exists($this->getAll, "deleteAll") ) {
+            return $this->getAll->deleteAll();
         } else {
-            throw new \Exception("Refreshable dont implement DataStoresInterface");
+            throw new \Exception("Refreshable don't haw method deleteAll");
         }
-
     }
 }
 

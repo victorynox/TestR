@@ -23,14 +23,31 @@ class CashableStoreAbstractFactory extends DataStoresAbstractFactoryAbstract
         $serviceConfig = $config['dataStore'][$requestedName];
         $requestedClassName = $serviceConfig['class'];
         if (isset($serviceConfig['getAll'])) {
-            $getAll = $serviceConfig['getAll'];
+            if($container->has($serviceConfig['getAll'])){
+                $getAll = $container->get($serviceConfig['getAll']);
+            }else{
+                throw new DataStoresException(
+                    'There is getAll not created ' . $requestedName . 'in config \'dataStore\''
+                );
+            }
         } else {
             throw new DataStoresException(
                 'There is getAll for ' . $requestedName . 'in config \'dataStore\''
             );
         }
-        $cashStore = isset($serviceConfig['cashStore']) ? $serviceConfig['cashStore'] : null;
+        if(isset($serviceConfig['cashStore'])){
+            if($container->has($serviceConfig['cashStore'])){
+                $cashStore = $container->get($serviceConfig['cashStore']);
+            }else{
+                throw new DataStoresException(
+                    'There is getAll for ' . $serviceConfig['cashStore'] . 'in config \'dataStore\''
+                );
+            }
+        }else{
+            $cashStore = null;
+        }
 
+        //$cashStore = isset($serviceConfig['cashStore']) ?  new $serviceConfig['cashStore']() : null;
         return new $requestedClassName($getAll, $cashStore);
 
     }
