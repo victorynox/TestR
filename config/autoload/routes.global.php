@@ -8,9 +8,9 @@ return [
         // Map middleware -> factories here
         'factories' => [
             App\Action\HelloAction::class => App\Action\HelloActionFactory::class,
-            App\Middleware\RScriptValidatorMiddleware::class =>  App\Middleware\RScriptValidatorFactory::class,
             Auth\AuthenticationMiddleware::class => Auth\AuthenticationFactory::class,
             Auth\Action\LogoutAction::class =>   Auth\Action\LogoutActionFactory::class,
+            zaboy\rest\Pipe\RestPipe::class => App\DataStore\Pipes\Factory\RestPipeFactory::class,
         ],
     ],
 
@@ -41,21 +41,11 @@ return [
             'allowed_method' => ['GET'],
         ],
         [
-            'name' => 'api',
-            'path' => '/api/{script_name:[a-zA-Z]{1,40}}',
-            'middleware' => [
-                App\Middleware\RScriptValidatorMiddleware::class,
-                App\Action\RScriptMiddleware::class,
-            ],
+            'name' => 'restAPI',
+            'path' => '/rest[/{resourceName}[/{id}]]',
+            'middleware' =>  zaboy\rest\Pipe\RestPipe::class,
             'allowed_method' => ['GET', 'POST'],
-        ],
-        /*[
-            'name' => 'api',
-            'path' => '/api/{script_name:[a-zA-Z]{1,40}}',
-            'middleware' => [
-                App\Middleware\RScriptMiddleware::class,
-            ],
-            'allowed_method' => ['GET'],
-        ]*/
+        ]
+
     ],
 ];

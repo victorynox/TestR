@@ -12,8 +12,7 @@ return [
             Helper\ServerUrlMiddleware::class => Helper\ServerUrlMiddlewareFactory::class,
             Helper\UrlHelperMiddleware::class => Helper\UrlHelperMiddlewareFactory::class,
             Auth\AuthErrorHandlerMiddleware::class => Auth\AuthErrorHandlerFactory::class,
-//            zaboy\rest\Pipe\RestPipe::class => zaboy\rest\Pipes\Factory\RestPipeFactory::class,
-            zaboy\rest\Pipe\RestPipe::class => App\DataStore\Pipes\Factory\RestPipeFactory::class,
+            //zaboy\rest\Pipe\RestPipe::class => App\DataStore\Pipes\Factory\RestPipeFactory::class,
         ],
     ],
     // This can be used to seed pre- and/or post-routing middleware
@@ -24,13 +23,13 @@ return [
             ],
             'priority' => -12,
         ],
-        'restAPI' => [
+        /*'restAPI' => [
             'middleware' => [
                 zaboy\rest\Pipe\RestPipe::class
             ],
             'path' => '/rest',
             'priority' => 1,
-        ],
+        ],*/
         'auth' => [
             'middleware' => [
                 Auth\IdentificationMiddleware::class,
@@ -86,7 +85,7 @@ return [
                 // - etc.
                 ApplicationFactory::DISPATCH_MIDDLEWARE,
             ],
-            'priority' => 1,
+            'priority' => 2,
         ],
 
         'error' => [
