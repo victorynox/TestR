@@ -18,6 +18,7 @@ define(
         "dijit/form/Button",
         "dojo/text!./templates/FilterControlPanel.html",
         'dgrid/Grid',
+        'dgrid/OnDemandGrid',
         'dgrid/Keyboard',
         'dgrid/Selection',
         'dgrid/Editor',
@@ -40,6 +41,7 @@ define(
               Button,
               templates,
               Grid,
+              OnDemandGrid,
               Keyboard,
               Selection,
               Editor,
@@ -112,15 +114,12 @@ define(
                     label: "Применить фильтр к таблице",
                 }, self.setFilterBtnNode);
 
-                this.filterListGrid = new (declare([Grid, Selection, Pagination, Editor]))({
+                this.filterListGrid = new (declare([OnDemandGrid, Selection, Editor]))({
                     collection: this.store.filter({'tableName': self.name}),
                     columns: self.columns,
+                    className: 'dgrid-autoheight',
                     selectionMode: self.selectionMode,
-                    pagingLinks: self.pagingLinks,
-                    pagingTextBox: self.pagingTextBox,
-                    firstLastArrows: self.firstLastArrows,
-                    rowsPerPage: self.rowsPerPage,
-                    pageSizeOptions: self.pageSizeOptions
+
                 }, self.filterListGridNode);
 
             },
