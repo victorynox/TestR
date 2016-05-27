@@ -2,12 +2,12 @@
 	<!-- Top pane -->
 	<div class="header">
 		<div class="controlHeader">
-			<a class="logoLink" href="${dgridUrl}"><img class="logo" src="${resourcesBaseUrl}/img/dgridLogo.png" alt="dgrid logo"></a>
+			<a class="logoLink" href="${dgridUrl}"><img class="logo" src="${resourcesBaseUrl}/img/dgridLogo.png" alt="dgrid logo" /></a>
 			${i18n.laboratory}
 		</div>
 		<a href="#" class="menuLink" data-dojo-attach-event="click:_showAbout">${i18n.about}</a>
 		<a href="${docBaseUrl}" target="_blank" class="menuLink">${i18n.docs}</a>
-		<a href="http://sitepen.com/" class="splogo"><img src="${resourcesBaseUrl}/img/sitepenLogo.png" alt="SitePen logo"></a>
+		<a href="http://sitepen.com/" class="splogo"><img src="${resourcesBaseUrl}/img/sitepenLogo.png" alt="SitePen logo" /></a>
 	</div>
 
 	<div class="control">
@@ -40,7 +40,9 @@
 		</div>
 
 		<div class="demoCodePane" data-dojo-attach-point="demoCodePane">
-			<textarea data-dojo-attach-point="gridCodeTextArea" class="demoCode" readonly></textarea>
+			<label>
+				<textarea data-dojo-attach-point="gridCodeTextArea" class="demoCode"></textarea>
+			</label>
 		</div>
 	</div>
 </div>

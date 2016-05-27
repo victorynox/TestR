@@ -15,6 +15,9 @@ return [
         'extension' => 'html.twig',
         'paths'     => [
             'app'    => ['templates/app'],
+            'auth'    => ['templates/auth'],
+            'ebay'    => ['templates/ebay'],
+            'rreport'    => ['templates/rreport'],
             //'layout' => ['templates/layout'],
             'error'  => ['templates/error'],
             'macros' => ['templates/macros'],

@@ -94,6 +94,33 @@ define([
 					}
 				}
 
+				function afterContentAdded() {
+					// Ensures the first element of a grid is always keyboard selectable after data has been
+					// retrieved if there is not already a valid focused element.
+
+					var focusedNode = grid._focusedNode || initialNode;
+
+					// do not update the focused element if we already have a valid one
+					if (isFocusableClass.test(focusedNode.className) && areaNode.contains(focusedNode)) {
+						return;
+					}
+
+					// ensure that the focused element is actually a grid cell, not a
+					// dgrid-preload or dgrid-content element, which should not be focusable,
+					// even when data is loaded asynchronously
+					var elements = areaNode.getElementsByTagName('*');
+					for (var i = 0, element; (element = elements[i]); ++i) {
+						if (isFocusableClass.test(element.className)) {
+							focusedNode = grid._focusedNode = element;
+							break;
+						}
+					}
+
+					initialNode.tabIndex = -1;
+					focusedNode.tabIndex = grid.tabIndex; // This is initialNode if nothing focusable was found
+					return;
+				}
+
 				if (isHeader) {
 					// Initialize header now (since it's already been rendered),
 					// and aspect after future renderHeader calls to reset focus.
@@ -101,32 +128,15 @@ define([
 					aspect.after(grid, 'renderHeader', initHeader, true);
 				}
 				else {
-					aspect.after(grid, 'renderArray', function (rows) {
-						// summary:
-						//		Ensures the first element of a grid is always keyboard selectable after data has been
-						//		retrieved if there is not already a valid focused element.
-
-						var focusedNode = grid._focusedNode || initialNode;
-
-						// do not update the focused element if we already have a valid one
-						if (isFocusableClass.test(focusedNode.className) && areaNode.contains(focusedNode)) {
-							return rows;
+					aspect.after(grid, 'renderArray', afterContentAdded, true);
+					aspect.after(grid, '_onNotification', function (rows, event) {
+						if (event.totalLength === 0) {
+							areaNode.tabIndex = 0;
 						}
-
-						// ensure that the focused element is actually a grid cell, not a
-						// dgrid-preload or dgrid-content element, which should not be focusable,
-						// even when data is loaded asynchronously
-						var elements = areaNode.getElementsByTagName('*');
-						for (var i = 0, element; (element = elements[i]); ++i) {
-							if (isFocusableClass.test(element.className)) {
-								focusedNode = grid._focusedNode = element;
-								break;
-							}
+						else if (event.totalLength === 1 && event.type === 'add') {
+							afterContentAdded();
 						}
-
-						focusedNode.tabIndex = grid.tabIndex;
-						return rows;
-					});
+					}, true);
 				}
 
 				grid._listeners.push(on(areaNode, 'mousedown', function (event) {
@@ -422,6 +432,9 @@ define([
 				this._focusOnNode(node, false);
 			}
 			else {
+				if (this._removedFocus) {
+					this._removedFocus.active = true;
+				}
 				this.contentNode.focus();
 			}
 		}
@@ -500,7 +513,6 @@ define([
 		// summary:
 		//		Handles requests to scroll to the beginning or end of the grid.
 
-		// Assume scrolling to top unless event is specifically for End key
 		var cellNavigation = this.cellNavigation,
 			contentNode = this.contentNode,
 			contentPos = scrollToTop ? 0 : contentNode.scrollHeight,
@@ -508,8 +520,14 @@ define([
 			endChild = contentNode[scrollToTop ? 'firstChild' : 'lastChild'],
 			hasPreload = endChild.className.indexOf('dgrid-preload') > -1,
 			endTarget = hasPreload ? endChild[(scrollToTop ? 'next' : 'previous') + 'Sibling'] : endChild,
-			endPos = endTarget.offsetTop + (scrollToTop ? 0 : endTarget.offsetHeight),
 			handle;
+
+		// Scroll explicitly rather than relying on native browser scrolling
+		// (which might use smooth scrolling, which could incur extra renders for OnDemandList)
+		event.preventDefault();
+		this.scrollTo({
+			y: scrollPos
+		});
 
 		if (hasPreload) {
 			// Find the nearest dgrid-row to the relevant end of the grid
@@ -552,12 +570,6 @@ define([
 				handle.remove();
 				return rows;
 			});
-		}
-
-		if (scrollPos === endPos) {
-			// Grid body is already scrolled to end; prevent browser from scrolling
-			// entire page instead
-			event.preventDefault();
 		}
 	};
 

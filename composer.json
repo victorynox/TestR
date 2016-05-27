@@ -32,9 +32,10 @@
         "zendframework/zend-hydrator": "^1.1 || ^2.1",
         "avz-cmf/bigdata": "^4.1",
         "zendframework/zend-http": "^2.5",
-        "avz-cmf/zaboy-res": "^1.1.8",
+        "avz-cmf/zaboy-res": "^2.0",
         "zendframework/zend-db": "^2.7",
-        "avz-cmf/zaboy-rest": "^1.0"
+        "avz-cmf/zaboy-rest": "^2.0",
+        "dts/ebay-sdk-php": "^4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8",
@@ -43,9 +44,12 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/App/",
-            "Auth\\": "src/Auth/",
-            "Util\\": "src/Util/"
+            "victorynox\\Auth\\": "src/Auth/",
+            "victorynox\\DataStore\\": "src/DataStore/",
+            "victorynox\\Ebay\\": "src/Ebay/",
+            "victorynox\\RReports\\": "src/RReports/",
+            "victorynox\\View\\": "src/View/",
+            "victorynox\\Util\\": "src/Util/"
         }
     },
     "autoload-dev": {

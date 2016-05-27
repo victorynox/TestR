@@ -41,9 +41,12 @@
             <ul class="nav navbar-nav navbar-right">
                 {#TODO Написать страницу помощи#}
                {# <li><a href="#">Help</a></li>#}
+                <li><a href="{{ path('rreport') }}">Отчеты </a></li>
+                <li><a href="{{ path('notification.view') }}"> Уведомления Ebay </a></li>
                 {% block access %}
-                <li><a href="{{ path('logout') }}">Logout</a></li>
+                    <li><a href="{{ path('logout') }}">Logout</a></li>
                 {% endblock access %}
+                >
             </ul>
 
             {#TODO форма поиска#}

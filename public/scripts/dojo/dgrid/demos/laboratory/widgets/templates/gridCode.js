@@ -1,6 +1,6 @@
 require([
 	${dependencies}
-], function (${callbackParams}) {
+], function (declare ${callbackParams}) {
 	${dataDeclaration}
 
 	// Instantiate grid

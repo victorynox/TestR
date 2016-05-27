@@ -124,7 +124,7 @@ define([
 
             if (self.__name) {
                 if(self.__store) {
-                    if (!self.__filterDialog) {
+                    if (!self.filterEditDialog) {
                         var form = new Form({
                             id: "filterCreateDialogForm",
                             doLayout: true
@@ -231,7 +231,7 @@ define([
                         form.startup();
                         //self.__filterDialog.show();
                     }
-                    self.__filterDialog.show();
+                    self.filterEditDialog.show();
                 }
             }
 

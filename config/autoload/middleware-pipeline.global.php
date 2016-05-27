@@ -5,13 +5,13 @@ use Zend\Expressive\Helper;
 return [
     'dependencies' => [
         'invokables' => [
-            Util\Redirect::class => Util\Redirect::class,
-            App\Middleware\ViewMiddleware::class
+            victorynox\Util\Redirect::class => victorynox\Util\Redirect::class,
+            victorynox\View\Middleware\ViewMiddleware::class
         ],
         'factories' => [
             Helper\ServerUrlMiddleware::class => Helper\ServerUrlMiddlewareFactory::class,
             Helper\UrlHelperMiddleware::class => Helper\UrlHelperMiddlewareFactory::class,
-            Auth\AuthErrorHandlerMiddleware::class => Auth\AuthErrorHandlerFactory::class,
+            victorynox\Auth\Middleware\AuthErrorHandlerMiddleware::class => victorynox\Auth\Middleware\AuthErrorHandlerFactory::class,
             //zaboy\rest\Pipe\RestPipe::class => App\DataStore\Pipes\Factory\RestPipeFactory::class,
         ],
     ],
@@ -19,7 +19,7 @@ return [
     'middleware_pipeline' => [
         'view' => [
             'middleware' => [
-                App\Middleware\ViewMiddleware::class,
+                victorynox\View\Middleware\ViewMiddleware::class,
             ],
             'priority' => -12,
         ],
@@ -32,9 +32,9 @@ return [
         ],*/
         'auth' => [
             'middleware' => [
-                Auth\IdentificationMiddleware::class,
+                victorynox\Auth\Middleware\IdentificationMiddleware::class,
                 //Auth\AuthenticationMiddleware::class,
-                Auth\AuthorizationMiddleware::class,
+                victorynox\Auth\Middleware\AuthorizationMiddleware::class,
                 //Auth\AuthErrorHandlerMiddleware::class,
             ],
             'priority' => 2,
@@ -91,7 +91,7 @@ return [
         'error' => [
             'middleware' => [
                 // Add error middleware here.
-                Auth\AuthErrorHandlerMiddleware::class,
+                victorynox\Auth\Middleware\AuthErrorHandlerMiddleware::class,
             ],
             'error'    => true,
             'priority' => -9,

@@ -1,0 +1,107 @@
+{% extends '@layout/layout.html.twig' %}
+
+
+ {% block mainSideMenu %}
+
+     {#<li>
+         <button class="btn" id="saveFilter"></button>
+     </li>
+     <li>
+         <div class="controller-tree">
+             <ol id="controller-tree-icons-container">
+
+             </ol>
+         </div>
+     </li>
+     <li id="filters"></li>#}
+
+ {% endblock mainSideMenu %}
+
+{% block centerRightBlock %}
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 padding-none">
+        {# <div id="top-page-menu"></div>
+         <div class="main">
+             <h1 id="reportName" class="page-header">Уведомления Ebay</h1>
+             <div class="main-table">
+                 <div class="grid-button-panel">
+                     <button class="btn" id="addFilterOnGridButton"></button>
+                     <button class="btn" id="clearFilterOnGridButton"></button>
+                 </div>
+                 <div id="filter-active"></div>
+                 <div id="grid"></div>
+                 <div id="notification"></div>
+             </div>
+         </div>#}
+        <div id="temp-grid"></div>
+        {#<div id="temp-grid2">asdasdadsasd</div>#}
+    </div>
+{% endblock centerRightBlock %}
+
+{% block stylesheets %}
+    <link href="/scripts/dojo/dojo/resources/dojo.css" rel="stylesheet">
+    <link href="/scripts/dojo/dijit/themes/claro/claro.css" rel="stylesheet">
+    <link rel="stylesheet" href="/scripts/dojo/dojox/highlight/resources/highlight.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dojox/highlight/resources/pygments/colorful.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dgrid/css/dgrid.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dgrid/css/skins/claro.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dgrid/css/skins/claro.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dojox/grid/enhanced/resources/claro/EnhancedGrid.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dojox/grid/enhanced/resources/EnhancedGrid_rtl.css"/>
+    <link rel="stylesheet" href="/scripts/Smart/FilterEditor/resources/css/FilterEditor.css"/>
+{% endblock stylesheets %}
+
+{% block javascripts %}
+
+    <script>
+        var dojoConfig = {
+            async: true,
+            isDebug: true,
+            // This code registers the correct location of the "demo"
+            // package so we can load Dojo from the CDN whilst still
+            // being able to load local modules
+            packages: [
+                {
+                    name: "script",
+                    location: '/scripts'
+                }
+            ]
+        };
+    </script>
+    <script src="/scripts/dojo/dojo/dojo.js"></script>
+    <script>
+        require([
+            "dojo/dom",
+            "dojo/on",
+            "dojo/dom-class",
+            "dojo/dom-construct",
+            "dojo/aspect",
+            "dojo/query",
+            "dojox/xml/DomParser",
+            'dojo/_base/array',
+            'dojo/json',
+            "script/Smart/TableControlPanel/TableControlPanelFactory",
+            "dojo/domReady!"
+        ], function (dom,
+                     on,
+                     domClass,
+                     domConstruct,
+                     aspect,
+                     query,
+                     DomParser,
+                     array,
+                     json,
+                     TableControlPanelFactory) {
+
+            var tempFilteredGrid = new TableControlPanelFactory('notification');
+            tempFilteredGrid.startup();
+            dom.byId("temp-grid").appendChild(tempFilteredGrid.domNode);
+
+
+            /*on(dom.byId("temp-grid2"), "click", function () {
+                var columns = tempFilteredGrid.table.getConfig();
+                columns['1'].hidden = true;
+                tempFilteredGrid.table.setColumns(columns);
+            })*/
+        });
+    </script>
+{% endblock javascripts %}

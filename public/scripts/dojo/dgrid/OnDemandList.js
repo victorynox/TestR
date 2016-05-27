@@ -84,13 +84,6 @@ define([
 			);
 		},
 
-		destroy: function () {
-			this.inherited(arguments);
-			if (this._refreshTimeout) {
-				clearTimeout(this._refreshTimeout);
-			}
-		},
-
 		renderQuery: function (query, options) {
 			// summary:
 			//		Creates a preload node for rendering a query into, and executes the query
@@ -171,9 +164,8 @@ define([
 				// Render the result set
 				return self.renderQueryResults(results, preloadNode, options).then(function (trs) {
 					return results.totalLength.then(function (total) {
-						var trCount = trs.length,
-							parentNode = preloadNode.parentNode,
-							noDataNode = self.noDataNode;
+						var trCount = trs.length;
+						var parentNode = preloadNode.parentNode;
 
 						if (self._rows) {
 							self._rows.min = 0;
@@ -186,24 +178,12 @@ define([
 						}
 						// now we need to adjust the height and total count based on the first result set
 						if (total === 0 && parentNode) {
-							if (noDataNode) {
-								domConstruct.destroy(noDataNode);
-								delete self.noDataNode;
+							if (self.noDataNode) {
+								domConstruct.destroy(self.noDataNode);
 							}
-							self.noDataNode = noDataNode = domConstruct.create('div', {
-								className: 'dgrid-no-data',
-								innerHTML: self.noDataMessage
-							});
-							parentNode.insertBefore(noDataNode, self._getFirstRowSibling(parentNode));
+							self._insertNoDataNode(parentNode);
 						}
-						var height = 0;
-						for (var i = 0; i < trCount; i++) {
-							height += self._calcRowHeight(trs[i]);
-						}
-						// only update rowHeight if we actually got results and are visible
-						if (trCount && height) {
-							self.rowHeight = height / trCount;
-						}
+						self._calcAverageRowHeight(trs);
 
 						total -= trCount;
 						preload.count = total;
@@ -268,22 +248,16 @@ define([
 						end: queryOptions.start + queryOptions.count
 					});
 				}).then(function () {
-					// Emit on a separate turn to enable event to be used consistently for
-					// initial render, regardless of whether the backing store is async
-					self._refreshTimeout = setTimeout(function () {
-						on.emit(self.domNode, 'dgrid-refresh-complete', {
-							bubbles: true,
-							cancelable: false,
-							grid: self
-						});
-						self._refreshTimeout = null;
-					}, 0);
+					self._emitRefreshComplete();
 				});
 			}
 		},
 
 		resize: function () {
 			this.inherited(arguments);
+			if (!this.rowHeight) {
+				this._calcAverageRowHeight(this.contentNode.getElementsByClassName('dgrid-row'));
+			}
 			this._processScroll();
 		},
 
@@ -338,6 +312,21 @@ define([
 			}
 
 			return rowElement.offsetHeight;
+		},
+
+		_calcAverageRowHeight: function (rowElements) {
+			// summary:
+			//		Sets this.rowHeight based on the average from heights of the provided row elements.
+
+			var count = rowElements.length;
+			var height = 0;
+			for (var i = 0; i < count; i++) {
+				height += this._calcRowHeight(rowElements[i]);
+			}
+			// only update rowHeight if elements were passed and are in flow
+			if (count && height) {
+				this.rowHeight = height / count;
+			}
 		},
 
 		lastScrollTop: 0,

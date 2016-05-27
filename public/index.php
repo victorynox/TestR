@@ -19,4 +19,3 @@ $container = require 'config/container.php';
 $app = $container->get('Zend\Expressive\Application');
 
 $app->run();
-

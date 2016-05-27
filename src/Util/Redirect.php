@@ -6,7 +6,7 @@
  * Time: 11:19
  */
 
-namespace Util;
+namespace victorynox\Util;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -37,10 +37,11 @@ class Redirect
      * @param array $query
      * @return \Psr\Http\Message\MessageInterface
      */
-    private function redirect($path, $url, $response, $query = []){
+    private function redirect($path, $url, $response, $query = [])
+    {
         $url = $url->withPath($path);
 
-        if(count($query)){
+        if (count($query)) {
             $url = $url->withQuery(http_build_query($query));
         }
 

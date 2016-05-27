@@ -6,7 +6,8 @@
  * Time: 13:49
  */
 
-namespace Auth\Adapter;
+namespace victorynox\Auth\Adapter;
+
 use Zend\Authentication\Adapter\AdapterInterface;
 use Zend\Authentication\Result;
 
@@ -20,7 +21,7 @@ class AuthAdapter implements AdapterInterface
     public function __construct($login, $password, $config)
     {
         $this->login = $login;
-        $this->password =$password;
+        $this->password = $password;
         $this->config = $config;
     }
 
@@ -32,15 +33,15 @@ class AuthAdapter implements AdapterInterface
      */
     public function authenticate()
     {
-        if(isset($this->config['authentications'][$this->login])){
+        if (isset($this->config['authentications'][$this->login])) {
             $pass = $this->config['authentications'][$this->login]['password'];
             $role = $this->config['authentications'][$this->login]['role'];
-            if(strcmp($pass, $this->password) == 0){
+            if (strcmp($pass, $this->password) == 0) {
                 return new Result(Result::SUCCESS, ['login' => $this->login, 'role' => $role]);
-            }else{
+            } else {
                 return new Result(Result::FAILURE, $this->login);
             }
-        }else{
+        } else {
             return new Result(Result::FAILURE_IDENTITY_NOT_FOUND, $this->login);
         }
     }

@@ -142,12 +142,14 @@ var Source = declare("dojo.dnd.Source", Selector, {
 			var type = source.getItem(nodes[i].id).type;
 			// type instanceof Array
 			var flag = false;
+
 			for(var j = 0; j < type.length; ++j){
 				if(type[j] in this.accept){
 					flag = true;
 					break;
 				}
 			}
+
 			if(!flag){
 				return false;	// Boolean
 			}
@@ -295,6 +297,7 @@ var Source = declare("dojo.dnd.Source", Selector, {
 		if(this == target){
 			// this one is for us => move nodes!
 			this.onDrop(source, nodes, copy);
+
 		}
 		this.onDndCancel();
 	},

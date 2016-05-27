@@ -1140,7 +1140,7 @@ define([
 			//
 			//		Overridable function that return array of child items of given parent item,
 			//		or if parentItem==null then return top items in tree
-			// tags:
+			// tags:`
 			//		deprecated
 		},
 

@@ -6,8 +6,7 @@
  * Time: 10:45
  */
 
-namespace Util;
-
+namespace victorynox\Util;
 
 class Math
 {
@@ -19,10 +18,12 @@ class Math
      * @return float the result of the division
      * @throws \Exception
      */
-    public function divide($a, $b){
-        if((isset($b) and isset($a)) and ((is_float($b) or is_int($b) and ((is_float($a) or is_int($a)))) and $b != 0)){
+    public function divide($a, $b)
+    {
+
+        if ((isset($b) && isset($a)) && ((is_float($b) || is_int($b) && ((is_float($a) || is_int($a)))) && $b != 0)) {
             return $a/$b;
-        }else{
+        } else {
             throw new \Exception("error by divide");
         }
         /*if(){
@@ -30,6 +31,4 @@ class Math
         }*/
 
     }
-
-
 }

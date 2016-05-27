@@ -6,7 +6,7 @@
  * Time: 16:23
  */
 
-namespace Auth\Action;
+namespace victorynox\Auth\Action;
 
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
