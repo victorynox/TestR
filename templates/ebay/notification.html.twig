@@ -33,7 +33,7 @@
              </div>
          </div>#}
         <div id="temp-grid"></div>
-        {#<div id="temp-grid2">asdasdadsasd</div>#}
+        <div id="temp-grid2"></div>
     </div>
 {% endblock centerRightBlock %}
 
@@ -70,6 +70,7 @@
     <script src="/scripts/dojo/dojo/dojo.js"></script>
     <script>
         require([
+            "dojo/_base/declare",
             "dojo/dom",
             "dojo/on",
             "dojo/dom-class",
@@ -80,8 +81,17 @@
             'dojo/_base/array',
             'dojo/json',
             "script/Smart/TableControlPanel/TableControlPanelFactory",
+
+            "dstore/Memory",
+
+            "dgrid/Grid",
+            'dgrid/extensions/Pagination',
+            'dgrid/extensions/ColumnHider',
+            'dgrid/extensions/ColumnResizer',
+
             "dojo/domReady!"
-        ], function (dom,
+        ], function (declare,
+                     dom,
                      on,
                      domClass,
                      domConstruct,
@@ -90,18 +100,46 @@
                      DomParser,
                      array,
                      json,
-                     TableControlPanelFactory) {
+                     TableControlPanelFactory,
+                     Memory,
+                     Grid,
+                     Pagination,
+                     ColumnHider,
+                     ColumnResizer) {
 
             var tempFilteredGrid = new TableControlPanelFactory('notification');
             tempFilteredGrid.startup();
             dom.byId("temp-grid").appendChild(tempFilteredGrid.domNode);
 
+            /* var store = new Memory({
+             data: [
+             {id: "1", name:"1Name11" },
+             {id: "2", name:"1Name12" },
+             {id: "3", name:"1Name13" },
+             {id: "4", name:"1Name14" }
+             ]
+             });
+             var testgrid = new (declare([Grid, Pagination, ColumnHider, ColumnResizer]))({
+             "columns": [
+             {"label": "id", "field": "id"},
+             {"label": "Дата создания", "field": "name"},
+             ],
+             collections: store,
+             "selectionMode": "single",
+             "pagingLinks": false,
+             "pagingTextBox": true,
+             "firstLastArrows": true,
+             "rowsPerPage": 15,
+             "pageSizeOptions": [10, 15, 25]
+             }, "temp-grid2");
+
+             testgrid.startup();*/
 
             /*on(dom.byId("temp-grid2"), "click", function () {
-                var columns = tempFilteredGrid.table.getConfig();
-                columns['1'].hidden = true;
-                tempFilteredGrid.table.setColumns(columns);
-            })*/
+             var columns = tempFilteredGrid.table.getConfig();
+             columns['1'].hidden = true;
+             tempFilteredGrid.table.setColumns(columns);
+             })*/
         });
     </script>
 {% endblock javascripts %}

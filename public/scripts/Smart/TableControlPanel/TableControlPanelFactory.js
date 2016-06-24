@@ -13,6 +13,7 @@ define(
         './widget/TableControlPanel',
         './data/tables',
 
+        'dstore/Store',
         'dstore/Memory',
         'dstore/Request',
         'dstore/Rest',
@@ -23,6 +24,7 @@ define(
         'dstore/Trackable',
 
         '../FilteredGrid/util/GridFactory',
+        '../extensions/Store/StoreRqlFilter',
     ],
     function (declare,
               lang,
@@ -33,6 +35,7 @@ define(
               parser,
               TableControlPanel,
               tables,
+              Store,
               Memory,
               Request,
               Rest,
@@ -41,7 +44,9 @@ define(
               Cache,
               Tree,
               Trackable,
-              GridFactory) {
+              GridFactory,
+              StoreRqlFilter
+    ) {
 
         var storeNameToConstructor = {
             "Memory": Memory,
@@ -51,7 +56,10 @@ define(
             "LocalDB": LocalDB,
             "Cache": Cache,
             "Tree": Tree,
-            "Trackable": Trackable
+            "Trackable": Trackable,
+            "Store": Store,
+            "StoreRqlFilter":StoreRqlFilter
+
         };
 
         function createStore(storeConfig) {
@@ -65,7 +73,10 @@ define(
             return new (declare(declareArray))(storeConfig.options);
         }
 
-        return function (name) {
+        /**
+         * gridStore non require store for grid
+         */
+        return function (name, gridStore) {
             //TODO create check exist table in config
 
             var filteredGridOption = {};
@@ -90,7 +101,11 @@ define(
                 });*/
             }
 
-            filteredGridOption["options"]["collection"] = createStore(tables[name]["filteredGridOption"]["store"]);
+            if(gridStore !== null && gridStore !== undefined && gridStore instanceof Store){
+                filteredGridOption["options"]["collection"] = gridStore;
+            }else{
+                filteredGridOption["options"]["collection"] = createStore(tables[name]["filteredGridOption"]["store"]);
+            }
 
 
 

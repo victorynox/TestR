@@ -21,12 +21,12 @@ return [
             Helper\UrlHelper::class => Helper\UrlHelperFactory::class,
         ],
         'abstract_factories' => [
-            'zaboy\res\Middlewares\Factory\MiddlewareStoreAbstractFactory',
-            'zaboy\res\DataStores\Factory\DbTableStoresAbstractFactory',
-            'victorynox\DataStore\Cashable\CashableStores\Factory\CashableStoreAbstractFactory',
-            'zaboy\res\DataStores\Factory\MemoryStoresAbstractFactory',
-            'zaboy\res\DataStores\Factory\HttpClientStoresAbstractFactory',
-            'Zend\Db\Adapter\AdapterAbstractServiceFactory'
+            'zaboy\rest\Middleware\Factory\DataStoreAbstractFactory',
+            'zaboy\rest\DataStore\Factory\HttpClientAbstractFactory',
+            'zaboy\rest\DataStore\Factory\DbTableAbstractFactory',
+            'zaboy\rest\DataStore\Factory\CsvAbstractFactory',
+            'zaboy\rest\DataStore\Factory\MemoryAbstractFactory',
+            'Zend\Db\Adapter\AdapterAbstractServiceFactory',
         ]
     ],
 ];

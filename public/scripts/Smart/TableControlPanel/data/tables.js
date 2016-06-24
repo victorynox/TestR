@@ -9,12 +9,16 @@ define([], function () {
             "filteredGridOption": {
                 "store": {
                     "options": {
-                        "target": "/rest/ebay_notification"
+                        "target": "/rest/ebay_notification",
+                        "useRangeHeaders": true,
+                        'headers': {
+                            'Accept': 'application/json',
+                        }
                         //"data": null
                     },
                     "declare": [
-                        "Rest",
-                        "RequestMemory",
+                        //"Rest",
+                        "StoreRqlFilter",
                         "Trackable"
                     ]
                 },
@@ -39,7 +43,8 @@ define([], function () {
                         "Pagination",
                         "ColumnHider",
                         "ColumnResizer",
-                        "_StoreMixin"
+                        //"_StoreMixin"
+                        "GridRqlFilter"
                     ]
                 }
 
@@ -47,7 +52,10 @@ define([], function () {
             "filterControlPanelOption": {
                 "store": {
                     "options": {
-                        "target": "/rest/filters_list"
+                        "target": "/rest/filters_list",
+                        'headers': {
+                            'Accept': 'application/json',
+                        }
                         //"data": null,
                     },
                     "declare": [
@@ -109,6 +117,105 @@ define([], function () {
                 }
 
             }
-        }
+        },
+        "plotPublishPrice" : {
+            "title": "Гистограмма цены выставленных товаров",
+            "name": "plotPublishPrice",
+            "filteredGridOption": {
+                "store": {
+
+                },
+                "grid": {
+                    "options": {
+                        "columns": [
+                            {"label": "id", "field": "id"},
+                            {"label": "Логарифм по основанию 10 от цены выставленного товара", "field": "x"},
+                            {"label": "Количество выставленных товаров из данного ценового интервалая", "field": "y"}
+                        ],
+                        "selectionMode": "single",
+                        "pagingLinks": false,
+                        "pagingTextBox": true,
+                        "firstLastArrows": true,
+                        "rowsPerPage": 15,
+                        "pageSizeOptions": [10, 15, 25]
+                    },
+                    "declare": [
+                        "Grid",
+                        "Keyboard",
+                        "Selection",
+                        "Pagination",
+                        "ColumnHider",
+                        "ColumnResizer"
+                        //"_StoreMixin"
+                    ]
+                }
+
+            },
+            "filterControlPanelOption": {
+                "store": {
+                    "options": {
+                        "target": "/rest/filters_list"
+                        //"data": null,
+                    },
+                    "declare": [
+                        "Rest",
+                        "RequestMemory",
+                        "Trackable"
+                    ]
+                },
+
+                "options": {
+                    "columns": [
+                        {"label": "id", "field": "id"},
+                        {
+                            "label": "Название",
+                            "field": "name",
+                            "editor": "text",
+                            "editOn": "dblclick",
+                            "autoSave": true
+                        }
+                    ],
+                    "filteredStoreDataOption": [
+                        {
+                            "label": "Логарифм по основанию 10 от цены выставленного товара",
+                            "value": {
+                                "type": "string",
+                                "name": "x",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        },
+                        {
+                            "label": "Количество выставленных товаров из данного ценового интервалая",
+                            "value": {
+                                "type": "string",
+                                "name": "y",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        }
+                    ]
+                }
+
+            }
+        },
     }
 });

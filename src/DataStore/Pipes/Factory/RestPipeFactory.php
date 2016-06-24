@@ -9,13 +9,13 @@
 namespace victorynox\DataStore\Pipes\Factory;
 
 use Interop\Container\ContainerInterface;
-use zaboy\rest\Pipe\Factory\RestPipeFactory as PipeFactory;
+use zaboy\rest\Pipe\Factory\RestRqlFactory;
 
 class RestPipeFactory
 {
     public function __invoke(ContainerInterface $container, $requestedName)
     {
-        $pipeFactory =  new PipeFactory();
+        $pipeFactory =  new RestRqlFactory();
         return $pipeFactory($container, $requestedName, []);
     }
 }

@@ -20,14 +20,29 @@ class AuthorizationMiddleware
 
     public function __invoke(Request $request, Response $response, callable $next)
     {
-        $query = $request->getParsedBody();
+        $role = $request->getAttribute('role');
         $uri = $request->getUri();
+        $path = $uri->getPath();
+        switch ($path) {
+            case preg_match("/\\/auth/", $path) > 0:
+                break;
+            case preg_match("/^\\/rest[\\w\\W]+/", $path) > 0:
+                if ($role != 'admin' && $role != 'rest' && $role != 'guest') {
+                    throw new \Exception("You are not authorized", 403);
+                }
+                break;
+            default:
+                if ('admin' != $role) {
+                    throw new \Exception("You are not authorized", 403);
+                }
+                break;
+        }
 
-        if ($uri->getPath() != "/auth") {
-            if ('admin' != $query['role']) {
+        /*if ($uri->getPath() != "/auth") {
+            if ('admin' != $role) {
                 throw new \Exception("You are not authorized", 403);
             }
-        }
+        }*/
 
         return $next($request, $response);
     }

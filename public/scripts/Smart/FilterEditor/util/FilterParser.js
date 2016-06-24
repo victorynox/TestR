@@ -12,7 +12,7 @@ define(
         "dojo/json",
         "dojo/dom",
         'dojo/_base/array',
-        'script/SmartFilter/SmartFilterNode'
+        '../Entity/SmartFilterNode'
     ],
     function (declare,
               Grid,

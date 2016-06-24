@@ -19,13 +19,13 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 class AuthenticationMiddleware
 {
 
-    private $config;
+    private $authConfig;
     private $template;
 
 
     public function __construct(TemplateRendererInterface $renderer, $config)
     {
-        $this->config = $config;
+        $this->authConfig = $config;
         $this->template = $renderer;
 
     }
@@ -45,7 +45,7 @@ class AuthenticationMiddleware
         if ($request->getMethod() == 'POST') {
             $auth = new AuthenticationService();
             $query = $request->getParsedBody();
-            $authAdapter = new AuthAdapter($query['login'], $query['password'], $this->config);
+            $authAdapter = new AuthAdapter($query['login'], $query['password'], $this->authConfig);
             $result = $auth->authenticate($authAdapter);
             if (!$result->isValid()) {
                 //$response->getBody()->write("Not valid authentication\n");

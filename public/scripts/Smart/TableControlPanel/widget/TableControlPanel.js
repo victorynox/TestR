@@ -150,14 +150,17 @@ define(
                         }
                         if (selectedRow !== null && selectedRow !== undefined) {
                             var filterParser = new FilterParser();
-                            var data = filterParser.parseRQLToData(selectedRow.filter, 0, null);
+
+                            /* var data = filterParser.parseRQLToData(selectedRow.filter, 0, null);
                             var dataObject = filterParser.stackToObject(data);
                             dataObject = filterParser.optimiseFilter(dataObject, dataObject.type);
                             var filter = filterParser.filterParse(dataObject[0], 0, null);
                             self.table.refresh({
                                 name: selectedRow.name,
                                 filter: filter
-                            });
+                            });*/
+                            //selectedRow.filter += "&select(id,count(id),max(id),min(id))";
+                            self.table.setRqlFilter(selectedRow);
                         } else {
                             alert("Фильтр не выбран");
                         }
@@ -170,6 +173,7 @@ define(
                     on(self.loadGridSettingBtn, "click", function () {
                         self.loadGridSettingDialog.show();
                     })
+                    
                     /*self.saveGridSettingDialog.on("save-config", function (event) {
                         if (event !== null &&
                             event !== undefined &&

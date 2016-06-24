@@ -89,23 +89,20 @@ define([
                     options: self.options,
                     declare: self.declare,
                     domNode: self.gridNode
-
                 });
-                
 
-                //TODO подумать как реализовать загрузку по дефоулту
                 /*if (self.grid === null) {
-                    self.grid = new DefaultGrid({
-                        collection: self.store.filter(),
-                        columns: self.columns,
-                        selectionMode: self.selectionMode,
-                        pagingLinks: self.pagingLinks,
-                        pagingTextBox: self.pagingTextBox,
-                        firstLastArrows: self.firstLastArrows,
-                        rowsPerPage: self.rowsPerPage,
-                        pageSizeOptions: self.pageSizeOptions
-                    }, self.gridNode);
-                }*/
+                 self.grid = new DefaultGrid({
+                 collection: self.store.filter(),
+                 columns: self.columns,
+                 selectionMode: self.selectionMode,
+                 pagingLinks: self.pagingLinks,
+                 pagingTextBox: self.pagingTextBox,
+                 firstLastArrows: self.firstLastArrows,
+                 rowsPerPage: self.rowsPerPage,
+                 pageSizeOptions: self.pageSizeOptions
+                 }, self.gridNode);
+                 }*/
 
                 /**
                  * onClick emit set-filter notification
@@ -167,18 +164,9 @@ define([
                     filter.filter !== undefined &&
                     filter.filter instanceof Filter) {
 
+                    self._setFilterBlock(filter.name);
+
                     store = self.store.filter(filter.filter);
-
-                    var filterNode = domConstructor.create('button', {'class': "btn btn-success filter_active"});
-                    on(filterNode, "click", function () {
-                            self.clear();
-                            self.filterActiveNode.innerHTML = "";
-                        }
-                    );
-                    domConstructor.place("<span class='glyphicon glyphicon-remove' style='float:right;'></span><p>" + filter.name + "</p>", filterNode);
-
-                    self.filterActiveNode.appendChild(filterNode);
-
                 }
 
                 if (store !== null && store !== undefined) {
@@ -188,7 +176,15 @@ define([
 
             clear: function () {
                 var self = this;
-                self.grid.set('collection', self.store)
+                //
+                if(self.grid.benchmarkColumns !== undefined &&
+                    self.grid.benchmarkColumns !== null){
+                    self.grid.setRqlFilter(null);
+                    self.grid.refresh();
+                    self.setColumns(self.grid.benchmarkColumns);
+                }else{
+                    self.grid.set('collection', self.store);
+                }
             },
 
             getConfig: function () {
@@ -197,9 +193,45 @@ define([
                 return columns;
             },
 
-            setColumns: function(columns){
+            setColumns: function (columns) {
                 var self = this;
                 self.grid.set('columns', columns);
+            },
+
+            setRqlFilter: function (filter) {
+                if (filter !== null &&
+                    filter.name !== null &&
+                    filter.name !== undefined &&
+                    filter.filter !== null &&
+                    filter.filter !== undefined
+                ) {
+                    var self = this;
+                    self.grid.setRqlFilter(filter.filter);
+                    self.grid.newReceivedColumns = null;
+                    self.grid.refresh();
+
+                    setTimeout(function () {
+                        if (self.grid.newReceivedColumns) {
+                            self.setColumns(self.grid.newReceivedColumns);
+                        }
+                        self._setFilterBlock(filter.name);
+                    }, 100);
+                }
+            },
+
+            _setFilterBlock: function (filterName) {
+                var self = this;
+                var filterNode = domConstructor.create('button', {'class': "btn btn-success filter_active"});
+                on(filterNode, "click", function () {
+                        self.clear();
+                        self.filterActiveNode.innerHTML = "";
+                    }
+                );
+
+                domConstructor.place("<span class='glyphicon glyphicon-remove' style='float:right;'></span><p>" + filterName + "</p>", filterNode);
+
+                self.filterActiveNode.innerHTML = "";
+                self.filterActiveNode.appendChild(filterNode);
             }
 
         });

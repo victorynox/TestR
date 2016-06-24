@@ -27,7 +27,8 @@ define(
         'dstore/Trackable',
         'dstore/Filter',
         
-        '../../Util/GetTableColumnWithConfig'
+        '../../Util/GetTableColumnWithConfig',
+        '../../extensions/Grid/GridRqlFilter'
     ],
     function (declare,
               lang,
@@ -44,11 +45,15 @@ define(
               ColumnReorder,
               ColumnResizer,
               _StoreMixin,
+              
               Rest,
               RequestMemory,
               Trackable,
               Filter,
-              GetTableColumnWithConfig) {
+              
+              GetTableColumnWithConfig,
+              GridRqlFilter
+    ) {
 
         var gridMixinNameToConstructor = {
             "Grid": Grid,
@@ -59,6 +64,7 @@ define(
             "ColumnReorder": ColumnReorder,
             "ColumnResizer": ColumnResizer,
             "_StoreMixin": _StoreMixin,
+            "GridRqlFilter": GridRqlFilter
         };
 
         
@@ -86,47 +92,13 @@ define(
             
             var getTableConf = new GetTableColumnWithConfig({name: conf.name});
             
-            //if(conf.configName !== 'default'){
+            if(conf.configName !== 'default'){
                 var columnWithConf = getTableConf.getColumn(conf.configName, conf.name);
                 option.columns = columnWithConf !== null ? columnWithConf : option.columns;
-            //}
-
+            }
 
             grid = new (declare(declareArray))(option, conf.domNode);
 
-            /*if (gridConfig[name] !== undefined && gridConfig[name] !== null) {
-
-                //noinspection JSDuplicatedDeclaration
-                for (var module in gridConfig[name]) {
-                    if (gridConfig[name].hasOwnProperty(module)) {
-                        declareArray.push(gridMixinNameToConstructor[module]);
-                        
-                        /!*if (gridConfig[name][module]["before"] !== null &&
-                         gridConfig[name][module]["before"] !== undefined) {
-
-                         for (var index in gridConfig[name][module]["before"]) {
-                         if (gridConfig[name][module]["before"].hasOwnProperty(index)) {
-                         option[index] = gridConfig[name][module]["before"][index];
-                         }
-                         }
-                         }*!/
-                    }
-                }
-
-                option['collection'] = store;
-
-                grid = new (declare(declareArray))(option, domNode);
-
-                //noinspection JSDuplicatedDeclaration
-
-                /!*for (var module in gridConfig[name]) {
-                 if (gridConfig[name].hasOwnProperty(module)) {
-                 if (gridMixinNameToConfigure[module] !== null) {
-                 gridMixinNameToConfigure[module](grid, gridConfig[name][module]['after']);
-                 }
-                 }
-                 }*!/
-            }*/
 
             return grid;
         }

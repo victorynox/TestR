@@ -19,6 +19,7 @@ define(
         'dstore/Cache',
         'dstore/Tree',
         'dstore/Trackable',
+        '../../extensions/Store/StoreRqlFilter',
     ],
     function (declare,
               lang,
@@ -34,7 +35,8 @@ define(
               LocalDB,
               Cache,
               Tree,
-              Trackable) {
+              Trackable,
+              StoreRqlFilter) {
 
         var storeNameToConstructor = {
             "Memory": Memory,
@@ -44,7 +46,8 @@ define(
             "LocalDB": LocalDB,
             "Cache": Cache,
             "Tree": Tree,
-            "Trackable": Trackable
+            "Trackable": Trackable,
+            "StoreRqlFilter": StoreRqlFilter
         };
 
         return function createStore(storeConfig) {

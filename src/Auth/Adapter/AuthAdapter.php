@@ -15,14 +15,14 @@ class AuthAdapter implements AdapterInterface
 {
 
     private $login;
-    private $config;
+    private $authConfig;
     private $password;
 
     public function __construct($login, $password, $config)
     {
         $this->login = $login;
         $this->password = $password;
-        $this->config = $config;
+        $this->authConfig = $config;
     }
 
     /**
@@ -33,9 +33,9 @@ class AuthAdapter implements AdapterInterface
      */
     public function authenticate()
     {
-        if (isset($this->config['authentications'][$this->login])) {
-            $pass = $this->config['authentications'][$this->login]['password'];
-            $role = $this->config['authentications'][$this->login]['role'];
+        if (isset($this->authConfig[$this->login])) {
+            $pass = $this->authConfig[$this->login]['password'];
+            $role = $this->authConfig[$this->login]['role'];
             if (strcmp($pass, $this->password) == 0) {
                 return new Result(Result::SUCCESS, ['login' => $this->login, 'role' => $role]);
             } else {

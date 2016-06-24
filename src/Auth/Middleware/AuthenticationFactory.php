@@ -14,8 +14,14 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 class AuthenticationFactory
 {
 
+    /**
+     * @param ContainerInterface $container
+     * @return AuthenticationMiddleware
+     */
     public function __invoke(ContainerInterface $container)
     {
-        return new AuthenticationMiddleware($container->get(TemplateRendererInterface::class), $container->get('config'));
+        $config = $container->get('config');
+        $authConfig = $config['authentications'];
+        return new AuthenticationMiddleware($container->get(TemplateRendererInterface::class), $authConfig);
     }
 }

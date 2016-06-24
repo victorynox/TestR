@@ -12,6 +12,7 @@ return [
             Helper\ServerUrlMiddleware::class => Helper\ServerUrlMiddlewareFactory::class,
             Helper\UrlHelperMiddleware::class => Helper\UrlHelperMiddlewareFactory::class,
             victorynox\Auth\Middleware\AuthErrorHandlerMiddleware::class => victorynox\Auth\Middleware\AuthErrorHandlerFactory::class,
+            victorynox\Auth\Middleware\IdentificationMiddleware::class => victorynox\Auth\Middleware\IdentificationFactory::class,
             //zaboy\rest\Pipe\RestPipe::class => App\DataStore\Pipes\Factory\RestPipeFactory::class,
         ],
     ],

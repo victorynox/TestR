@@ -22,7 +22,8 @@ define([
     "dojox/layout/TableContainer",
     "dojo/Deferred",
     "dojo/dom-style",
-    "dojo/dom-class"
+    "dojo/dom-class",
+    "Rscript/Smart/TableControlPanel/TableControlPanelFactory",
 
 
 ], function (declare,
@@ -48,7 +49,8 @@ define([
              TableContainer,
              Deferred,
              domStyle,
-             domClass) {
+             domClass,
+             TableControlPanelFactory) {
     return declare(null, {
 
         __scriptsList: {},
@@ -67,6 +69,7 @@ define([
             height: "500px",
             margin: "5px auto 0px auto"
         },
+
         constructor: function (scriptsList, store, chart) {
             if (scriptsList != null && store instanceof Store) {
 
@@ -89,7 +92,7 @@ define([
                 });
                 this.__createSelectionForm(listForSelect);
 
-                var temp;
+                /*var temp;
                 on(document.getElementById("newFilter"), "click", function () {
                     temp = null;
                     self.__createFilterForm();
@@ -109,7 +112,7 @@ define([
                 on(document.getElementById("cleanFilter"), "click", function () {
                     self.__filter = {};
                     self.__renderPlotWithGrid(self.__filter);
-                });
+                });*/
 
                 on(document.getElementById("closeAlert"), "click", function () {
                     domStyle.set("alertBlock", {
@@ -119,7 +122,7 @@ define([
             }
         },
 
-        __createFilterForm: function (store) {
+        /*__createFilterForm: function (store) {
             var self = this;
 
             if (self.__name) {
@@ -235,7 +238,7 @@ define([
                 }
             }
 
-        },
+        },*/
 
         __createSelectionForm: function (listForSelect) {
             this.__scriptSelectionForm = new Form({
@@ -315,8 +318,13 @@ define([
                 });
             }
 
-            self.__dgrid = new dgredCreate(store.filter(filter), setting);
-            return !self.__dgrid.isError;
+            //self.__dgrid = new dgredCreate(store.filter(filter), setting);
+            self.__dgrid = new TableControlPanelFactory(self.__name, store);
+            if(self.__dgrid  !== null){
+                self.__dgrid.startup();
+                dom.byId("grid").appendChild(self.__dgrid.domNode);
+            }
+            return self.__dgrid !== null;
 
         },
 

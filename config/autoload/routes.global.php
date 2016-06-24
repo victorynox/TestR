@@ -11,7 +11,7 @@ return [
             victorynox\RReports\Action\HelloAction::class => victorynox\RReports\Action\HelloActionFactory::class,
             victorynox\Auth\Middleware\AuthenticationMiddleware::class => victorynox\Auth\Middleware\AuthenticationFactory::class,
             victorynox\Auth\Action\LogoutAction::class =>   victorynox\Auth\Action\LogoutActionFactory::class,
-            zaboy\rest\Pipe\RestPipe::class => victorynox\DataStore\Pipes\Factory\RestPipeFactory::class,
+            zaboy\rest\Pipe\RestRql::class => victorynox\DataStore\Pipes\Factory\RestPipeFactory::class,
             victorynox\Ebay\Notification\Action\NotificationViewAction::class => \victorynox\Ebay\Notification\Action\NotificationViewFactory::class,
             victorynox\Ebay\Notification\Action\NotificationAction::class => \victorynox\Ebay\Notification\Action\NotificationFactory::class,
             victorynox\Ebay\Notification\Action\GetNotificationDataAction::class => \victorynox\Ebay\Notification\Action\GetNotificationDataFactory::class,
@@ -50,7 +50,7 @@ return [
         [
             'name' => 'restAPI',
             'path' => '/rest[/{resourceName}[/{id}]]',
-            'middleware' =>  zaboy\rest\Pipe\RestPipe::class,
+            'middleware' =>  zaboy\rest\Pipe\RestRql::class,
             'allowed_method' => ['GET', 'POST', 'DELETE', 'PUSH'],
         ],
 
