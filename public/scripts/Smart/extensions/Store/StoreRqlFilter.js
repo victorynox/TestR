@@ -42,137 +42,139 @@ define([
             var queryParams = this._renderQueryParams(),
                 requestUrl = this.target;
 
-            if (kwArgs.requestParams) {
-                push.apply(queryParams, kwArgs.requestParams);
-            }
-            var rqlQuery;
-            //eq(a, a)&select(count(sd))&limit(15,20)
-            if (kwArgs.rql !== null && kwArgs.rql !== undefined) {
-                rqlQuery = {};
-                var tempArr = kwArgs.rql.split("&");
-                rqlQuery.join = function (separator) {
-                    var str = '';
-                    
-                    /* var str =  rqlQuery.query + separator +
-                     rqlQuery.limit + separator +
-                     rqlQuery.sort + separator +
-                     rqlQuery.select + separator;*/
-                    //todo переделать под цикл
-                    if (rqlQuery.query !== null &&
-                        rqlQuery.query !== undefined) {
-                        str += rqlQuery.query + separator;
-                    }
+            if(kwArgs !== null && kwArgs !== undefined){
+                if (kwArgs.requestParams) {
+                    push.apply(queryParams, kwArgs.requestParams);
+                }
+                var rqlQuery;
+                //eq(a, a)&select(count(sd))&limit(15,20)
+                if (kwArgs.rql !== null && kwArgs.rql !== undefined) {
+                    rqlQuery = {};
+                    var tempArr = kwArgs.rql.split("&");
+                    rqlQuery.join = function (separator) {
+                        var str = '';
 
-                    if (rqlQuery.limit !== null &&
-                        rqlQuery.limit !== undefined) {
-                        str += rqlQuery.limit + separator;
-                    }
+                        /* var str =  rqlQuery.query + separator +
+                         rqlQuery.limit + separator +
+                         rqlQuery.sort + separator +
+                         rqlQuery.select + separator;*/
+                        //todo переделать под цикл
+                        if (rqlQuery.query !== null &&
+                            rqlQuery.query !== undefined) {
+                            str += rqlQuery.query + separator;
+                        }
 
-                    if (rqlQuery.sort !== null &&
-                        rqlQuery.sort !== undefined) {
-                        str += rqlQuery.sort + separator;
-                    }
+                        if (rqlQuery.limit !== null &&
+                            rqlQuery.limit !== undefined) {
+                            str += rqlQuery.limit + separator;
+                        }
 
-                    if (rqlQuery.select !== null &&
-                        rqlQuery.select !== undefined) {
-                        str += rqlQuery.select + separator;
-                    }
-                    str = str.slice(0, str.length - 1);
-                    return str;
+                        if (rqlQuery.sort !== null &&
+                            rqlQuery.sort !== undefined) {
+                            str += rqlQuery.sort + separator;
+                        }
 
-                };
-                rqlQuery.length = 0;
+                        if (rqlQuery.select !== null &&
+                            rqlQuery.select !== undefined) {
+                            str += rqlQuery.select + separator;
+                        }
+                        str = str.slice(0, str.length - 1);
+                        return str;
 
-                // eq(a, a)
-                // select(count(sd))
-                // limit(15,20)
+                    };
+                    rqlQuery.length = 0;
 
-                var selectRegx = /(^select\([\w\W]+\))/,
-                    limitRegx = /(^limit\(([0-9]+)\,?([0-9]+)?\))/,
-                    sortRegx = /(^sort\([\w\W]+\))/;
+                    // eq(a, a)
+                    // select(count(sd))
+                    // limit(15,20)
 
-                array.forEach(tempArr, function (item) {
-                    if (item.match(selectRegx)) {
-                        rqlQuery.select = item;
-                        rqlQuery.length += 1;
-                    } else if (item.match(limitRegx)) {
-                        rqlQuery.limit = item;
-                        rqlQuery.length += 1;
+                    var selectRegx = /(^select\([\w\W]+\))/,
+                        limitRegx = /(^limit\(([0-9]+)\,?([0-9]+)?\))/,
+                        sortRegx = /(^sort\([\w\W]+\))/;
 
-                    } else if (item.match(sortRegx)) {
-                        rqlQuery.sort = item;
-                        rqlQuery.length += 1;
-
-                    } else {
-                        rqlQuery.query = item;
-                        rqlQuery.length += 1;
-
-                    }
-                });
-
-                if (queryParams && Array.isArray(queryParams), queryParams.length > 0) {
-                    array.forEach(queryParams, function (item) {
+                    array.forEach(tempArr, function (item) {
                         if (item.match(selectRegx)) {
-                            //rqlQuery.select = item;
-
+                            rqlQuery.select = item;
+                            rqlQuery.length += 1;
                         } else if (item.match(limitRegx)) {
-                            var limitQueryArr = item.match(limitRegx);
-                            //todo переписать слияние ноды limit()
-                            if (rqlQuery.limit !== undefined &&
-                                rqlQuery.limit !== null) {
-
-                                var limitRqlArr = item.match(rqlQuery.limit);
-
-                                var limit, offset;
-
-                                var limitQuery = limitQueryArr[2];
-                                if (limitQueryArr[3] !== undefined) {
-                                    var offsetQuery = limitQueryArr[3];
-                                }
-
-                                if (limitRqlArr) {
-                                    var limitRql = limitRqlArr[2];
-                                    limit = limitRql < limitQuery ? limitRql : limitQuery;
-                                    if (limitRqlArr[3] !== undefined) {
-                                        var offsetRql = limitRqlArr[3];
-                                        offset = offsetRql + offsetQuery;
-                                    }
-
-                                } else {
-                                    limit = limitQuery;
-                                    if (offsetQuery !== undefined) {
-                                        offset = offsetQuery;
-                                    }
-                                }
-                                if (offset !== undefined) {
-                                    rqlQuery.limit = "limit(" + limit + "," + offset + ")";
-                                } else {
-                                    rqlQuery.limit = "limit(" + limit + ")";
-                                }
-                            } else {
-                                if (limitQueryArr[3] !== undefined) {
-                                    rqlQuery.limit = "limit(" + limitQueryArr[2] + "," + limitQueryArr[3] + ")";
-                                } else {
-                                    rqlQuery.limit = "limit(" + limitQueryArr[2] + ")";
-                                }
-                            }
+                            rqlQuery.limit = item;
+                            rqlQuery.length += 1;
 
                         } else if (item.match(sortRegx)) {
-                            //rqlQuery.sort = item;
-                        } else {
-                            if (rqlQuery.query !== undefined &&
-                                rqlQuery.query !== null) {
-                                rqlQuery.query = 'and(' + rqlQuery.query + ',' + item + ")";
-                            }
-                        }
-                    })
-                }
-            } else {
-                rqlQuery = queryParams;
-            }
+                            rqlQuery.sort = item;
+                            rqlQuery.length += 1;
 
-            if (rqlQuery.length > 0) {
-                requestUrl += (this._targetContainsQueryString ? '&' : '?') + rqlQuery.join('&');
+                        } else {
+                            rqlQuery.query = item;
+                            rqlQuery.length += 1;
+
+                        }
+                    });
+
+                    if (queryParams && Array.isArray(queryParams), queryParams.length > 0) {
+                        array.forEach(queryParams, function (item) {
+                            if (item.match(selectRegx)) {
+                                //rqlQuery.select = item;
+
+                            } else if (item.match(limitRegx)) {
+                                var limitQueryArr = item.match(limitRegx);
+                                //todo переписать слияние ноды limit()
+                                if (rqlQuery.limit !== undefined &&
+                                    rqlQuery.limit !== null) {
+
+                                    var limitRqlArr = item.match(rqlQuery.limit);
+
+                                    var limit, offset;
+
+                                    var limitQuery = limitQueryArr[2];
+                                    if (limitQueryArr[3] !== undefined) {
+                                        var offsetQuery = limitQueryArr[3];
+                                    }
+
+                                    if (limitRqlArr) {
+                                        var limitRql = limitRqlArr[2];
+                                        limit = limitRql < limitQuery ? limitRql : limitQuery;
+                                        if (limitRqlArr[3] !== undefined) {
+                                            var offsetRql = limitRqlArr[3];
+                                            offset = offsetRql + offsetQuery;
+                                        }
+
+                                    } else {
+                                        limit = limitQuery;
+                                        if (offsetQuery !== undefined) {
+                                            offset = offsetQuery;
+                                        }
+                                    }
+                                    if (offset !== undefined) {
+                                        rqlQuery.limit = "limit(" + limit + "," + offset + ")";
+                                    } else {
+                                        rqlQuery.limit = "limit(" + limit + ")";
+                                    }
+                                } else {
+                                    if (limitQueryArr[3] !== undefined) {
+                                        rqlQuery.limit = "limit(" + limitQueryArr[2] + "," + limitQueryArr[3] + ")";
+                                    } else {
+                                        rqlQuery.limit = "limit(" + limitQueryArr[2] + ")";
+                                    }
+                                }
+
+                            } else if (item.match(sortRegx)) {
+                                //rqlQuery.sort = item;
+                            } else {
+                                if (rqlQuery.query !== undefined &&
+                                    rqlQuery.query !== null) {
+                                    rqlQuery.query = 'and(' + rqlQuery.query + ',' + item + ")";
+                                }
+                            }
+                        })
+                    }
+                } else {
+                    rqlQuery = queryParams;
+                }
+
+                if (rqlQuery.length > 0) {
+                    requestUrl += (this._targetContainsQueryString ? '&' : '?') + rqlQuery.join('&');
+                }
             }
 
             return requestUrl;

@@ -8,17 +8,20 @@ return [
         ],
         // Map middleware -> factories here
         'factories' => [
-            victorynox\RReports\Action\HelloAction::class => victorynox\RReports\Action\HelloActionFactory::class,
+            victorynox\AnalyticReports\Action\HelloAction::class => victorynox\AnalyticReports\Action\HelloActionFactory::class,
             victorynox\Auth\Middleware\AuthenticationMiddleware::class => victorynox\Auth\Middleware\AuthenticationFactory::class,
             victorynox\Auth\Action\LogoutAction::class =>   victorynox\Auth\Action\LogoutActionFactory::class,
             zaboy\rest\Pipe\RestRql::class => victorynox\DataStore\Pipes\Factory\RestPipeFactory::class,
+            victorynox\Ebay\Category\Action\CategoryTreeAction::class => victorynox\Ebay\Category\Action\CategoryTreeFactory::class,
             victorynox\Ebay\Notification\Action\NotificationViewAction::class => \victorynox\Ebay\Notification\Action\NotificationViewFactory::class,
             victorynox\Ebay\Notification\Action\NotificationAction::class => \victorynox\Ebay\Notification\Action\NotificationFactory::class,
             victorynox\Ebay\Notification\Action\GetNotificationDataAction::class => \victorynox\Ebay\Notification\Action\GetNotificationDataFactory::class,
+            victorynox\Ebay\Trading\Action\GetItemTransactionsAction::class => victorynox\Ebay\Trading\Action\GetItemTransactionsFactory::class,
         ],
     ],
 
     'routes' => [
+
         // Example:
         // [
         //     'name' => 'home',
@@ -26,10 +29,11 @@ return [
         //     'middleware' => App\Action\HomePageAction::class,
         //     'allowed_methods' => ['GET'],
         // ],
+
         [
             'name' => 'rreport',
             'path' => '/',
-            'middleware' => victorynox\RReports\Action\HelloAction::class,
+            'middleware' => victorynox\AnalyticReports\Action\HelloAction::class,
             'allowed_method' => ['GET', 'POST'],
         ],
 
@@ -46,10 +50,9 @@ return [
             'middleware' => victorynox\Auth\Action\LogoutAction::class,
             'allowed_method' => ['GET'],
         ],
-
         [
-            'name' => 'restAPI',
-            'path' => '/rest[/{resourceName}[/{id}]]',
+            'name' => 'rest.api',
+            'path' => '/rest[/{Resource-Name}[/{id}]]',
             'middleware' =>  zaboy\rest\Pipe\RestRql::class,
             'allowed_method' => ['GET', 'POST', 'DELETE', 'PUSH'],
         ],
@@ -60,25 +63,41 @@ return [
             'middleware' =>  victorynox\Ebay\Notification\Action\NotificationAction::class,
             'allowed_method' => ['GET'],
         ],
+
         [
             'name' => 'notification.view',
             'path' => '/ebay/notifications/view',
             'middleware' =>  victorynox\Ebay\Notification\Action\NotificationViewAction::class,
             'allowed_method' => ['GET'],
         ],
+
+        /*[
+            'name' => 'get.ebay.category',
+            'path' => '/ebay/category',
+            'middleware' =>  victorynox\Ebay\Category\Action\CategoryTreeAction::class,
+            'allowed_method' => ['GET'],
+        */
+
         [
-            'name' => 'ge.notification.data',
+            'name' => 'get.notification.data',
             'path' => '/ebay/notifications/data/{id}',
             'middleware' =>  victorynox\Ebay\Notification\Action\GetNotificationDataAction::class,
             'allowed_method' => ['GET'],
         ],
+
         [
             'name' => 'findItemByStore',
             'path' => '/ebay/find-item',
             'middleware' =>  victorynox\Ebay\Finding\Action\FindItemsIneBayStoreAction::class,
             'allowed_method' => ['GET'],
-        ]
+        ],
 
+        [
+            'name' => 'get.item.transactions',
+            'path' => '/ebay/item-transactions',
+            'middleware' =>  victorynox\Ebay\Trading\Action\GetItemTransactionsAction::class,
+            'allowed_method' => ['GET'],
+        ]
 
     ],
 ];

@@ -8,11 +8,16 @@ define(['dojo/dom',
         "dijit/form/Form",
         "dijit/form/DateTextBox",
         "dijit/form/NumberTextBox",
+        "dijit/form/TextBox",
         "dijit/form/Button",
         "dijit/form/Select",
         "dojox/layout/TableContainer",
         "dojo/Deferred",
         "dojo/dom-construct",
+        'dstore/Trackable',
+        'dstore/Rest',
+        'dstore/legacy/DstoreAdapter',
+        "Rscript/Smart/extensions/Store/StoreRqlFilter",
         "dojo/domReady!"],
     function (dom,
               on,
@@ -24,16 +29,37 @@ define(['dojo/dom',
               Form,
               DateTextBox,
               NumberTextBox,
+              TextBox,
               Button,
               Select,
               TableContainer,
               Deferred,
-              domConstruct) {
+              domConstruct,
+              Trackable,
+              Rest,
+              DstoreAdapter,
+              StoreRqlFilter) {
         return declare(null, {
-            _myStore: null,
-            constructor: function (myStore) {
+            getCategoryStore: null,
+            getBrandStore: null,
+            constructor: function () {
                 var self = this;
-                self._myStore = myStore;
+
+                self.getCategoryStore =new DstoreAdapter( new (declare([Trackable, Rest]))({
+                    'target': '/rest/getCategory',
+                    'headers': {
+                        'Accept': 'application/json',
+                    }
+                }));
+
+                self.getBrandStore = new DstoreAdapter(new (declare([Trackable, Rest]))({
+                    'target': '/rest/getBrand',
+                    'idProperty': 'value',
+                    'headers': {
+                        'Accept': 'application/json',
+                    }
+                }));
+
             },
             getForm: function (name) {
                 domConstruct.destroy("scriptConfigDialogForm");
@@ -57,6 +83,11 @@ define(['dojo/dom',
                     {
                         return this.__plotPublishPrice();
                     }
+                    case "NNSold":
+                    case "NN":
+                    {
+                        return this.__NNForm();
+                    }
                     default:
                     {
                         return this.__notForm();
@@ -66,10 +97,9 @@ define(['dojo/dom',
 
             __notForm: function () {
                 var self = this;
+
                 var asyForm = function () {
                     var deferred = new Deferred();
-
-
 
                     var form = new Form({
                         id: "scriptConfigDialogForm",
@@ -84,7 +114,8 @@ define(['dojo/dom',
                 };
                 return asyForm();
             },
-            __plotPublishPrice: function () {
+
+            __NNForm: function () {
                 var self = this;
 
                 var asyForm = function () {
@@ -105,9 +136,9 @@ define(['dojo/dom',
                         }
                     );
 
-                    var ebayCategoryId = new NumberTextBox({
-                        label: "Номер категории",
-                        name: "ebaycategory_id",
+                    var title = new TextBox({
+                        label: "Титл Товара",
+                        name: "liketitle",
                         required: false
                     });
 
@@ -123,30 +154,90 @@ define(['dojo/dom',
                         required: false
                     });
 
-                    var brand = new Select();
-
-                    self._myStore.query([{name: "scriptName", value: "getBrand"}]).then(function (items) {
-
-                        list.push({id: 0, label: "По всем брендам", value: ""});
-
-                        array.forEach(items, function (item) {
-                            list.push({id: item.id, label: item.name, value: item.value});
-                        });
-
-                        var brand = new Select({
-                            label: "Бренд",
-                            name: "brand",
-                            options: list,
-                            required: false
-                        });
-
-                        array.forEach([ebayCategoryId, beginAddDate, endAddDate, brand], function (child) {
-                            formContainer.addChild(child);
-                        });
-                        formContainer.placeAt(form);
-
-                        deferred.resolve(form);
+                    var brand = new Select({
+                        label: "Бренд",
+                        name: 'brand',
+                        
+                        store: self.getBrandStore,
+                        style: 'width: 200px;',
+                        labelAttr: 'name',
+                        maxHeight: -1,
                     });
+
+                    array.forEach([title, beginAddDate, endAddDate, brand], function (child) {
+                        formContainer.addChild(child);
+                    });
+
+                    formContainer.placeAt(form);
+
+                    deferred.resolve(form);
+
+                    return deferred.promise;
+                };
+
+                return asyForm();
+            },
+
+            __plotPublishPrice: function () {
+                var self = this;
+
+                var asyForm = function () {
+                    var deferred = new Deferred();
+                    var list = [];
+                    var list2 = [];
+
+                    var form = new Form({
+                        id: "scriptConfigDialogForm",
+                        doLayout: true
+                    });
+
+                    var formContainer = new TableContainer(
+                        {
+                            cols: 1,
+                            customClass: "labelsAndFields",
+                            "labelWidth": "200"
+                        }
+                    );
+
+                    var ebayCategory = new Select({
+                        label: "Категория",
+                        
+                        name: 'likeebaycategory_id',
+                        store: self.getCategoryStore,
+                        style: 'width: 200px;',
+                        labelAttr: 'name',
+                        maxHeight: -1,
+                    });
+
+                    var brand = new Select({
+                        label: "Бренд",
+                        
+                        name: 'brand',
+                        store: self.getBrandStore,
+                        style: 'width: 200px;',
+                        labelAttr: 'name',
+                        maxHeight: -1,
+                    });
+
+                    var beginAddDate = new DateTextBox({
+                        label: "Дата начала выборки",
+                        name: "begadd_date",
+                        required: false
+                    });
+
+                    var endAddDate = new DateTextBox({
+                        label: "Дата конца выборки",
+                        name: "endadd_date",
+                        required: false
+                    });
+
+                    array.forEach([ebayCategory, beginAddDate, endAddDate, brand], function (child) {
+                        formContainer.addChild(child);
+                    });
+
+                    formContainer.placeAt(form);
+
+                    deferred.resolve(form);
 
                     return deferred.promise;
                 };

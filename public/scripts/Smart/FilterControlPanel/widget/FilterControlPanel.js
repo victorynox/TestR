@@ -203,6 +203,25 @@ define(
 
             getSelectedRow: function () {
                 return this._rowSelected;
+            },
+
+            destroy: function () {
+                var self = this;
+                if (self.newFilterBtn !== undefined) {
+                    self.newFilterBtn.destroy();
+                }
+                if (self.removeFilterBtn !== undefined) {
+                    self.removeFilterBtn.destroy();
+                }
+                if (self.setFilterBtn !== undefined) {
+                    self.setFilterBtn.destroy();
+                }
+                if (self.filterListGrid !== undefined) {
+                    self.filterListGrid.destroy();
+                }
+                if (self.filterEditor !== undefined) {
+                    self.filterEditor.destroy();
+                }
             }
 
         });

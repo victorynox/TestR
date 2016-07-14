@@ -31,7 +31,7 @@ define([], function () {
                     
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "plotSoldPrice": {
@@ -49,7 +49,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "plotProbPrice": {
@@ -67,14 +67,14 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "plotProfPrice": {
                 "reportName": "График прибыли от одного выставления товара из заданой ценовой категории",
                 "axis": {
                     "xAxis": "Логарифм по основанию 10 от цены выставленного товара",
-                    "yAxis": " Оценка прибыли от одного выставления товара из заданой ценовой категории"
+                    "yAxis": "Оценка прибыли от одного выставления товара из заданой ценовой категории"
                 },
                 "return": {
                     "type": "plot",
@@ -85,7 +85,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "plotPublishDay": {
@@ -103,7 +103,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "plotSoldDay": {
@@ -121,7 +121,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "plotProbDay": {
@@ -200,7 +200,7 @@ define([], function () {
                 "reportName": "График вероятности продажи товара выставленного в заданое время суток",
                 "axis": {
                     "xAxis": "Время суток(час)",
-                    "yAxis": " Оценка вероятности продажи товара выставленого заданое время суток"
+                    "yAxis": "Оценка вероятности продажи товара выставленого заданое время суток"
                 },
                 "return": {
                     "type": "plot",
@@ -233,7 +233,7 @@ define([], function () {
             },
 
             "plotCreatedTimeWithTZ": {
-                "reportName": " Гистограмма количества продаж в каждый час дня с учетом часовых почсов",
+                "reportName": "Гистограмма количества продаж в каждый час дня с учетом часовых почсов",
                 "axis": {
                     "xAxis": "Время суток в штате где выло куплено товар",
                     "yAxis": "Количество продынных товаров в заданое время суток с учетом часовых поясов"
@@ -278,7 +278,7 @@ define([], function () {
                         "delta_prof_mounth"
                     ]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "tableCategory": {
@@ -311,7 +311,7 @@ define([], function () {
                         "delta_prof_mounth"
                     ]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "tableProduct": {
@@ -327,7 +327,7 @@ define([], function () {
                         "price": "Цена товара",
                         "prob": "Оценка вероятности продажи",
                         "prof_mounth": "Оценка прибыли за месяц",
-                        "new_prob": "Оценка вероятности продажи пир выставлении на 10 дней",
+                        "new_prob": "Оценка вероятности продажи при выставлении на 10 дней",
                         "new_prof_mounth": "Оценка прибыли за месяц при выставлении на 10 дней",
                         "delta_prof_mounth": "Разница прибыли"
 
@@ -345,11 +345,11 @@ define([], function () {
                         "delta_prof_mounth"
                     ]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "tableModel": {
-                "reportName": " Таблица популярности каждой из марок мотоциклов",
+                "reportName": "Таблица популярности каждой из марок мотоциклов",
                 "paramsName": [],
                 "return": {
                     "type": "table",
@@ -388,7 +388,80 @@ define([], function () {
                         "prob"
                     ]
                 }
-            }
+            },
+
+            "bestProducts": {
+                "paramsName": [],
+                "reportName": "Список товаров которые продались больше всего на ebay",
+                "return": {
+                    "type": "table",
+                    "fieldLabel": {
+                        "id": "id строки",
+                        "title": "Тайтл товара",
+                        "count_sold": "Количество продаж данного товара начиная с 2016-01-22",
+                    },
+                    "fieldNames": [
+                        "id",
+                        "title",
+                        "count_sold",
+                    ]
+                }
+            },
+
+            "bestCompetitor": {
+                "paramsName": [],
+                "reportName": "Список продавцов и количество продаж этих продавцов",
+                "return": {
+                    "type": "table",
+                    "fieldLabel": {
+                        "id": "id строки",
+                        "seller_name": "Ник продавца",
+                        "count_sold": "Количество продаж данного товара начиная с 2016-01-22",
+                    },
+                    "fieldNames": [
+                        "id",
+                        "seller_name",
+                        "count_sold",
+                    ]
+                }
+            },
+
+            "NN": {
+                "reportName": "Гистограмма цен выставленных товаров с задаными словами",
+                "axis": {
+                    "xAxis": "Логарифм по основанию 10 от цены товара",
+                    "yAxis": "Количество продаж"
+                },
+                "return": {
+                    "type": "plot",
+                    "fieldLabel": {
+                        "id": "id",
+                        "x": "Логарифм по основанию 10 от цены товара",
+                        "y": "Количество продаж"
+                    },
+                    "fieldNames": ['id', 'x', "y"]
+                },
+                "paramsName": ["liketitle", "begadd_date", "endadd_date"]
+            },
+
+            "NNSold": {
+                "reportName": "Гистограмма цен проданых товаров с задаными словами",
+                "axis": {
+                    "xAxis": "логарифм по основанию 10 от цены товара",
+                    "yAxis": "Количество продаж"
+                },
+                "return": {
+                    "type": "plot",
+                    "fieldLabel": {
+                        "id": "id",
+                        "x": "Логарифм по основанию 10 от цены товара",
+                        "y": "Количество продаж"
+                    },
+                    "fieldNames": ['id', 'x', "y"]
+                },
+                "paramsName": ["liketitle", "begadd_date", "endadd_date"]
+            },
+
         },
         "names": [
             "plotPublishPrice",
@@ -408,7 +481,11 @@ define([], function () {
             "tableCategory",
             "tableProduct",
             "tableModel",
-            "tableProductModel"
+            "tableProductModel",
+            "bestProducts",
+            "bestCompetitor",
+            "NN",
+            "NNSold"
         ]
     };
 });

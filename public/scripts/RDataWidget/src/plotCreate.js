@@ -1,6 +1,8 @@
 define(["dojox/charting/Chart",
         'dojo/_base/array',
         "dojox/timing",
+        "dojo/when",
+        "dstore/legacy/DstoreAdapter",
         'dstore/charting/StoreSeries',
         "dojox/charting/themes/MiamiNice",
         "dojox/charting/axis2d/Default",
@@ -15,6 +17,8 @@ define(["dojox/charting/Chart",
     function (Chart,
               array,
               timing,
+              when,
+              DstoreAdapter,
               StoreSeries,
               MiamiNice,
               Default,
@@ -42,7 +46,16 @@ define(["dojox/charting/Chart",
                         titleFontColor: "orange"
                     });
 
+                    //this._store = new DstoreAdapter(store);
                     this._store = store;
+
+                    var series = new StoreSeries(self._store,
+                        function (item) {
+                            //return {x: item.x, y: item.y};
+                            return item.y;
+                        });
+
+                    self.series = series;
 
                     this._chart.addPlot("columnsPlot", {
                         type: Columns,
@@ -60,11 +73,7 @@ define(["dojox/charting/Chart",
                     this._chart.addAxis("x", {
                         majorTickStep: 1, minorTicks: false, title: settings.axis.xAxis, titleOrientation: "away",
                         labelFunc: function (index) {
-                            var column = "NULL";
-                            self._store.fetchRange({start: index - 1, end: index}).then(function (item) {
-                                column = item[0].x
-                            });
-                            
+                            var column = self.series.objects[index-1].x;
                             return column;
                         },
                         font: "normal normal normal 10pt Arial"
@@ -74,9 +83,9 @@ define(["dojox/charting/Chart",
 
                     var words = settings.axis.yAxis.split(" ");
 
-                    for(var i =0; i < words.length; ++i){
-                        yAxisLabel += " " + words[i] ;
-                        if(i%3 == 0){
+                    for (var i = 0; i < words.length; ++i) {
+                        yAxisLabel += " " + words[i];
+                        if (i % 3 == 0) {
                             yAxisLabel += "\n";
                         }
                     }
@@ -88,11 +97,7 @@ define(["dojox/charting/Chart",
                         titleFont: "normal normal normal 9pt Arial"
                     });
 
-                    this._chart.addSeries("Series 1", new StoreSeries(this._store,
-                        function (item) {
-                            //return {x: item.x, y: item.y};
-                            return item.y
-                        }), {
+                    this._chart.addSeries("Series 1", series, {
                         plot: "columnsPlot",
                         stroke: {
                             color: "red",
@@ -103,7 +108,18 @@ define(["dojox/charting/Chart",
 
                     new Tooltip(this._chart, "columnsPlot", {
                         text: function (chartItem) {
-                            return "id: " + chartItem.run.source.objects[chartItem.index].id + '<br>' + settings.axis.yAxis + ": " + chartItem.y + '<br>' + settings.axis.xAxis + ": " + chartItem.run.source.objects[chartItem.index].x;
+                            var str = "id: " + chartItem.run.source.objects[chartItem.index].id + '<br>';
+                            str += settings.axis.yAxis + ": " + chartItem.y + '<br>';
+                            var log10Reg = new RegExp("(Логарифм по основанию 10 от цены)", "i");
+
+                            if (log10Reg.exec(settings.axis.xAxis)) {
+                                var price = Math.pow(10, chartItem.run.source.objects[chartItem.index].x);
+                                str += "Цена: " + price.toFixed(2);
+                            } else {
+                                str += settings.axis.xAxis + ": " + chartItem.run.source.objects[chartItem.index].x;
+                            }
+
+                            return str;
                         }
                     });
                     new Highlight(this._chart, "columnsPlot");

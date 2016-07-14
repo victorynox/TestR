@@ -18,15 +18,20 @@ return [
         // Use 'factories' for services provided by callbacks/factory classes.
         'factories' => [
             Application::class => ApplicationFactory::class,
-            Helper\UrlHelper::class => Helper\UrlHelperFactory::class,
+            Helper\UrlHelper::class => Helper\UrlHelperFactory::class
         ],
         'abstract_factories' => [
+            'victorynox\DataStore\CDSAbstractFactory',
+            'zaboy\rest\DataStore\Aspect\Factory\AspectAbstractFactory',
             'zaboy\rest\Middleware\Factory\DataStoreAbstractFactory',
             'zaboy\rest\DataStore\Factory\HttpClientAbstractFactory',
             'zaboy\rest\DataStore\Factory\DbTableAbstractFactory',
             'zaboy\rest\DataStore\Factory\CsvAbstractFactory',
             'zaboy\rest\DataStore\Factory\MemoryAbstractFactory',
+            'zaboy\rest\DataStore\Factory\CacheableAbstractFactory',
+            'zaboy\rest\TableGateway\Factory\TableGatewayAbstractFactory',
             'Zend\Db\Adapter\AdapterAbstractServiceFactory',
+            'victorynox\AnalyticReports\Middleware\CDSManagerAbstractFactory',
         ]
     ],
 ];

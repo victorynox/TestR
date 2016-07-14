@@ -1,6 +1,7 @@
 define([
     'dojo/_base/declare',
     'dojo/_base/array',
+    'dojo/_base/lang',
     "dijit/ConfirmDialog",
     "dijit/form/TextBox",
     "dojo/dom-construct",
@@ -24,10 +25,12 @@ define([
     "dojo/dom-style",
     "dojo/dom-class",
     "Rscript/Smart/TableControlPanel/TableControlPanelFactory",
+    "Rscript/Smart/extensions/Store/StoreRqlFilter",
 
 
 ], function (declare,
              array,
+             lang,
              confirmDialog,
              TextBox,
              domConstruct,
@@ -50,7 +53,8 @@ define([
              Deferred,
              domStyle,
              domClass,
-             TableControlPanelFactory) {
+             TableControlPanelFactory,
+             StoreRqlFilter) {
     return declare(null, {
 
         __scriptsList: {},
@@ -64,6 +68,13 @@ define([
         __name: null,
         __filter: {},
         __filterDialog: null,
+        __storeConfig: {
+            "target": "/rest/",
+            "useRangeHeaders": true,
+            'headers': {
+                'Accept': 'application/json',
+            }
+        },
         __chart: {
             width: "100%",
             height: "500px",
@@ -78,6 +89,7 @@ define([
                 });
 
                 this.__scriptsList = scriptsList;
+
                 this.__store = store;
 
                 this.__chart.margin = chart.margin != null ? chart.margin : this.__chart.margin;
@@ -92,28 +104,6 @@ define([
                 });
                 this.__createSelectionForm(listForSelect);
 
-                /*var temp;
-                on(document.getElementById("newFilter"), "click", function () {
-                    temp = null;
-                    self.__createFilterForm();
-                });
-
-
-                on(document.getElementById("addFilter"), "click", function () {
-                    if (!(temp instanceof Memory)) {
-                        temp = self.__cashStore.filter(self.__filter);
-                    } else {
-                        temp = temp.filter(self.__filter);
-                    }
-
-                    self.__createFilterForm(temp);
-                });
-
-                on(document.getElementById("cleanFilter"), "click", function () {
-                    self.__filter = {};
-                    self.__renderPlotWithGrid(self.__filter);
-                });*/
-
                 on(document.getElementById("closeAlert"), "click", function () {
                     domStyle.set("alertBlock", {
                         display: "none"
@@ -122,123 +112,6 @@ define([
             }
         },
 
-        /*__createFilterForm: function (store) {
-            var self = this;
-
-            if (self.__name) {
-                if(self.__store) {
-                    if (!self.filterEditDialog) {
-                        var form = new Form({
-                            id: "filterCreateDialogForm",
-                            doLayout: true
-                        });
-
-                        var formContainer = new TableContainer(
-                            {
-                                cols: 1,
-                                customClass: "labelsAndFields",
-                                "labelWidth": "200"
-                            }
-                        );
-
-                        var selectParamsList = [];
-                        array.forEach(self.__scriptsList["scripts"][self.__name]["return"]['fieldNames'], function (name, i) {
-                            selectParamsList.push({
-                                id: i,
-                                value: name,
-                                label: self.__scriptsList["scripts"][self.__name]["return"]['fieldLabel'][name]
-                            });
-                        });
-
-                        var selectParams = new Select({
-                            label: "Поле",
-                            name: "field",
-                            options: selectParamsList,
-                            required: false
-                        });
-
-                        var selectFilter = new Select({
-                            label: "Фильтр",
-                            name: "filter",
-                            options: [
-                                {id: 0, label: "=", value: "eq"},
-                                {id: 0, label: ">", value: "gt"},
-                                {id: 0, label: "<", value: "lt"},
-                                {id: 0, label: ">=", value: "gte"},
-                                {id: 0, label: "<=", value: "lte"},
-                                {id: 0, label: "!=", value: "ne"}
-                            ],
-                            required: false
-                        });
-                        var value = new TextBox({
-                            label: "Значение",
-                            name: "value",
-                        });
-
-                        formContainer.addChild(selectFilter);
-                        formContainer.addChild(selectParams);
-                        formContainer.addChild(value);
-                        formContainer.placeAt(form);
-
-                        self.__filterDialog = new confirmDialog({
-                            id: 'filterCreateDialog',
-                            title: "Фильтр",
-                            style: 'width:600px;',
-                            content: form,
-                            execute: function () {
-
-
-                                var f = query("#filterCreateDialogForm")[0];
-
-                                var filter = f["filter"];
-                                var field = f["field"];
-                                var value = f["value"];
-                                self.__filter = new Filter();
-                                switch (filter.value) {
-                                    case "eq":
-                                    {
-                                        self.__filter = self.__filter.eq(field.value, parseFloat(value.value));
-                                        break;
-                                    }
-                                    case "gt":
-                                    {
-                                        self.__filter = self.__filter.gt(field.value, parseFloat(value.value));
-                                        break;
-                                    }
-                                    case "lt":
-                                    {
-                                        self.__filter = self.__filter.lt(field.value, parseFloat(value.value));
-                                        break;
-                                    }
-                                    case "gte":
-                                    {
-                                        self.__filter = self.__filter.gte(field.value, parseFloat(value.value));
-                                        break;
-                                    }
-                                    case "lte":
-                                    {
-                                        self.__filter = self.__filter.lte(field.value, parseFloat(value.value));
-                                        break;
-                                    }
-                                    case "ne":
-                                    {
-                                        self.__filter = self.__filter.ne(field.value, parseFloat(value.value));
-                                        break;
-                                    }
-                                }
-                                self.__renderPlotWithGrid(self.__filter, store);
-                            }
-                        });
-
-
-                        form.startup();
-                        //self.__filterDialog.show();
-                    }
-                    self.filterEditDialog.show();
-                }
-            }
-
-        },*/
 
         __createSelectionForm: function (listForSelect) {
             this.__scriptSelectionForm = new Form({
@@ -294,9 +167,7 @@ define([
 
             if (self.__scriptsList["scripts"][self.__name]["return"]['type'] === "plot") {
                 domStyle.set(chartDiv, {
-                    /*width: "1200px",
-                     height: "500px",
-                     margin: "5px auto 0px auto"*/
+
                     width: self.__chart.width,
                     height: self.__chart.height,
                     margin: self.__chart.margin
@@ -309,18 +180,23 @@ define([
                 self.plot.render();
             } else {
                 domStyle.set(chartDiv, {
-                    /*width: "1200px",
-                     height: "500px",
-                     margin: "5px auto 0px auto"*/
+
                     width: 0,
                     height: 0,
                     margin: 0
                 });
             }
 
-            //self.__dgrid = new dgredCreate(store.filter(filter), setting);
+            if (self.__dgrid) {
+                self.__dgrid.destroy();
+
+                if (dom.byId(self.__dgrid.domNode)) {
+                    domConstruct.destroy(self.__dgrid.domNode);
+                }
+            }
+
             self.__dgrid = new TableControlPanelFactory(self.__name, store);
-            if(self.__dgrid  !== null){
+            if (self.__dgrid !== null) {
                 self.__dgrid.startup();
                 dom.byId("grid").appendChild(self.__dgrid.domNode);
             }
@@ -340,7 +216,7 @@ define([
                 self.__scriptConfigDialog.destroyRecursive(true);
             }
 
-            var formCreator = new formCreate(store);
+            var formCreator = new formCreate();
             var asyFCreate = formCreator.getForm(self.__name);
 
 
@@ -361,33 +237,35 @@ define([
                             }, 2);
 
                             try {
-                                data = [];
+                                data = {
+                                    params: [],
+                                    scriptName: null
+                                };
+
                                 var f = query("#scriptConfigDialogForm")[0];
-                                data.push({name: "scriptName", value: self.__name});
+                                data.scriptName = self.__name;
 
                                 array.forEach(self.__scriptsList["scripts"][self.__name]["paramsName"], function (name) {
                                     var item = f[name];
-                                    if (item.value != "") {
-                                        data.push({name: name, value: item.value});
+
+                                    if (item.value !== "") {
+                                        if(!(name === 'brand' && item.value === '0')){
+                                            data.params.push({name: name, value: item.value});
+                                        }
                                     }
 
                                 });
+                                var a = 1;
+                                self.__store.query(data).then(function (respData) {
+                                        if (respData.cdsId === null || respData.cdsId === undefined) {
+                                            throw "Not return cdsID";
+                                        }
 
-                                self.__store.query(data).then(function (items) {
-                                    if(items.status == 202){
-                                        setTimeout(function () {
-                                            deferred.reject("Script working... But data not return because timeout ending");
-                                        }, 1);
-                                    } else if (!items || !Array.isArray(items) || items.length < 1) {
-                                        setTimeout(function () {
-                                            deferred.reject("Data was not returned");
-                                        }, 1);
-                                    } else if (items[0] === "ERROR") {
-                                        setTimeout(function () {
-                                            deferred.reject("Sent invalid data or data is not enough for the report");
-                                        }, 1);
-                                    } else  {
-                                        self.__cashStore = new (declare([Memory, Trackable]))({data: items});
+                                        var setting = lang.clone(self.__storeConfig);
+                                        setting.target = self.__storeConfig.target + respData.cdsId;
+
+
+                                        self.__cashStore = new (declare([StoreRqlFilter, Trackable]))(setting);
 
                                         if (!self.__renderPlotWithGrid(self.__filter)) {
                                             setTimeout(function () {
@@ -396,11 +274,11 @@ define([
                                         } else {
                                             deferred.resolve('finish');
                                         }
-                                    }
-                                }, function (error) {
-                                    setTimeout(function () {
-                                        deferred.reject("Script timeout end");
-                                    }, 1);
+
+                                    }, function (error) {
+                                        setTimeout(function () {
+                                            deferred.reject("Script timeout end");
+                                        }, 1);
                                     }
                                 );
                             } catch (err) {

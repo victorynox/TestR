@@ -208,6 +208,17 @@ define(
                 this.table.startup();
                 this.filterControlPanel.startup();
                 this.filtersTP.startup();
+            },
+
+            destroy: function () {
+                var self = this;
+                self.filtersTP.destroyRecursive();
+                self.saveGridSettingBtn.destroyRecursive();
+                self.loadGridSettingBtn.destroyRecursive();
+                self.saveGridSettingDialog.destroyRecursive();
+                self.loadGridSettingDialog.destroyRecursive();
+
+                // /domConstruct.destroy("someId");
             }
 
         });
