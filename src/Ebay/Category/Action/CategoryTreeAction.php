@@ -24,6 +24,6 @@ class CategoryTreeAction
 
     public function __invoke(Request $request, Response $response, callable $next)
     {
-        return new HtmlResponse($this->template->render('app::category-tree-page'));
+        return new HtmlResponse($this->template->render('app::ebay-category'));
     }
 }

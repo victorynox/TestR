@@ -31,6 +31,7 @@
         "zendframework/zend-inputfilter": "^2.6",
         "zendframework/zend-hydrator": "^1.1 || ^2.1",
         "avz-cmf/bigdata": "^4.1",
+        "xiag/rql-parser": "^1.0",
         "zendframework/zend-http": "^2.5",
         "zendframework/zend-db": "^2.7",
         "avz-cmf/zaboy-rest": "^3.6",
@@ -46,14 +47,14 @@
             "victorynox\\Auth\\": "src/Auth/",
             "victorynox\\DataStore\\": "src/DataStore/",
             "victorynox\\Ebay\\": "src/Ebay/",
-            "victorynox\\RReports\\": "src/RReports/",
+            "victorynox\\AnalyticReports\\": "src/AnalyticReports/",
             "victorynox\\View\\": "src/View/",
             "victorynox\\Util\\": "src/Util/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "AppTest\\": "test/AppTest/"
+            "victorynox\\AppTest\\": "test/AppTest/"
         }
     },
     "scripts": {

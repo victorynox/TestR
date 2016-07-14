@@ -6,6 +6,7 @@
  * Date: 31.03.16
  * Time: 13:58
  */
+namespace victorynox\AppTest\DataStore;
 
 use zaboy\rest\Middleware\ResourceResolver;
 use Zend\Diactoros\Response;

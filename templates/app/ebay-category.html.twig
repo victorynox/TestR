@@ -1,0 +1,47 @@
+{% extends '@layout/layout.html.twig' %}
+
+{% block stylesheets %}
+    <link href="/scripts/dojo/dojo/resources/dojo.css" rel="stylesheet">
+    <link href="/scripts/dojo/dijit/themes/claro/claro.css" rel="stylesheet">
+    <link rel="stylesheet" href="/scripts/dojo/dojox/highlight/resources/highlight.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dojox/highlight/resources/pygments/colorful.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dgrid/css/dgrid.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dgrid/css/skins/claro.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dgrid/css/skins/claro.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dojox/grid/enhanced/resources/claro/EnhancedGrid.css"/>
+    <link rel="stylesheet" href="/scripts/dojo/dojox/grid/enhanced/resources/EnhancedGrid_rtl.css"/>
+{% endblock stylesheets %}
+
+{% block javascripts %}
+
+
+{% endblock javascripts %}
+
+
+{% block informMessages %}
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
+
+        <div id="alertBlock" class="alert alert-success alert-dismissable">
+            <button type="button" class="close" id="closeAlert">&times;</button>
+            <div id="output2"></div>
+        </div>
+
+    </div>
+{% endblock informMessages %}
+
+
+ {% block mainSideMenu %}
+
+ {% endblock mainSideMenu %}
+
+{% block centralBlockName %}  {% endblock centralBlockName %}
+
+{% block contentHeader %}
+
+{% endblock contentHeader %}
+
+{% block contentBodyName %} Ebay категории {% endblock contentBodyName %}
+
+{% block contentBody %}
+    <div id="tree"></div>
+{% endblock contentBody %}

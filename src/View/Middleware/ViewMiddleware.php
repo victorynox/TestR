@@ -23,6 +23,7 @@ class ViewMiddleware
         //$query = $request->getAttribute('View');
 
         $query = $request->getParsedBody();
+        
         if (isset($query['view'])) {
             $view = $query['view'];
             if (isset($view['render'])) {

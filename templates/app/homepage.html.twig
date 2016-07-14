@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/scripts/dojo/dgrid/css/skins/claro.css"/>
     <link rel="stylesheet" href="/scripts/dojo/dojox/grid/enhanced/resources/claro/EnhancedGrid.css"/>
     <link rel="stylesheet" href="/scripts/dojo/dojox/grid/enhanced/resources/EnhancedGrid_rtl.css"/>
+    <link rel="stylesheet" href="/scripts/Smart/FilterEditor/resources/css/FilterEditor.css"/>
 {% endblock stylesheets %}
 
 {% block javascripts %}
@@ -65,34 +66,64 @@
             var scriptsList = scriptListConfig;
 
             var myStore = new declare([Rest, RequestMemory, Trackable])({
-                target: 'rest/rdata',
-
+                'target': 'rest/cdsManager',
+                'headers': {
+                    'Accept': 'application/json',
+                },
                 query: function (options) {
                     var headers = lang.mixin({Accept: this.accepts}, this.headers);
                     var store = this;
                     var query = '';
-                    array.forEach(options, function (item) {
+                    if (options.params.length > 1) {
+                        query = 'and(';
+                    }
+                    array.forEach(options.params, function (item) {
                         var begReg = new RegExp("^beg([a-zA-Z0-9\_]+)");
                         var endReg = new RegExp("^end([a-zA-Z0-9\_]+)");
+                        var likeReg = new RegExp("^like([a-zA-Z0-9\_]+)");
+
                         if (begReg.exec(item.name)) {
                             var name = begReg.exec(item.name);
-                            query += name[1] + ">=" + item.value + "&";
+                            query += "lte(" + name[1] + "," + item.value + "),";
                         } else if (endReg.exec(item.name)) {
                             var name = endReg.exec(item.name);
-                            query += name[1] + "<=" + item.value + "&";
+                            query += "gte(" + name[1] + "," + item.value + "),";
+                        } else if (likeReg.exec(item.name)) {
+                            var name = likeReg.exec(item.name);
+                            var valuesArr = item.value.split(",");
+                            if (valuesArr.length > 1) {
+                                query += "or(";
+                                array.forEach(valuesArr, function (value) {
+                                    value = value.trim();
+                                    query += "like(" + name[1] + ",*" + value + "*),";
+                                });
+                                query = query.replace(/\,$/, "");
+                                query += "),";
+                            } else {
+                                query += "like(" + name[1] + ",*" + item.value.trim() + "*),";
+                            }
                         } else {
-                            query += item.name + "=" + item.value + "&";
+                            query += "eq(" + item.name + "," + item.value + "),";
                         }
                     });
-                    query = query.replace(/\&$/, "");
+                    query = query.replace(/\,$/, "");
+                    if (options.params.length > 1) {
+                        query += ')';
+                    }
+
                     return request(this.target, {
                         headers: headers,
-                        query: query,
+                        method: "POST",
+                        data: {
+                            scriptName: options.scriptName,
+                            query: query
+                        },
                     }).then(function (response) {
                         return store._restore(store.parse(response), true);
                     });
                 }
             });
+
             var rDataWidget = new RDataWidget({
 
                 store: myStore,
@@ -109,7 +140,7 @@
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
 
         <div id="alertBlock" class="alert alert-success alert-dismissable">
-            <button type="button" class="close" id="closeAlert" >&times;</button>
+            <button type="button" class="close" id="closeAlert">&times;</button>
             <div id="output2"></div>
         </div>
 

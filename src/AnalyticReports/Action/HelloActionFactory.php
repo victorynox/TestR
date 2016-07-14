@@ -6,7 +6,7 @@
  * Time: 12:07
  */
 
-namespace victorynox\RReports\Action;
+namespace victorynox\AnalyticReports\Action;
 
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
