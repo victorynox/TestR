@@ -59,19 +59,6 @@ define(['dojo/dom',
                         'Accept': 'application/json',
                     }
                 }));
-                /*self.getCategoryStore = new (declare([Trackable, Rest]))({
-                    'target': '/rest/getCategory',
-                    'headers': {
-                        'Accept': 'application/json',
-                    }
-                });
-                self.getBrandStore = new (declare([Trackable, Rest]))({
-                    'target': '/rest/getBrand',
-                    'idProperty': 'value',
-                    'headers': {
-                        'Accept': 'application/json',
-                    }
-                })*/
 
             },
             getForm: function (name) {
@@ -167,13 +154,23 @@ define(['dojo/dom',
                         required: false
                     });
 
+                    var brandArr = [
+
+                    ];
+
+                    self.getBrandStore.query().forEach(function (item) {
+                        if((item.selected !== undefined || item.selected !== null ) && item.selected === true){
+                            brandArr.push({label: item.name, value: item.value, selected: true});
+                        }else{
+                            brandArr.push({label: item.name, value: item.value});
+                        }
+                    });
+
                     var brand = new Select({
                         label: "Бренд",
                         name: 'brand',
-                        
-                        store: self.getBrandStore,
+                        options: brandArr,
                         style: 'width: 200px;',
-                        labelAttr: 'name',
                         maxHeight: -1,
                     });
 
@@ -212,29 +209,8 @@ define(['dojo/dom',
                         }
                     );
 
-                    /*var ebayCategory = new Select({
-                        label: "Категория",
-                        name: 'likeebaycategory_id',
-                        store: self.getCategoryStore,
-                        style: 'width: 200px;',
-                        labelAttr: 'name',
-                        maxHeight: -1,
-                    });*/
-
-                    /*var brand = new Select({
-                        label: "Бренд",
-                        name: 'brand',
-                        store: self.getBrandStore,
-                        style: 'width: 200px;',
-                        labelAttr: 'name',
-                        maxHeight: -1,
-                    });*/
-                    var categoryArr = [
-
-                    ];
-                    var brandArr = [
-
-                    ];
+                    var categoryArr = [];
+                    var brandArr = [];
 
                     self.getCategoryStore.query().forEach(function (item) {
                         if((item.selected !== undefined || item.selected !== null ) && item.selected === true){
@@ -271,15 +247,7 @@ define(['dojo/dom',
 
                         maxHeight: -1,
                     });
-
-                    /*self.getCategoryStore.fetch().then(function(items){
-                        ebayCategory.set('options', items);
-                    });
-                    self.getBrandStore.fetch().then(function(items){
-                       brand.set('options', items);
-                    });*/
-
-
+                    
                     var beginAddDate = new DateTextBox({
                         label: "Дата начала выборки",
                         name: "begadd_date",
