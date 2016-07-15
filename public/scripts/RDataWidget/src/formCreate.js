@@ -79,6 +79,8 @@ define(['dojo/dom',
                     case "plotCreatedTimeWithTZ":
                     case "tableCategoryPrice":
                     case "tableCategory":
+                    case "soldProduct":
+                    case "sold_view":
                     case "tableProduct":
                     {
                         return this.__plotPublishPrice();

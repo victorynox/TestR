@@ -475,7 +475,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'ProductID', "count_sold"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "sold_view": {
@@ -490,7 +490,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'count_sold', "count_view", 'prob']
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "tablePublishTime": {
@@ -510,7 +510,7 @@ define([], function () {
                     "fieldNames": ['id',"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
                 },
                 "paramsName": []
-            },
+            }
 
         },
         "names": [
