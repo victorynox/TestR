@@ -166,15 +166,7 @@ define(['dojo/dom',
                         }
                     });
 
-                    var brand = new Select({
-                        label: "Бренд",
-                        name: 'brand',
-                        options: brandArr,
-                        style: 'width: 200px;',
-                        maxHeight: -1,
-                    });
-
-                    array.forEach([title, beginAddDate, endAddDate, brand], function (child) {
+                    array.forEach([title, beginAddDate, endAddDate], function (child) {
                         formContainer.addChild(child);
                     });
 
