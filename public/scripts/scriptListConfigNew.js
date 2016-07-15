@@ -355,12 +355,14 @@ define([], function () {
                     "type": "table",
                     "fieldLabel": {
                         "id": "id строки",
+                        "vehicle": "Марка мотоцикла",
                         "vehicle_id": "id марки мотоцикла",
                         "count_sold": "Количество проданных товаров которые подходят данной марке",
                         "count_publish": "Количество выставленных товаров которые подходят данной марке"
                     },
                     "fieldNames": [
                         "id",
+                        "vehicle",
                         "vehicle_id",
                         "count_sold",
                         "count_publish"

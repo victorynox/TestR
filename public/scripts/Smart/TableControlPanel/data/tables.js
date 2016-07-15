@@ -2183,6 +2183,7 @@ define([], function () {
                             {"label": "id", "field": "id"},
 
                             {"label": "id марки мотоцикла", "field": "vehicle_id"},
+                            {"label": "Mаркa мотоцикла", "field": "vehicle"},
 
                             {"label": "Количество проданных товаров которые подходят данной марке", "field": "count_sold"},
                             {"label": "Количество выставленных товаров которые подходят данной марке", "field": "count_publish"},
@@ -2241,6 +2242,23 @@ define([], function () {
                             "value": {
                                 "type": "string",
                                 "name": "vehicle_id",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        }, {
+                            "label": "Mаркa мотоцикла",
+                            "value": {
+                                "type": "string",
+                                "name": "vehicle",
                                 "field": {
                                     'type': "TextBox"
                                 }
