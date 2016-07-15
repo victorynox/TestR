@@ -2859,5 +2859,428 @@ define([], function () {
 
             }
         },
+
+        "soldProduct" : {
+            "title": "Таблица количества продаж каждого из товаров",
+            "name": "soldProduct",
+            "filteredGridOption": {
+                "store": {
+
+                },
+                "grid": {
+                    "options": {
+                        "columns": [
+                            {"label": "id", "field": "id"},
+                            {"label": "ProductID", "field": "ProductID"},
+                            {"label": "Количество продаж", "field": "count_sold"}
+                        ],
+                        "selectionMode": "single",
+                        "pagingLinks": false,
+                        "pagingTextBox": true,
+                        "firstLastArrows": true,
+                        "rowsPerPage": 15,
+                        "pageSizeOptions": [10, 15, 25]
+                    },
+                    "declare": [
+                        "Grid",
+                        "Keyboard",
+                        "Selection",
+                        "Pagination",
+                        "ColumnHider",
+                        "ColumnResizer",
+                        "GridRqlFilter"
+                        //"_StoreMixin"
+                    ]
+                }
+
+            },
+            "filterControlPanelOption": {
+                "store": {
+                    "options": {
+                        'headers': {
+                            'Accept': 'application/json'
+                        },
+                        "target": "/rest/filters_list"
+                        //"data": null,
+                    },
+
+                    "declare": [
+                        "Rest",
+                        "RequestMemory",
+                        "Trackable"
+                    ]
+                },
+
+                "options": {
+                    "columns": [
+                        {"label": "id", "field": "id"},
+                        {
+                            "label": "Название",
+                            "field": "name",
+                            "editor": "text",
+                            "editOn": "dblclick",
+                            "autoSave": true
+                        }
+                    ],
+                    "filteredStoreDataOption": [
+                        {
+                            "label": "ProductID",
+                            "value": {
+                                "type": "string",
+                                "name": "ProductID",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        },
+                        {
+                            "label": "Количество продаж",
+                            "value": {
+                                "type": "string",
+                                "name": "count_sold",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        }
+                    ]
+                }
+
+            }
+        },
+
+        "sold_view" : {
+            "title": "Таблица соотношений покупок и просмотров лотов",
+            "name": "sold_view",
+            "filteredGridOption": {
+                "store": {
+
+                },
+                "grid": {
+                    "options": {
+                        "columns": [
+                            {"label": "id", "field": "id"},
+                            {"label": "Количество продаж", "field": "count_sold"},
+                            {"label": "Количество просмотров лота", "field": "count_view"},
+                            {"label": "Вероятность продажи товара на который зашли", "field": "prob"}
+                        ],
+                        "selectionMode": "single",
+                        "pagingLinks": false,
+                        "pagingTextBox": true,
+                        "firstLastArrows": true,
+                        "rowsPerPage": 15,
+                        "pageSizeOptions": [10, 15, 25]
+                    },
+                    "declare": [
+                        "Grid",
+                        "Keyboard",
+                        "Selection",
+                        "Pagination",
+                        "ColumnHider",
+                        "ColumnResizer",
+                        "GridRqlFilter"
+                        //"_StoreMixin"
+                    ]
+                }
+
+            },
+            "filterControlPanelOption": {
+                "store": {
+                    "options": {
+                        'headers': {
+                            'Accept': 'application/json'
+                        },
+                        "target": "/rest/filters_list"
+                        //"data": null,
+                    },
+
+                    "declare": [
+                        "Rest",
+                        "RequestMemory",
+                        "Trackable"
+                    ]
+                },
+
+                "options": {
+                    "columns": [
+                        {"label": "id", "field": "id"},
+                        {
+                            "label": "Название",
+                            "field": "name",
+                            "editor": "text",
+                            "editOn": "dblclick",
+                            "autoSave": true
+                        }
+                    ],
+                    "filteredStoreDataOption": [
+                        {
+                            "label": "Количество продаж",
+                            "value": {
+                                "type": "string",
+                                "name": "count_sold",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        },
+                        {
+                            "label": "Количество просмотров лота",
+                            "value": {
+                                "type": "string",
+                                "name": "count_view",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        },
+                        {
+                            "label": "Вероятность продажи товара на который зашли",
+                            "value": {
+                                "type": "string",
+                                "name": "prob",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        }
+                    ]
+                }
+
+            }
+        },
+
+        "tablePublishTime" : {
+            "title": "Таблица количества выставлений на каждый час недели",
+            "name": "tablePublishTime",
+            "filteredGridOption": {
+                "store": {
+
+                },
+                "grid": {
+                    "options": {
+                        "columns": [
+                            {"label": "id", "field": "id"},
+                            {"label": "Monday", "field": "Monday"},
+                            {"label": "Tuesday", "field": "Tuesday"},
+                            {"label": "Wednesday", "field": "Wednesday"},
+                            {"label": "Thursday", "field": "Thursday"},
+                            {"label": "Friday", "field": "Friday"},
+                            {"label": "Saturday", "field": "Saturday"},
+                            {"label": "Sunday", "field": "Sunday"}
+                        ],
+                        "selectionMode": "single",
+                        "pagingLinks": false,
+                        "pagingTextBox": true,
+                        "firstLastArrows": true,
+                        "rowsPerPage": 15,
+                        "pageSizeOptions": [10, 15, 25]
+                    },
+                    "declare": [
+                        "Grid",
+                        "Keyboard",
+                        "Selection",
+                        "Pagination",
+                        "ColumnHider",
+                        "ColumnResizer",
+                        "GridRqlFilter"
+                        //"_StoreMixin"
+                    ]
+                }
+
+            },
+            "filterControlPanelOption": {
+                "store": {
+                    "options": {
+                        'headers': {
+                            'Accept': 'application/json'
+                        },
+                        "target": "/rest/filters_list"
+                        //"data": null,
+                    },
+
+                    "declare": [
+                        "Rest",
+                        "RequestMemory",
+                        "Trackable"
+                    ]
+                },
+
+                "options": {
+                    "columns": [
+                        {"label": "id", "field": "id"},
+                        {
+                            "label": "Название",
+                            "field": "name",
+                            "editor": "text",
+                            "editOn": "dblclick",
+                            "autoSave": true
+                        }
+                    ],
+                    "filteredStoreDataOption": [
+                        {
+                            "label": "Monday",
+                            "value": {
+                                "type": "string",
+                                "name": "Monday",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        },{
+                            "label": "Tuesday",
+                            "value": {
+                                "type": "string",
+                                "name": "Tuesday",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        },{
+                            "label": "Wednesday",
+                            "value": {
+                                "type": "string",
+                                "name": "Wednesday",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        },{
+                            "label": "Thursday",
+                            "value": {
+                                "type": "string",
+                                "name": "Thursday",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        },{
+                            "label": "Friday",
+                            "value": {
+                                "type": "string",
+                                "name": "Friday",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        },{
+                            "label": "Saturday",
+                            "value": {
+                                "type": "string",
+                                "name": "Saturday",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        },{
+                            "label": "Sunday",
+                            "value": {
+                                "type": "string",
+                                "name": "Sunday",
+                                "field": {
+                                    'type': "TextBox"
+                                }
+                            },
+                            "filter": [
+                                {"id": 0, "label": "=", "value": "eq"},
+                                {"id": 0, "label": ">", "value": "gt"},
+                                {"id": 0, "label": "<", "value": "lt"},
+                                {"id": 0, "label": ">=", "value": "gte"},
+                                {"id": 0, "label": "<=", "value": "lte"},
+                                {"id": 0, "label": "!=", "value": "ne"}
+                            ]
+                        }
+                    ]
+                }
+
+            }
+        },
     }
 });

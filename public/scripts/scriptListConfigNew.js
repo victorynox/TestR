@@ -462,6 +462,54 @@ define([], function () {
                 "paramsName": ["liketitle", "begadd_date", "endadd_date"]
             },
 
+            "soldProduct": {
+                "reportName": "Таблица количества продаж каждого из товаров",
+                "return": {
+                    "type": "table",
+                    "fieldLabel": {
+                        "id": "id",
+                        "ProductID": "ProductID",
+                        "count_sold": "Количество продаж"
+                    },
+                    "fieldNames": ['id', 'ProductID', "count_sold"]
+                },
+                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+            },
+
+            "sold_view": {
+                "reportName": "Таблица соотношений покупок и просмотров лотов",
+                "return": {
+                    "type": "table",
+                    "fieldLabel": {
+                        "id": "id",
+                        "count_sold": "Количество продаж",
+                        "count_view": "Количество просмотров лота",
+                        "prob": "Вероятность продажи товара на который зашли"
+                    },
+                    "fieldNames": ['id', 'count_sold', "count_view", 'prob']
+                },
+                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+            },
+
+            "tablePublishTime": {
+                "reportName": "Таблица количества выставлений на каждый час недели",
+                "return": {
+                    "type": "table",
+                    "fieldLabel": {
+                        "id": "id",
+                        "Monday": "Monday",
+                        "Tuesday": "Tuesday",
+                        "Wednesday": "Wednesday",
+                        "Thursday": "Thursday",
+                        "Friday": "Friday",
+                        "Saturday": "Saturday",
+                        "Sunday": "Sunday"
+                    },
+                    "fieldNames": ['id',"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+                },
+                "paramsName": []
+            },
+
         },
         "names": [
             "plotPublishPrice",
@@ -485,7 +533,10 @@ define([], function () {
             "bestProducts",
             "bestCompetitor",
             "NN",
-            "NNSold"
+            "NNSold",
+            "soldProduct",
+            "sold_view",
+            "tablePublishTime"
         ]
     };
 });
