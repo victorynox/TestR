@@ -247,7 +247,7 @@ define(['dojo/dom',
 
                         maxHeight: -1,
                     });
-                    
+
                     var beginAddDate = new DateTextBox({
                         label: "Дата начала выборки",
                         name: "begadd_date",
