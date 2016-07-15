@@ -41,7 +41,7 @@ class GetBrandAspect extends AspectAbstract
     protected function postQuery(&$result, Query $query)
     {
         foreach ($result as &$data){
-            if($data['id'] == 'All Brand'){
+            if($data['name'] === 'All Brands'){
                 $data['selected'] = true;
             }
         }
