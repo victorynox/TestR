@@ -24,7 +24,9 @@ class CachingDataStore extends Memory
 
     protected $cdsIdentifierString = 'cds_id';
 
+    //30
     protected $fieldType = [
+        //9
         'int' => [
             'id',
             'category_price',
@@ -33,7 +35,10 @@ class CachingDataStore extends Memory
             'count_publish',
             'count_model_sold',
             'count_model_publish',
+            'count_view',
+            'Hour',
         ],
+        //14
         'float' => [
             'x',
             'y',
@@ -44,11 +49,20 @@ class CachingDataStore extends Memory
             'prof_mounth',
             'new_prof_mounth',
             'delta_prof_mounth',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+            'Sunday',
         ],
+        //7
         'string' => [
             'title',
             'seller_name',
             'vehicle',
+            'vehicles',
             'ProductID',
             'vehicle_id',
             'ebaycategory_id',

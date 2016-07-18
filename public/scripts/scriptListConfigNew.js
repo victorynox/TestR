@@ -139,7 +139,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "plotCreatedDay": {
@@ -157,7 +157,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "plotPublishTime": {
@@ -193,7 +193,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "plotProbTime": {
@@ -211,7 +211,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "plotCreatedTime": {
@@ -229,7 +229,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "plotCreatedTimeWithTZ": {
@@ -247,7 +247,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "tableCategoryPrice": {
