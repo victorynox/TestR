@@ -1692,9 +1692,9 @@ define([], function () {
 
             }
         },
-        "tableCategory" : {
+        "tableCategoryID" : {
             "title": "Таблица частот по категориям товаров",
-            "name": "tableCategoryebaycategory_id",
+            "name": "tableCategoryID",
             "filteredGridOption": {
                 "store": {
 
@@ -2878,9 +2878,9 @@ define([], function () {
             }
         },
 
-        "soldProduct" : {
+        "soldProducts" : {
             "title": "Таблица количества продаж каждого из товаров",
-            "name": "soldProduct",
+            "name": "soldProducts",
             "filteredGridOption": {
                 "store": {
 
@@ -2983,9 +2983,9 @@ define([], function () {
             }
         },
 
-        "sold_view" : {
+        "soldView" : {
             "title": "Таблица соотношений покупок и просмотров лотов",
-            "name": "sold_view",
+            "name": "soldView",
             "filteredGridOption": {
                 "store": {
 
@@ -2994,6 +2994,7 @@ define([], function () {
                     "options": {
                         "columns": [
                             {"label": "id", "field": "id"},
+                            {"label": "ItemID", "field": "ItemID"},
                             {"label": "Количество продаж", "field": "count_sold"},
                             {"label": "Количество просмотров лота", "field": "count_view"},
                             {"label": "Вероятность продажи товара на который зашли", "field": "prob"}

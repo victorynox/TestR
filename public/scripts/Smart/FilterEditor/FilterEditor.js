@@ -349,8 +349,7 @@ define([
                             {id: 0, label: "<=", value: "lte"},
                             {id: 0, label: "!=", value: "ne"},
                             {id: 0, label: "in", value: "in"},
-                            {id: 0, label: "match", value: "match"},
-                            {id: 0, label: "contains", value: "contains"}
+                            {id: 0, label: "match", value: "match"}
                         ],
                         required: false
                     });

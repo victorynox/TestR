@@ -175,7 +175,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["brand", "ebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
             "plotSoldTime": {
@@ -281,7 +281,7 @@ define([], function () {
                 "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
-            "tableCategory": {
+            "tableCategoryID": {
                 "reportName": "Таблица частот по категориям товаров",
                 "return": {
                     "type": "table",
@@ -464,7 +464,7 @@ define([], function () {
                 "paramsName": ["liketitle", "begadd_date", "endadd_date"]
             },
 
-            "soldProduct": {
+            "soldProducts": {
                 "reportName": "Таблица количества продаж каждого из товаров",
                 "return": {
                     "type": "table",
@@ -478,19 +478,20 @@ define([], function () {
                 "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
             },
 
-            "sold_view": {
+            "soldView": {
                 "reportName": "Таблица соотношений покупок и просмотров лотов",
                 "return": {
                     "type": "table",
                     "fieldLabel": {
                         "id": "id",
+                        "ItemID": "ItemID",
                         "count_sold": "Количество продаж",
                         "count_view": "Количество просмотров лота",
                         "prob": "Вероятность продажи товара на который зашли"
                     },
-                    "fieldNames": ['id', 'count_sold', "count_view", 'prob']
+                    "fieldNames": ['id','ItemID', 'count_sold', "count_view", 'prob']
                 },
-                "paramsName": ["brand", "likeebaycategory_id", "begadd_date", "endadd_date"]
+                "paramsName": ["begadd_date", "endadd_date"]
             },
 
             "tablePublishTime": {
@@ -528,7 +529,7 @@ define([], function () {
             "plotCreatedTime",
             "plotCreatedTimeWithTZ",
             "tableCategoryPrice",
-            "tableCategory",
+            "tableCategoryID",
             "tableProduct",
             "tableModel",
             "tableProductModel",
@@ -536,9 +537,9 @@ define([], function () {
             "bestCompetitor",
             "NN",
             "NNSold",
-            "soldProduct",
-            "sold_view",
-            "tablePublishTime"
+            "tablePublishTime",
+            "soldProducts",
+            "soldView"
         ]
     };
 });

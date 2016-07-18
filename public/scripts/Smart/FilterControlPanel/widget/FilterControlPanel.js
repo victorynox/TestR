@@ -168,7 +168,10 @@ define(
                             if (event !== null &&
                                 event !== undefined &&
                                 event.filter !== null &&
-                                event.filter !== undefined) {
+                                event.filter !== undefined &&
+                                event.filter.rql !== null &&
+                                event.filter.rql !== undefined
+                            ) {
 
                                 //TODO add check filter name in 'event' and 'selectedRow'
                                 var selectedRow = self.getSelectedRow();
@@ -177,6 +180,8 @@ define(
                                     name: selectedRow.name,
                                     filter: event.filter.rql
                                 }, {overwrite: true})
+                            }else{
+                                console.log("not set fild in event");
                             }
                         });
                     }),

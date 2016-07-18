@@ -60,6 +60,7 @@ class CachingDataStore extends Memory
         //7
         'string' => [
             'title',
+            'ItemID',
             'seller_name',
             'vehicle',
             'vehicles',

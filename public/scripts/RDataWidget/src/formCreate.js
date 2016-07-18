@@ -78,9 +78,8 @@ define(['dojo/dom',
                     case "plotCreatedTime":
                     case "plotCreatedTimeWithTZ":
                     case "tableCategoryPrice":
-                    case "tableCategory":
-                    case "soldProduct":
-                    case "sold_view":
+                    case "tableCategoryID":
+                    case "soldProducts":
                     case "tableProduct":
                     {
                         return this.__plotPublishPrice();
@@ -89,6 +88,10 @@ define(['dojo/dom',
                     case "NN":
                     {
                         return this.__NNForm();
+                    }
+                    case "soldView":
+                    {
+                        return this.__soldViewForm();
                     }
                     default:
                     {
@@ -114,6 +117,53 @@ define(['dojo/dom',
 
                     return deferred.promise;
                 };
+                return asyForm();
+            },
+
+            __soldViewForm: function () {
+                var self = this;
+
+                var asyForm = function () {
+                    var deferred = new Deferred();
+                    var list = [];
+
+
+                    var form = new Form({
+                        id: "scriptConfigDialogForm",
+                        doLayout: true
+                    });
+
+                    var formContainer = new TableContainer(
+                        {
+                            cols: 1,
+                            customClass: "labelsAndFields",
+                            "labelWidth": "200"
+                        }
+                    );
+
+                    var beginAddDate = new DateTextBox({
+                        label: "Дата начала выборки",
+                        name: "begadd_date",
+                        required: false
+                    });
+
+                    var endAddDate = new DateTextBox({
+                        label: "Дата конца выборки",
+                        name: "endadd_date",
+                        required: false
+                    });
+
+                    array.forEach([beginAddDate, endAddDate], function (child) {
+                        formContainer.addChild(child);
+                    });
+
+                    formContainer.placeAt(form);
+
+                    deferred.resolve(form);
+
+                    return deferred.promise;
+                };
+
                 return asyForm();
             },
 
