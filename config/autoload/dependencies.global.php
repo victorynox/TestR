@@ -25,11 +25,11 @@ return [
             'zaboy\rest\DataStore\Aspect\Factory\AspectAbstractFactory',
             'zaboy\rest\Middleware\Factory\DataStoreAbstractFactory',
             'zaboy\rest\DataStore\Factory\HttpClientAbstractFactory',
-            'zaboy\rest\DataStore\Factory\DbTableAbstractFactory',
+            'victorynox\DataStore\Factory\DbTableMultiInsertAbstractFactory',
             'zaboy\rest\DataStore\Factory\CsvAbstractFactory',
             'zaboy\rest\DataStore\Factory\MemoryAbstractFactory',
             'zaboy\rest\DataStore\Factory\CacheableAbstractFactory',
-            'zaboy\rest\TableGateway\Factory\TableGatewayAbstractFactory',
+            'victorynox\DataStore\Factory\TableGatewayMultiInsertAbstractFactory',
             'Zend\Db\Adapter\AdapterAbstractServiceFactory',
             'victorynox\AnalyticReports\Middleware\CDSManagerAbstractFactory',
         ]
