@@ -96,12 +96,13 @@ class CDSManagerMiddleware extends DataStoreAbstract
                 'query' => $queryString
             ]);
 
-            foreach ($data as $item) {
+            foreach ($data as &$item) {
                 $item['cds_id'] = $cdsId;
                 $item['data_id'] = $item['id'];
                 unset($item['id']);
-                $this->cds->create($item);
             }
+
+            $this->cds->create($data);
         }
 
         $request = $request->withAttribute('CDS-ID', $cdsId);

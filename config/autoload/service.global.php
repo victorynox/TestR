@@ -8,8 +8,11 @@
 
 return [
     'dataSource' => [
+        #'plotPublishPrice' => ['url' => 'http://localhost:11999/',],
         'plotPublishPrice' => ['url' => 'http://192.168.122.22:11999/'],
+        #'getCategory' => ['url' => 'http://localhost:11999/',],
         'getCategory' => ['url' => 'http://192.168.122.22:11999/'],
+        #'getBrand' => ['url' => 'http://localhost:11999/',],
         'getBrand' => ['url' => 'http://192.168.122.22:11999/'],
     ],
 
@@ -67,23 +70,18 @@ return [
         'rHttpClient' => [
             'class' => 'zaboy\rest\DataStore\HttpClient',
             'url' => 'http://192.168.122.22:11999/',
+            #'url' => 'http://localhost:11999/',
             'options' => ['timeout' => 30]
         ],
-        //StaticDataStore
-        'rServer' => [
-            'class' => 'zaboy\rest\DataStore\HttpClient',
-            'url' => 'http://192.168.122.22:11999/',
-        ],
-
 
         'getCategory' => [
             'class' => 'victorynox\DataStore\GetCategoryAspect',
-            'dataStore' => 'rServer',
+            'dataStore' => 'rHttpClient',
         ],
 
         'getBrand' => [
             'class' => 'victorynox\DataStore\GetBrandAspect',
-            'dataStore' => 'rServer',
+            'dataStore' => 'rHttpClient',
         ],
 
         //*********************************
