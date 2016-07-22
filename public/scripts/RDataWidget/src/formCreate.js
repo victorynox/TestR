@@ -11,11 +11,14 @@ define(['dojo/dom',
         "dijit/form/TextBox",
         "dijit/form/Button",
         "dijit/form/Select",
+        "dijit/Tree",
         "dojox/layout/TableContainer",
         "dojo/Deferred",
+        "dojo/DeferredList",
         "dojo/dom-construct",
         'dstore/Trackable',
         'dstore/Rest',
+        'dstore/Memory',
         'dstore/legacy/DstoreAdapter',
         "Rscript/Smart/extensions/Store/StoreRqlFilter",
         "dojo/domReady!"],
@@ -32,35 +35,60 @@ define(['dojo/dom',
               TextBox,
               Button,
               Select,
+              Tree,
               TableContainer,
               Deferred,
+              DeferredList,
               domConstruct,
               Trackable,
               Rest,
+              Memory,
               DstoreAdapter,
               StoreRqlFilter) {
         return declare(null, {
             getCategoryStore: null,
             getBrandStore: null,
+
+
+             loadArrayByStore: function (args) {
+                var deferred = new Deferred();
+
+                if ((args.store !== null && args.store !== undefined) &&
+                    (args.callback !== null && args.callback !== undefined ) &&
+                    (args.array !== null && args.array !== undefined)) {
+
+                    args.store.fetch().then(function(objects){
+                        args.callback(objects);
+                        deferred.resolve(args.array);
+                    })
+
+                } else {
+                    throw "not set params";
+                }
+
+                return deferred.promise;
+            },
+
             constructor: function () {
                 var self = this;
 
-                self.getCategoryStore = new DstoreAdapter( new (declare([Trackable, Rest]))({
+                self.getCategoryStore =new (declare([Trackable, Rest]))({
                     'target': '/rest/getCategory',
                     'headers': {
                         'Accept': 'application/json',
                     }
-                }));
+                });
 
-                self.getBrandStore = new DstoreAdapter(new (declare([Trackable, Rest]))({
+                self.getBrandStore = new (declare([Trackable, Rest]))({
                     'target': '/rest/getBrand',
                     'idProperty': 'value',
                     'headers': {
                         'Accept': 'application/json',
                     }
-                }));
+                });
 
             },
+            
             getForm: function (name) {
                 domConstruct.destroy("scriptConfigDialogForm");
                 switch (name) {
@@ -80,21 +108,17 @@ define(['dojo/dom',
                     case "tableCategoryPrice":
                     case "tableCategoryID":
                     case "soldProducts":
-                    case "tableProduct":
-                    {
+                    case "tableProduct": {
                         return this.__plotPublishPrice();
                     }
                     case "NNSold":
-                    case "NN":
-                    {
+                    case "NN": {
                         return this.__NNForm();
                     }
-                    case "soldView":
-                    {
+                    case "soldView": {
                         return this.__soldViewForm();
                     }
-                    default:
-                    {
+                    default: {
                         return this.__notForm();
                     }
                 }
@@ -206,18 +230,6 @@ define(['dojo/dom',
                         required: false
                     });
 
-                    var brandArr = [
-
-                    ];
-
-                    self.getBrandStore.query().forEach(function (item) {
-                        if((item.selected !== undefined || item.selected !== null ) && item.selected === true){
-                            brandArr.push({label: item.name, value: item.value, selected: true});
-                        }else{
-                            brandArr.push({label: item.name, value: item.value});
-                        }
-                    });
-
                     array.forEach([title, beginAddDate, endAddDate], function (child) {
                         formContainer.addChild(child);
                     });
@@ -256,61 +268,101 @@ define(['dojo/dom',
                     var categoryArr = [];
                     var brandArr = [];
 
-                    self.getCategoryStore.query().forEach(function (item) {
-                        if((item.selected !== undefined || item.selected !== null ) && item.selected === true){
-                            categoryArr.push({label: item.name, value: item.id, selected: true});
-                        }else{
-                            categoryArr.push({label: item.name, value: item.id});
+                    var categoryProm = self.loadArrayByStore({
+                        store: self.getCategoryStore,
+                        array: categoryArr,
+                        callback: function (objects) {
+                            objects.forEach(function (item) {
+                                categoryArr.push({label: item.name, id: item.id, parentID: item.parentID});
+                            });
                         }
                     });
 
-                    self.getBrandStore.query().forEach(function (item) {
-                        if((item.selected !== undefined || item.selected !== null ) && item.selected === true){
-                            brandArr.push({label: item.name, value: item.value, selected: true});
-                        }else{
-                            brandArr.push({label: item.name, value: item.value});
+                    var brendProm = self.loadArrayByStore({
+                        store: self.getBrandStore,
+                        array: brandArr,
+                        callback: function (objects) {
+                            objects.forEach(function (item) {
+                                if ((item.selected !== undefined || item.selected !== null ) && item.selected === true) {
+                                    brandArr.push({label: item.name, value: item.value, selected: true});
+                                } else {
+                                    brandArr.push({label: item.name, value: item.value});
+                                }
+                            });
                         }
                     });
 
+                    var defList = new DeferredList([categoryProm, brendProm]);
 
+                    defList.then(function(results){
+                        var brand = new Select({
+                            label: "Бренд",
+                            name: 'brand',
+                            options: brandArr,
+                            style: 'width: 200px;',
 
-                    var ebayCategory = new Select({
-                        label: "Категория",
-                        name: 'likeebaycategory_id',
-                        options: categoryArr,
-                        style: 'width: 200px;',
+                            maxHeight: -1,
+                        });
 
-                        maxHeight: -1,
+                        var beginAddDate = new DateTextBox({
+                            label: "Дата начала выборки",
+                            name: "begadd_date",
+                            required: false
+                        });
+
+                        var endAddDate = new DateTextBox({
+                            label: "Дата конца выборки",
+                            name: "endadd_date",
+                            required: false
+                        });
+
+                        var categoryTree = new Memory({
+                            data: categoryArr,
+                            mayHaveChildren: function (item) {
+                                return true;
+                            },
+                            getChildren: function (object, onComplete) {
+
+                                this.filter({"parentID": object.id}).fetch().then(function (objects) {
+                                    onComplete(objects);
+                                });
+                            },
+                            getLabel: function (object) {
+                                return object.label;
+                            },
+                            getRoot: function (onItem, onError) {
+                                this.filter({'parentID': '-1'}).fetch().then(function (objects) {
+                                    if (objects[0] !== null && objects[0] !== undefined) {
+                                        onItem(objects[0]);
+                                    } else {
+                                        onItem(objects);
+                                    }
+                                });
+                            }
+                        });
+
+                        var ebayCategoryTree = new Tree({
+                            label: "Категория",
+                            name: 'likeebaycategory_id',
+                            model: categoryTree,
+                            openOnDblClick: true,
+                            onClick: function(item){
+                                var f = query("#scriptConfigDialogForm")[0];
+                                f['likeebaycategory_id'] = {
+                                    name: 'ebaycategory_id',
+                                    value: item.id
+                                }
+                            }
+                        });
+
+                        array.forEach([ebayCategoryTree, beginAddDate, endAddDate, brand], function (child) {
+                            formContainer.addChild(child);
+                        });
+
+                        formContainer.placeAt(form);
+
+                        deferred.resolve(form);
                     });
-
-                    var brand = new Select({
-                        label: "Бренд",
-                        name: 'brand',
-                        options: brandArr,
-                        style: 'width: 200px;',
-
-                        maxHeight: -1,
-                    });
-
-                    var beginAddDate = new DateTextBox({
-                        label: "Дата начала выборки",
-                        name: "begadd_date",
-                        required: false
-                    });
-
-                    var endAddDate = new DateTextBox({
-                        label: "Дата конца выборки",
-                        name: "endadd_date",
-                        required: false
-                    });
-
-                    array.forEach([ebayCategory, beginAddDate, endAddDate, brand], function (child) {
-                        formContainer.addChild(child);
-                    });
-
-                    formContainer.placeAt(form);
-
-                    deferred.resolve(form);
 
                     return deferred.promise;
                 };

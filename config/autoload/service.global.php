@@ -22,30 +22,12 @@ return [
             'cdsManagerStore' => 'cdsManagerDbTable',
             'dataStore' => 'rHttpClient',
             'cds' => 'cachingDbTable',
-            'allowResource' => [
-                "plotPublishPrice",
-                "plotSoldPrice",
-                "plotProbPrice",
-                "plotProfPrice",
-                "plotPublishDay",
-                "plotSoldDay",
-                "plotProbDay",
-                "plotCreatedDay",
-                "plotPublishTime",
-                "plotSoldTime",
-                "plotProbTime",
-                "plotCreatedTime",
-                "plotCreatedTimeWithTZ",
-                "tableCategoryPrice",
-                "tableCategory",
-                "tableProduct",
-                "tableModel",
-                "tableProductModel",
-                "bestProducts",
-                "bestCompetitor",
-                "NN",
-                "NNSold"
-            ]
+        ]
+    ],
+
+    'tableGateway' =>[
+        'cds_table' => [
+            'sql' => 'zaboy\rest\TableGateway\DbSql\MultiInsertSql'
         ]
     ],
 
@@ -59,7 +41,7 @@ return [
 
         'cachingDbTable' => [
             'class' => 'zaboy\rest\DataStore\DbTable',
-            'tableName' => 'cds_table'
+            'tableGateway' => 'cds_table'
         ],
 
         'cdsManagerDbTable' => [

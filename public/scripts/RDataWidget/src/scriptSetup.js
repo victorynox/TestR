@@ -248,7 +248,7 @@ define([
                                 array.forEach(self.__scriptsList["scripts"][self.__name]["paramsName"], function (name) {
                                     var item = f[name];
 
-                                    if (item.value !== "") {
+                                    if (item !== null && item !== undefined &&item.value !== "") {
                                         if(!(name === 'brand' && item.value === '0')){
                                             data.params.push({name: name, value: item.value});
                                         }

@@ -79,7 +79,7 @@ define([
                     }
 
                     if (object.filter !== null && object.filter !== undefined) {
-                        if (this.filter === null && this.filter === undefined) {
+                        if (this.filter === null || this.filter === undefined) {
                             this.filter = object.filter;
                         }
                     }
