@@ -20,6 +20,7 @@ define([
     "./dgredCreate",
     'dstore/Filter',
     'dstore/Store',
+    'dstore/Rest',
     "dojox/layout/TableContainer",
     "dojo/Deferred",
     "dojo/dom-style",
@@ -49,6 +50,7 @@ define([
              dgredCreate,
              Filter,
              Store,
+             Rest,
              TableContainer,
              Deferred,
              domStyle,
@@ -266,6 +268,7 @@ define([
 
 
                                         self.__cashStore = new (declare([StoreRqlFilter, Trackable]))(setting);
+                                        //self.__cashStore = new (declare([Rest, Trackable]))(setting);
 
                                         if (!self.__renderPlotWithGrid(self.__filter)) {
                                             setTimeout(function () {
