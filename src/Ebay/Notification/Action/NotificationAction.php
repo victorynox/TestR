@@ -12,7 +12,7 @@ use DTS\eBaySDK\Parser\XmlParser;
 use DTS\eBaySDK\Trading\Types\AbstractResponseType;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use zaboy\res\DataStores\DataStoresInterface;
+use zaboy\rest\DataStore\Interfaces\DataStoresInterface;
 
 class NotificationAction
 {
