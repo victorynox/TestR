@@ -175,12 +175,18 @@ define([
                 if (rqlQuery.length > 0) {
                     requestUrl += (this._targetContainsQueryString ? '&' : '?') + rqlQuery.join('&');
                 }
+            }else{
+                if (queryParams.length > 0) {
+                    requestUrl += (this._targetContainsQueryString ? '&' : '?') + queryParams.join('&');
+                }
             }
 
             return requestUrl;
         },
 
         _request: function (kwArgs) {
+
+            var self = this;
 
             kwArgs = kwArgs || {};
 
@@ -191,7 +197,7 @@ define([
                 lang.mixin(headers, kwArgs.headers);
             }
 
-            var requestUrl = this._renderUrl(kwArgs.queryParams);
+            var requestUrl = self._renderUrl(kwArgs.queryParams);
 
             var response = request(requestUrl, {
                 method: 'GET',

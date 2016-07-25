@@ -158,7 +158,7 @@ define([
                         self._total = event.totalLength;
                     }
                 }),
-                aspect.around(this.collection, '_renderUrl', lang.hitch(this, function (originFetchRange) {
+                aspect.around(self.collection, '_renderUrl', lang.hitch(this, function (originFetchRange) {
                     var self = this;
                     return function (requestParams) {
                         var kwArgs = {};
@@ -166,7 +166,7 @@ define([
                         kwArgs.rql = self.rqlFilter;
                         kwArgs.requestParams = requestParams;
 
-                        return originFetchRange.call(self.collection, kwArgs);
+                        return originFetchRange.call(this, kwArgs);
                     }
                 })),
                 collection.on('data-received', function (e) {
