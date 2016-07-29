@@ -91,14 +91,13 @@ define(
             });
             
             var getTableConf = new GetTableColumnWithConfig({name: conf.name});
-            
-            if(conf.configName !== 'default'){
-                var columnWithConf = getTableConf.getColumn(conf.configName, conf.name);
-                option.columns = columnWithConf !== null ? columnWithConf : option.columns;
-            }
+
+            //if(conf.configName !== 'default'){
+            var columnWithConf = getTableConf.getColumn(conf.configName, conf.name);
+            option.columns = columnWithConf !== null ? columnWithConf : option.columns;
+            //}
 
             grid = new (declare(declareArray))(option, conf.domNode);
-
 
             return grid;
         }

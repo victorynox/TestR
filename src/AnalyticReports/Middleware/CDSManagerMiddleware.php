@@ -14,12 +14,12 @@ use Xiag\Rql\Parser\Node\Query\LogicOperator\AndNode;
 use Xiag\Rql\Parser\Node\Query\ScalarOperator\EqNode;
 use Xiag\Rql\Parser\Query;
 use zaboy\rest\DataStore\Interfaces\DataStoresInterface;
-use zaboy\rest\Middleware\DataStoreAbstract;
+use zaboy\rest\Middleware;
 use zaboy\rest\RestException;
 use zaboy\rest\RqlParser\RqlParser;
 
 
-class CDSManagerMiddleware extends DataStoreAbstract
+class CDSManagerMiddleware extends Middleware\DataStoreAbstract
 {
     /** @var  DataStoresInterface */
     protected $cdsManagerStore;

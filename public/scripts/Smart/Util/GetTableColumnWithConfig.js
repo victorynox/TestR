@@ -29,7 +29,7 @@ define(
               Trackable,
               Filter) {
         var configStore = new (declare([Rest, RequestMemory, Trackable]))({
-            target: "/rest/table_preference"
+            target: "/rest/tablePreferenceList"
         });
 
         function a(name, tableName) {

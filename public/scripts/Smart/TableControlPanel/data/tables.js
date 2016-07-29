@@ -3,13 +3,13 @@
  */
 define([], function () {
     return {
-        "notification": {
+        "typeNotification": {
             "title": "Уведомления Ebay",
-            "name": "notification",
+            "name": "typeNotification",
             "filteredGridOption": {
                 "store": {
                     "options": {
-                        "target": "/rest/ebay_notification",
+                        "target": "/rest/typeNotification",
                         "useRangeHeaders": true,
                         'headers': {
                             'Accept': 'application/json',
@@ -25,9 +25,9 @@ define([], function () {
                 "grid": {
                     "options": {
                         "columns": [
-                            {"label": "id", "field": "id"},
+                           /* {"label": "id", "field": "id"},
                             {"label": "Дата создания", "field": "add_date"},
-                            {"label": "Тип уведомления", "field": "soapaction"}
+                            {"label": "Тип уведомления", "field": "type"}*/
                         ],
                         "selectionMode": "single",
                         "pagingLinks": false,
