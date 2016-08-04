@@ -37,21 +37,21 @@ class TablePreferenceListAspect extends AspectAbstract
     protected function postQuery(&$result, Query $query)
     {
         if ($query->getQuery()) {
-            $queryStr = RqlParser::rqlEncode($query->getQuery());
-            if (preg_match('/$and\(eq\(tableName\,' . $this->tableName . '\)\,eq\(name\,_default\)\)/', $queryStr)) {
+            $queryStr = urldecode(RqlParser::rqlEncode($query));
+            $pattern = '/^and\(eq\(tableName\,' . $this->tableName . '\)\,eq\(name\,_default\)\)/';
+            if (preg_match($pattern, $queryStr)) {
                 if (count($result) === 0) {
                     if (method_exists($this->tableDS, 'getTableConfig')) {
                         $preference = $this->tableConfigToPreference($this->tableDS->getTableConfig());
-                        $this->dataStore->create([
+
+                        $res = [
                             'table_name' => $this->tableName,
                             'name' => '_default',
                             'preference' => json_encode($preference)
-                        ]);
-
-                        $defaultPreference = $this->dataStore->query($query);
-                        foreach ($defaultPreference as $key => $value) {
-                            $result[$key] = $value;
-                        }
+                        ];
+                       foreach ($res as $key => $item){
+                           $result[0][$key] = $item;
+                       }
                     }
                 }
             }

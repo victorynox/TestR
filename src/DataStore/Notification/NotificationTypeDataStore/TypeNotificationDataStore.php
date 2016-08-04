@@ -10,7 +10,7 @@ namespace victorynox\DataStore\Notification\NotificationTypeDataStore;
 
 use zaboy\rest\DataStore\Memory;
 
-class ItemListedDataStore extends Memory
+class TypeNotificationDataStore extends Memory
 {
     protected static $tableConfig = [
         'id' => [

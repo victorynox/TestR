@@ -4,6 +4,7 @@ define([
     'dojo/_base/lang',
     "dijit/ConfirmDialog",
     "dijit/form/TextBox",
+    "dijit/form/NumberTextBox",
     "dojo/dom-construct",
     "dojo/dom",
     "dojo/on",
@@ -27,6 +28,8 @@ define([
     "dojo/dom-class",
     "Rscript/Smart/TableControlPanel/TableControlPanelFactory",
     "Rscript/Smart/extensions/Store/StoreRqlFilter",
+    "dojox/widget/TitleGroup",
+    "dijit/TitlePane",
 
 
 ], function (declare,
@@ -34,6 +37,7 @@ define([
              lang,
              confirmDialog,
              TextBox,
+             NumberTextBox,
              domConstruct,
              dom,
              on,
@@ -56,7 +60,9 @@ define([
              domStyle,
              domClass,
              TableControlPanelFactory,
-             StoreRqlFilter) {
+             StoreRqlFilter,
+             TitleGroup,
+             TitlePane) {
     return declare(null, {
 
         __scriptsList: {},
@@ -82,6 +88,9 @@ define([
             height: "500px",
             margin: "5px auto 0px auto"
         },
+        firstTable: null,
+        factoryTable: null,
+        tablePublishTimeWithFactory: null,
 
         constructor: function (scriptsList, store, chart) {
             if (scriptsList != null && store instanceof Store) {
@@ -104,6 +113,7 @@ define([
                 array.forEach(this.__scriptsList.names, function (name) {
                     listForSelect.push({label: self.__scriptsList['scripts'][name].reportName, value: name})
                 });
+
                 this.__createSelectionForm(listForSelect);
 
                 on(document.getElementById("closeAlert"), "click", function () {
@@ -111,6 +121,7 @@ define([
                         display: "none"
                     });
                 });
+
             }
         },
 
@@ -154,10 +165,15 @@ define([
             }
 
             var chartDiv = dom.byId("simplechart");
-            var gridDiv = dom.byId("grid");
+            //var gridDiv = dom.byId("grid");
 
             chartDiv.innerHTML = "";
-            gridDiv.innerHTML = "";
+            //gridDiv.innerHTML = "";
+
+            var group = new TitleGroup();
+            dom.byId("grid").appendChild(group.domNode);
+
+
 
             var setting = {
                 title: self.__scriptsList.scripts[self.__name]['reportName'],
@@ -197,10 +213,88 @@ define([
                 }
             }
 
+            if(self.__name === "tablePublishTime"){
+                var button = new Button({
+                    "label": "Установить количество товаров",
+                });
+
+                dom.byId("menuContainer").appendChild(button.domNode);
+
+                on(button, "click", function(event){
+                    var countLotNumberTextBox = new NumberTextBox({
+                        name: "countLot"
+                    });
+                    var dialog = new confirmDialog({
+                        title: "Количество товаров которые будут выставлены",
+                        style: "width: 500px;",
+                        content: countLotNumberTextBox.domNode,
+                        execute: function(){
+                            if(self.tablePublishTimeWithFactory !== null){
+                                domConstruct.destroy(dom.byId(self.tablePublishTimeWithFactory.domNode));
+                                self.tablePublishTimeWithFactory.destroyRecursive();
+                            }
+                            var factor = countLotNumberTextBox.get('value');
+                            var asyncLoader = function(){
+                                var deferred = new Deferred();
+                                
+                                store.fetch().then(function(items){
+                                    var data = [];
+
+                                    items.forEach(function(item){
+                                        for(var key in item){
+                                            if(item.hasOwnProperty(key) && key !== 'id'){
+                                                item[key] *= factor;
+                                                item[key] = item[key].toFixed(3);
+                                            }
+                                        }
+                                        data.push(item);
+                                    });
+
+                                    var analogStore = new Memory({
+                                        data: data
+                                    });
+
+                                    deferred.resolve(analogStore)
+                                });
+                                
+                                return deferred.promise;
+                            };
+                            asyncLoader().then(function(storeWithFactory){
+                                self.tablePublishTimeWithFactory = TableControlPanelFactory("tablePublishTimeWithFactory", storeWithFactory);
+                                self.tablePublishTimeWithFactory.startup();
+
+                                if(self.factoryTable === null || self.factoryTable === undefined){
+                                    self.factoryTable = new TitlePane({open: true, title: self.__name});
+                                    self.firstTable.set('open', false);
+                                    group.addChild(self.factoryTable);
+                                }
+
+                                self.factoryTable.set("content", self.tablePublishTimeWithFactory.domNode);
+                                self.factoryTable.startup();
+
+                                //dom.byId("grid").appendChild(self.tablePublishTimeWithFactory.domNode);
+
+                            });
+                        }
+                    });
+                    dialog.show();
+                });
+            }else{
+                dom.byId("menuContainer").innerHTML = "";
+            }
+
             self.__dgrid = new TableControlPanelFactory(self.__name, store);
             if (self.__dgrid !== null) {
                 self.__dgrid.startup();
-                dom.byId("grid").appendChild(self.__dgrid.domNode);
+
+                if(self.firstTable === null || self.firstTable === undefined){
+                    self.firstTable = new TitlePane({open: true, title: self.__name});
+                    group.addChild(self.firstTable);
+                }
+
+                self.firstTable.set("content", self.__dgrid.domNode);
+                self.firstTable.startup();
+                //dom.byId("grid").appendChild(self.__dgrid.domNode);
             }
             return self.__dgrid !== null;
 

@@ -1,42 +1,5 @@
 {% extends '@layout/layout.html.twig' %}
 
-
- {% block mainSideMenu %}
-
-     {#<li>
-         <button class="btn" id="saveFilter"></button>
-     </li>
-     <li>
-         <div class="controller-tree">
-             <ol id="controller-tree-icons-container">
-
-             </ol>
-         </div>
-     </li>
-     <li id="filters"></li>#}
-
- {% endblock mainSideMenu %}
-
-{% block centerRightBlock %}
-    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 padding-none">
-        {# <div id="top-page-menu"></div>
-         <div class="main">
-             <h1 id="reportName" class="page-header">Уведомления Ebay</h1>
-             <div class="main-table">
-                 <div class="grid-button-panel">
-                     <button class="btn" id="addFilterOnGridButton"></button>
-                     <button class="btn" id="clearFilterOnGridButton"></button>
-                 </div>
-                 <div id="filter-active"></div>
-                 <div id="grid"></div>
-                 <div id="notification"></div>
-             </div>
-         </div>#}
-        <div id="temp-grid"></div>
-        <div id="temp-grid2"></div>
-    </div>
-{% endblock centerRightBlock %}
-
 {% block stylesheets %}
     <link href="/scripts/dojo/dojo/resources/dojo.css" rel="stylesheet">
     <link href="/scripts/dojo/dijit/themes/claro/claro.css" rel="stylesheet">
@@ -61,7 +24,7 @@
             // being able to load local modules
             packages: [
                 {
-                    name: "script",
+                    name: "Rscript",
                     location: '/scripts'
                 }
             ]
@@ -70,47 +33,153 @@
     <script src="/scripts/dojo/dojo/dojo.js"></script>
     <script>
         require([
-            "dojo/_base/declare",
             "dojo/dom",
-            "dojo/on",
-            "dojo/dom-class",
-            "dojo/dom-construct",
-            "dojo/aspect",
-            "dojo/query",
-            "dojox/xml/DomParser",
             'dojo/_base/array',
             'dojo/json',
-            "script/Smart/TableControlPanel/TableControlPanelFactory",
+            "Rscript/scriptListConfigNew",
+            "Rscript/RDataWidget/RDataWidget",
+            "Rscript/Smart/TableControlPanel/TableControlPanelFactory",
+            'dstore/RequestMemory',
+            "dstore/Rest",
+            'dstore/Trackable',
+            "dojo/on",
+            "dojox/widget/TitleGroup",
+            "dijit/TitlePane",
+            "dijit/Dialog",
+            "dijit/layout/ContentPane",
+            "dojox/xml/DomParser",
+            "dojo/dom-construct",
+            "dojo/_base/window",
+            "dojo/_base/declare",
+            'dojo/request',
+            'dojo/_base/lang',
+            "dojo/dom-style",
 
-            "dstore/Memory",
-
-            "dgrid/Grid",
-            'dgrid/extensions/Pagination',
-            'dgrid/extensions/ColumnHider',
-            'dgrid/extensions/ColumnResizer',
-
+            "dojo/dom-style",
             "dojo/domReady!"
-        ], function (declare,
-                     dom,
-                     on,
-                     domClass,
-                     domConstruct,
-                     aspect,
-                     query,
-                     DomParser,
+        ], function (dom,
                      array,
                      json,
+                     scriptListConfig,
+                     RDataWidget,
                      TableControlPanelFactory,
-                     Memory,
-                     Grid,
-                     Pagination,
-                     ColumnHider,
-                     ColumnResizer) {
+                     RequestMemory,
+                     Rest,
+                     Trackable,
+                     on,
+                     TitleGroup,
+                     TitlePane,
+                     Dialog,
+                     ContentPane,
+                     DomParser,
+                     domConstruct,
+                     window,
+                     declare,
+                     request,
+                     lang,
+                     domStyle) {
+
+            var group = new TitleGroup();
+            var firstTable = new TitlePane({open: true, title: "All Notification"});
+
+            group.addChild(firstTable);
+            dom.byId("grid").appendChild(group.domNode);
+
+            var notyficationGrid = null;
+            var oldType = null;
+            var secondTable = null;
+
+            var dialog = new Dialog({
+                title: "",
+                style: "width: 500px;",
+                content: ""
+            });
 
             var tempFilteredGrid = new TableControlPanelFactory('typeNotification');
+
+            on(tempFilteredGrid, "dgrid-select", function (event) {
+                var type = event.rows[0].data.type;
+                if (oldType !== type) {
+                    oldType = type;
+
+                    if (notyficationGrid === null) {
+                        secondTable = new TitlePane({open: false, title: ""});
+                        group.addChild(secondTable);
+                    }
+
+                    secondTable.set("title", type);
+
+                    if (notyficationGrid !== null) {
+                        notyficationGrid.destroy();
+                        domConstruct.destroy(notyficationGrid.domNode);
+                    }
+
+                    notyficationGrid = new TableControlPanelFactory(type);
+
+
+                    on(notyficationGrid, "dgrid-select", function (event) {
+                        var xmlData = event.rows[0].data.data;
+                        var jsonobj = DomParser.parse(xmlData);
+
+                        var parse = function (node) {
+
+                            var str;
+                            var nodeStr;
+                            if (node.childNodes !== undefined
+                                    && node.childNodes !== null) {
+
+                                str = "<ul>";
+                                nodeStr = "<li>";
+                                nodeStr += "<b>" + node.nodeName + ":</b>";
+
+                                array.forEach(node.childNodes, function (item) {
+                                    nodeStr += parse(item);
+                                });
+
+                                if (node.attributes !== null &&
+                                        node.attributes !== undefined &&
+                                        node.attributes.length > 0) {
+                                    nodeStr += "<br>";
+                                    array.forEach(node.attributes, function (item) {
+                                        nodeStr += "<i>" + parse(item) + "</i><br>";
+                                    });
+                                }
+
+                                str += nodeStr += "</li>";
+                                str += "</ul>";
+                            } else {
+                                str = node.nodeName !== "#text" ? node.nodeName + ": " + node.nodeValue : node.nodeValue;
+                            }
+
+                            return str
+                        };
+
+                        dialog.set("title", type);
+                        dialog.set("content", new ContentPane({
+                            content: parse(jsonobj),
+                        }));
+                        /*dialog.set("content", parse(jsonobj));*/
+                        dialog.show();
+                    });
+                    notyficationGrid.startup();
+                    secondTable.set("content", notyficationGrid.domNode);
+                }
+            });
+
             tempFilteredGrid.startup();
-            dom.byId("temp-grid").appendChild(tempFilteredGrid.domNode);
+            firstTable.set("content", tempFilteredGrid.domNode);
 
         });
     </script>
 {% endblock javascripts %}
+
+ {% block mainSideMenu %}
+ {% endblock mainSideMenu %}
+
+
+
+{% block contentBodyName %} Уведомления {% endblock contentBodyName %}
+
+{% block contentBody %}
+    <div id="grid"></div>
+{% endblock contentBody %}

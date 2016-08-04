@@ -25,6 +25,7 @@ return [
             'cds' => 'cachingDbTable',
         ],
         'tablePreferenceRest' => [
+            'class' => 'victorynox\DataStore\TablePreferenceList\TablePreferenceListMiddleware',
             'dataStore' => 'tablePreferenceList'
         ]
     ],

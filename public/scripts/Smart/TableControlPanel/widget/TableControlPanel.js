@@ -172,8 +172,10 @@ define(
 
                     on(self.loadGridSettingBtn, "click", function () {
                         self.loadGridSettingDialog.show();
+                    }),
+                    on(self.table, "dgrid-select", function (event) {
+                        self.emit("dgrid-select", event);
                     })
-                    
                     /*self.saveGridSettingDialog.on("save-config", function (event) {
                         if (event !== null &&
                             event !== undefined &&

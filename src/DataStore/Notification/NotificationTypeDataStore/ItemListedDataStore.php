@@ -19,7 +19,7 @@ class ItemListedDataStore extends Memory
                 'nullable' => false
             ]
         ],
-        'date' => [
+        'add_date' => [
             'field_type' => 'Datetime',
             'field_params' => [
                 'nullable' => false

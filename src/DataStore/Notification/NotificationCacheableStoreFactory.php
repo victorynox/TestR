@@ -19,16 +19,25 @@ class NotificationCacheableStoreFactory extends CacheableAbstractFactory
 {
     const KEY_ALL_NOTIFICATION = 'allNotification';
     const KEY_CACHEABLE_NOTIFICATION = 'notificationCacheable';
+    const KEY_CACHEABLE_NOTIFICATION_TYPE = 'typeNotification';
+
+    static protected $flag = false;
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $config = $container->get('config');
-        $serviceConfig = $config[self::KEY_DATASTORE][self::KEY_CACHEABLE_NOTIFICATION];
+        if($this::$flag){
+            $serviceConfig = $config[self::KEY_DATASTORE][self::KEY_CACHEABLE_NOTIFICATION_TYPE];
+        }else{
+            $serviceConfig = $config[self::KEY_DATASTORE][self::KEY_CACHEABLE_NOTIFICATION];
+        }
         $requestedClassName = $serviceConfig[self::KEY_CLASS];
         if (isset($serviceConfig[self::KEY_DATASOURCE])) {
             if ($container->has($serviceConfig[self::KEY_DATASOURCE])) {
                 $getAll = $container->get($serviceConfig[self::KEY_DATASOURCE]);
-                $getAll->setNotificationType($requestedName);
+                if(method_exists($getAll, 'setNotificationType')){
+                    $getAll->setNotificationType($requestedName);
+                }
             } else {
                 throw new DataStoreException(
                     'There is DataSource not created ' . $requestedName . 'in config \'dataStore\''
@@ -39,7 +48,7 @@ class NotificationCacheableStoreFactory extends CacheableAbstractFactory
                 'There is DataSource for ' . $requestedName . 'in config \'dataStore\''
             );
         }
-        $serviceConfig[self::KEY_CACHEABLE] = 'Notification' . $requestedName;
+        $serviceConfig[self::KEY_CACHEABLE] = 'Notification' . ucfirst($requestedName);
 
         if ($container->has($serviceConfig[self::KEY_CACHEABLE])) {
             $cashStore = $container->get($serviceConfig[self::KEY_CACHEABLE]);
@@ -55,12 +64,16 @@ class NotificationCacheableStoreFactory extends CacheableAbstractFactory
 
     public function canCreate(ContainerInterface $container, $requestedName)
     {
-        /** @var DataStoresInterface $allNotification */
-        $allNotification = $container->get($this::KEY_ALL_NOTIFICATION);
-        $query = new Query();
-        $query->setQuery(new EqNode(AllNotificationDataStoreFactory::KEY_EBAY_NOTIFICATION_TYPE, $requestedName));
-        $result = $allNotification->query($query);
-
+        if ($requestedName === self::KEY_CACHEABLE_NOTIFICATION_TYPE) {
+            $this::$flag = true;
+            return true;
+        } else {
+            /** @var DataStoresInterface $allNotification */
+            $allNotification = $container->get($this::KEY_ALL_NOTIFICATION);
+            $query = new Query();
+            $query->setQuery(new EqNode(AllNotificationDataStoreFactory::KEY_EBAY_NOTIFICATION_TYPE, $requestedName));
+            $result = $allNotification->query($query);
+        }
         return count($result) > 0;
     }
 

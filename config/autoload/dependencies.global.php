@@ -19,7 +19,6 @@ return [
         'factories' => [
             Application::class => ApplicationFactory::class,
             Helper\UrlHelper::class => Helper\UrlHelperFactory::class,
-            'tablePreferenceRest' => victorynox\DataStore\TablePreferenceList\TablePreferenceDataStoreRestFactory::class,
             'tablePreferenceListDbTable' => victorynox\DataStore\TablePreferenceList\TablePreferenceDbTableFactory::class,
             'allNotification' => victorynox\DataStore\Notification\AllNotificationDataStoreFactory::class,
             'notificationDataSource' => victorynox\DataStore\Notification\DataSource\NotificationDataSourceFactory::class,
@@ -33,9 +32,8 @@ return [
             'zaboy\rest\DataStore\Factory\DbTableAbstractFactory',
             'zaboy\rest\DataStore\Factory\CsvAbstractFactory',
             'zaboy\rest\DataStore\Factory\MemoryAbstractFactory',
-            'victorynox\DataStore\Notification\NotificationCacheableStoreFactory',
-            //'victorynox\DataStore\Notification\NotificationTypeDataStore\NotificationTypeDataStoreFactory',
             'zaboy\rest\DataStore\Factory\CacheableAbstractFactory',
+            'victorynox\DataStore\Notification\NotificationCacheableStoreFactory',
             'zaboy\rest\TableGateway\Factory\TableGatewayAbstractFactory',
             'Zend\Db\Adapter\AdapterAbstractServiceFactory',
             'victorynox\AnalyticReports\Middleware\CDSManagerAbstractFactory',
