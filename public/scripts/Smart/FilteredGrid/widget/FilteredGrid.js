@@ -85,37 +85,11 @@ define([
 
                 self.grid = GridFactory({
                     name: self.name,
-                    configName: "default",
+                    configName: "_default",
                     options: self.options,
                     declare: self.declare,
                     domNode: self.gridNode
                 });
-
-                /*if (self.grid === null) {
-                 self.grid = new DefaultGrid({
-                 collection: self.store.filter(),
-                 columns: self.columns,
-                 selectionMode: self.selectionMode,
-                 pagingLinks: self.pagingLinks,
-                 pagingTextBox: self.pagingTextBox,
-                 firstLastArrows: self.firstLastArrows,
-                 rowsPerPage: self.rowsPerPage,
-                 pageSizeOptions: self.pageSizeOptions
-                 }, self.gridNode);
-                 }*/
-
-                /**
-                 * onClick emit set-filter notification
-                 this.setFilterBtn = new Button({
-                    label: "Применить фильтр к таблице",
-                }, self.setFilterBtnNode);
-
-                 /!**
-                 * onClick emit remove-filter notification
-                 *!/
-                 this.removeFilterBtn = new Button({
-                    label: "Очистить фильтр",
-                }, self.removeFilterBtnNode);*/
 
             },
 
@@ -136,13 +110,6 @@ define([
                     on(self.grid, "dgrid-deselect", function (e) {
                         on.emit(self, "dgrid-deselect", e);
                     })
-                    /*on(self.setFilterBtn, "click", function (e) {
-                     self.emit("set-filter", e);
-                     }),
-
-                     on(self.removeFilterBtn, "click", function (e) {
-                     self.emit("remove-filter", e);
-                     })*/
                 );
 
             },

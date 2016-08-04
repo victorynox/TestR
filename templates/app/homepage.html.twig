@@ -38,6 +38,7 @@
             'dojo/json',
             "Rscript/scriptListConfigNew",
             "Rscript/RDataWidget/RDataWidget",
+            "Rscript/Smart/TableControlPanel/TableControlPanelFactory",
             'dstore/RequestMemory',
             "dstore/Rest",
             'dstore/Trackable',
@@ -53,6 +54,7 @@
                      json,
                      scriptListConfig,
                      RDataWidget,
+                     TableControlPanelFactory,
                      RequestMemory,
                      Rest,
                      Trackable,
@@ -130,7 +132,6 @@
                 scriptList: scriptsList
 
             }).placeAt(document.body);
-
         });
     </script>
 {% endblock javascripts %}
@@ -150,11 +151,11 @@
 
  {% block mainSideMenu %}
 
-     <li><a id="newFilter" href="#">Новый фильтр</a></li>
+     <li id="menuContainer"></li>
 
-     <li><a id="addFilter" href="#">Добавить фильр</a></li>
+     {#<li><a id="addFilter" href="#">Добавить фильр</a></li>
 
-     <li><a id="cleanFilter" href="#">Удалить фильтр</a></li>
+     <li><a id="cleanFilter" href="#">Удалить фильтр</a></li>#}
 
      <li id="selectScript"></li>
 

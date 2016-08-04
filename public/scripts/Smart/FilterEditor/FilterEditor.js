@@ -24,7 +24,8 @@ define([
         "dijit/form/TextBox",
         "./util/FilterParser",
         "./Entity/SmartFilterNode",
-        "./widget/FilterEditor"
+        "./widget/FilterEditor",
+    "dijit/registry"
     ],
     function (declare,
               lang,
@@ -48,7 +49,8 @@ define([
               TextBox,
               FilterParser,
               SmartFilterNode,
-              FilterEditor) {
+              FilterEditor,
+              registry) {
         return declare([], {
 
             conditionEditorDialog: null,
@@ -58,6 +60,13 @@ define([
             __onCancel: null,
             filteredStoreDataOption: null,
             name: null,
+
+            editor: {
+                name: null,
+                type: null,
+                value: null,
+                valueType: null
+            },
 
             constructor: function (conf, domNode, filteredStoreDataOption) {
                 this.filter = new FilterEditor(conf);
@@ -140,7 +149,7 @@ define([
                                         self.filter._store.put(targetNode, {parent: targetNode});
                                     });
 
-                                    self.showConditionEditForm();
+                                    self.showConditionEditForm(targetNode);
                                 } else {
                                     alert('You may select condition item');
                                 }
@@ -230,9 +239,19 @@ define([
                 }
             },
 
-            showConditionEditForm: function () {
+            showConditionEditForm: function (data) {
                 var self = this;
                 if (self.conditionEditorDialog) {
+                    if (data !== null && data !== undefined) {
+                        if(self.editor.name !== null && self.editor.name !== undefined &&
+                            self.editor.type !== null && self.editor.type !== undefined &&
+                        self.editor.value !== null && self.editor.value !== undefined){
+                            self.editor.name.set('value', data.name);
+                            //self.editor.valueType.set('value', data.name);
+                            self.editor.type.set('value', data.type);
+                            self.editor.value.set('value', data.value);
+                        }
+                    }
                     self.conditionEditorDialog.show();
                 }
             },
@@ -247,17 +266,17 @@ define([
                         var self = this;
 
                         switch (param.value.field.type) {
-                            case 'Select':
-                            {
+                            case 'Select': {
                                 return new Select({
+                                    id: "formWithFilterValue",
                                     label: "Значение",
                                     name: "value",
                                     options: param.value.field.option
                                 });
                             }
-                            case 'TextBox':
-                            {
+                            case 'TextBox': {
                                 return new TextBox({
+                                    id: "formWithFilterValue",
                                     label: "Значение",
                                     name: "value"
                                 });
@@ -268,16 +287,13 @@ define([
 
                     var parser = function (value, type) {
                         switch (type) {
-                            case 'string':
-                            {
+                            case 'string': {
                                 return value + '';
                             }
-                            case 'int':
-                            {
+                            case 'int': {
                                 return parseInt(value);
                             }
-                            case 'float':
-                            {
+                            case 'float': {
                                 return parseFloat(value);
                             }
                         }
@@ -302,16 +318,17 @@ define([
                         }
                     );
 
-                    var selectParams;
+
 
                     if (self.filteredStoreDataOption) {
-                        selectParams = new Select({
+                        self.editor.name = new Select({
+                            id: "formWithFilterName",
                             label: "Поле",
                             name: "field",
                             options: selectOptions
                         });
 
-                        selectParams.on('change', function () {
+                        self.editor.name.on('change', function () {
                             var name = this.get("value");
                             var param = null;
                             array.forEach(self.filteredStoreDataOption, function (item, i) {
@@ -321,24 +338,30 @@ define([
                                 }
                             }, self);
 
-                            selectFilter.set("options", param.filter);
+                            self.editor.type.set("options", param.filter);
                             //var index = formContainer.getIndexOfChild(value);
-                            formContainer.removeChild(value);
-                            value = getValue(param);
-                            formContainer.addChild(value);
+                            formContainer.removeChild(self.editor.value);
+                            self.editor.value.destroy();
+                            self.editor.value = getValue(param);
+                            formContainer.addChild(self.editor.value);
                         });
                     } else {
-                        selectParams = new TextBox({
+                        self.editor.name = new TextBox({
+                            id: "formWithFilterName",
                             label: "Поле",
                             name: "field",
                         });
-                        var selectType = new TextBox({
-                            label: "Типо значения",
+                        self.editor.valueType = new TextBox({
+                            id: "formWithFilterValueType",
+                            label: "Тип значения",
                             name: "type",
                         });
 
                     }
-                    var selectFilter = new Select({
+
+                    //todo create load filter by config if set
+                        self.editor.type = new Select({
+                        id: "formWithFilterType",
                         label: "Фильтр",
                         name: "filter",
                         options: [
@@ -354,18 +377,19 @@ define([
                         required: false
                     });
 
-                    var value = new TextBox({
+                    self.editor.value = new TextBox({
+                        id: "formWithFilterValue",
                         label: "Значение",
                         name: "value",
                     });
 
 
-                    formContainer.addChild(selectParams);
-                    if (selectType !== undefined && selectType !== null) {
-                        formContainer.addChild(selectType);
+                    formContainer.addChild(self.editor.name);
+                    if (self.editor.valueType !== undefined && self.editor.valueType !== null) {
+                        formContainer.addChild(self.editor.valueType);
                     }
-                    formContainer.addChild(selectFilter);
-                    formContainer.addChild(value);
+                    formContainer.addChild(self.editor.type);
+                    formContainer.addChild(self.editor.value);
                     formContainer.placeAt(self.conditionEditorDialogForm);
 
 
@@ -430,7 +454,8 @@ define([
 
                     try {
                         domConstruct.destroy("filterCreateDialogForm");
-                    } catch (e) {}
+                    } catch (e) {
+                    }
                 }
                 if (self.conditionEditorDialog !== null &&
                     self.conditionEditorDialog !== undefined &&
@@ -440,7 +465,8 @@ define([
 
                     try {
                         domConstruct.destroy("filterCreateDialog");
-                    } catch (e) {}
+                    } catch (e) {
+                    }
                 }
             }
         });

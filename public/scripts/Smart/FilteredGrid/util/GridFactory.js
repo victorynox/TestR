@@ -13,6 +13,7 @@ define(
         "dojo/dom-construct",
         'dojo/on',
         "dojo/parser",
+
         'dgrid/Grid',
         'dgrid/Keyboard',
         'dgrid/Selection',
@@ -28,7 +29,9 @@ define(
         'dstore/Filter',
         
         '../../Util/GetTableColumnWithConfig',
-        '../../extensions/Grid/GridRqlFilter'
+        '../../extensions/Grid/GridRqlFilter',
+
+
     ],
     function (declare,
               lang,
@@ -37,6 +40,7 @@ define(
               domConstruct,
               on,
               parser,
+
               Grid,
               Keyboard,
               Selection,
@@ -91,15 +95,16 @@ define(
             });
             
             var getTableConf = new GetTableColumnWithConfig({name: conf.name});
-            
-            if(conf.configName !== 'default'){
-                var columnWithConf = getTableConf.getColumn(conf.configName, conf.name);
-                option.columns = columnWithConf !== null ? columnWithConf : option.columns;
-            }
+
+            var columnWithConf = getTableConf.getColumn(conf.configName, conf.name);
 
             grid = new (declare(declareArray))(option, conf.domNode);
 
-
+            columnWithConf.then(function (columns) {
+                if(columns !== null){
+                    grid.set('columns', columns);
+                }
+            });
             return grid;
         }
     }

@@ -8,12 +8,13 @@
 
 return [
     'dataSource' => [
-        #'plotPublishPrice' => ['url' => 'http://localhost:11999/',],
-        'plotPublishPrice' => ['url' => 'http://192.168.122.22:11999/'],
-        #'getCategory' => ['url' => 'http://localhost:11999/',],
-        'getCategory' => ['url' => 'http://192.168.122.22:11999/'],
-        #'getBrand' => ['url' => 'http://localhost:11999/',],
-        'getBrand' => ['url' => 'http://192.168.122.22:11999/'],
+        'typeNotificationDataSource' => [
+            'dataStore' => 'allNotification'
+        ],
+
+        'notificationDataSource' => [
+            'dataStore' => 'allNotification'
+        ]
     ],
 
     'middleware' => [
@@ -22,16 +23,21 @@ return [
             'cdsManagerStore' => 'cdsManagerDbTable',
             'dataStore' => 'rHttpClient',
             'cds' => 'cachingDbTable',
+        ],
+        'tablePreferenceRest' => [
+            'class' => 'victorynox\DataStore\TablePreferenceList\TablePreferenceListMiddleware',
+            'dataStore' => 'tablePreferenceList'
         ]
     ],
 
-    'tableGateway' =>[
+    'tableGateway' => [
         'cds_table' => [
             'sql' => 'zaboy\rest\TableGateway\DbSql\MultiInsertSql'
         ]
     ],
 
     'dataStore' => [
+
 
         //*********************************
         'cachingDataStore' => [
@@ -74,19 +80,41 @@ return [
             'url' => 'http://localhost:7080/',
         ],
 
-        'ebay_notification' => [
+        'filtersList' => [
             'class' => 'zaboy\rest\DataStore\DbTable',
+            'tableGateway' => 'filters_list'
+        ],
+
+        'tablePreferenceList' => [
+            'dataStore' => 'tablePreferenceListDbTable',
+            'class' => 'victorynox\DataStore\TablePreferenceList\TablePreferenceListAspect'
+        ],
+
+        'tablePreferenceListDbTable' => [
+            'tableName' => 'table_preference'
+        ],
+
+        'allNotification' => [
             'tableName' => 'ebay_notification'
         ],
 
-        'filters_list' => [
-            'class' => 'zaboy\rest\DataStore\DbTable',
-            'tableName' => 'filters_list'
+        'notificationCacheable' => [
+            'dataSource' => 'notificationDataSource',
+            'class' => 'victorynox\DataStore\Notification\NotificationCacheable'
         ],
 
-        'table_preference' => [
-            'class' => 'zaboy\rest\DataStore\DbTable',
-            'tableName' => 'table_preference'
+        # Notification CacheableDS
+
+        'NotificationItemListed' => [
+            'class' => 'victorynox\DataStore\Notification\NotificationTypeDataStore\ItemListedDataStore'
+        ],
+        'NotificationTypeNotification' => [
+            'class' => 'victorynox\DataStore\Notification\NotificationTypeDataStore\TypeNotificationDataStore'
+        ],
+
+        'typeNotification' => [
+            'dataSource' => 'typeNotificationDataSource',
+            'class' => 'victorynox\DataStore\Notification\NotificationCacheable'
         ]
 
     ],

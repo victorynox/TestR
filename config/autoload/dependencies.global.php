@@ -18,7 +18,11 @@ return [
         // Use 'factories' for services provided by callbacks/factory classes.
         'factories' => [
             Application::class => ApplicationFactory::class,
-            Helper\UrlHelper::class => Helper\UrlHelperFactory::class
+            Helper\UrlHelper::class => Helper\UrlHelperFactory::class,
+            'tablePreferenceListDbTable' => victorynox\DataStore\TablePreferenceList\TablePreferenceDbTableFactory::class,
+            'allNotification' => victorynox\DataStore\Notification\AllNotificationDataStoreFactory::class,
+            'notificationDataSource' => victorynox\DataStore\Notification\DataSource\NotificationDataSourceFactory::class,
+            'typeNotificationDataSource' => victorynox\DataStore\Notification\DataSource\TypeNotificationFactory::class,
         ],
         'abstract_factories' => [
             'victorynox\DataStore\CDSAbstractFactory',
@@ -29,6 +33,7 @@ return [
             'zaboy\rest\DataStore\Factory\CsvAbstractFactory',
             'zaboy\rest\DataStore\Factory\MemoryAbstractFactory',
             'zaboy\rest\DataStore\Factory\CacheableAbstractFactory',
+            'victorynox\DataStore\Notification\NotificationCacheableStoreFactory',
             'zaboy\rest\TableGateway\Factory\TableGatewayAbstractFactory',
             'Zend\Db\Adapter\AdapterAbstractServiceFactory',
             'victorynox\AnalyticReports\Middleware\CDSManagerAbstractFactory',

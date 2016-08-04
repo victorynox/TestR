@@ -14,7 +14,8 @@ define(
         'dstore/Rest',
         'dstore/RequestMemory',
         'dstore/Trackable',
-        'dstore/Filter'
+        'dstore/Filter',
+        "dojo/Deferred",
     ],
     function (declare,
               lang,
@@ -27,19 +28,11 @@ define(
               Rest,
               RequestMemory,
               Trackable,
-              Filter) {
-        var configStore = new (declare([Rest, RequestMemory, Trackable]))({
-            target: "/rest/table_preference"
+              Filter,
+              Deferred) {
+        var configStore = new (declare([Rest, Trackable]))({
+            target: "/rest/tablePreferenceRest"
         });
-
-        function a(name, tableName) {
-            var columns = null;
-            var filter = (new Filter()).and((new Filter()).eq("tableName", tableName), (new Filter()).eq("name", name));
-            configStore.filter(filter).then(function (item) {
-                columns = item.preference;
-            });
-            return columns;
-        }
 
         return declare([], {
             name: null,
@@ -59,13 +52,27 @@ define(
 
             getColumn: function (name, tableName) {
                 var columns = null;
+
                 var filter = (new Filter()).and((new Filter()).eq("tableName", tableName), (new Filter()).eq("name", name));
-                
-                configStore.filter(filter).forEach(function (item) {
-                    columns = item.preference;
-                });
-                
-                return columns;
+
+                var async = function () {
+                    var def = new Deferred();
+                    configStore.filter(filter).fetch().then(function (items) {
+                        var col = items;
+                        if(col !== null && col !== undefined &&
+                            col[0] !== null && col[0] !== undefined &&
+                            col[0].preference !== null && col[0].preference !== undefined){
+                            var colum = JSON.parse(col[0].preference);
+                            def.resolve(colum);
+                        }else{
+                            def.reject();
+                        }
+                    });
+                    return def.promise;
+                };
+
+
+                return async();
             },
 
             setStore: function (store) {
