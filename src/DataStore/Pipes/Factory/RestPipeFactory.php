@@ -24,7 +24,7 @@ class RestPipeFactory
     public function __invoke(ContainerInterface $container, $requestedName)
     {
 
-        $lazyTPDSR = function (Request $request, Response $response, callable $next) use ($container) {
+        /*$lazyTPDSR = function (Request $request, Response $response, callable $next) use ($container) {
 
             $resourceName = $request->getAttribute('Resource-Name');
             $DataStoreDirectFactory = new DataStoreDirectFactory();
@@ -59,9 +59,9 @@ class RestPipeFactory
             }
 
             return $storeMiddleware($request, $response, $next);
-        };
+        };*/
 
-        $pipeFactory =  new RestRqlFactory([300 => $lazyTPDSR]);
+        $pipeFactory =  new RestRqlFactory();
         return $pipeFactory($container, $requestedName, []);
     }
 }

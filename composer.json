@@ -49,7 +49,8 @@
             "victorynox\\Ebay\\": "src/Ebay/",
             "victorynox\\AnalyticReports\\": "src/AnalyticReports/",
             "victorynox\\View\\": "src/View/",
-            "victorynox\\Util\\": "src/Util/"
+            "victorynox\\Util\\": "src/Util/",
+            "victorynox\\Configurator\\": "src/Configurator/"
         }
     },
     "autoload-dev": {

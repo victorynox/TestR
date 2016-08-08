@@ -31,7 +31,7 @@ define(
               Filter,
               Deferred) {
         var configStore = new (declare([Rest, Trackable]))({
-            target: "/rest/tablePreferenceRest"
+            target: "/rest/configuration"
         });
 
         return declare([], {

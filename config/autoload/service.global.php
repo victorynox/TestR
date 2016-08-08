@@ -23,10 +23,6 @@ return [
             'cdsManagerStore' => 'cdsManagerDbTable',
             'dataStore' => 'rHttpClient',
             'cds' => 'cachingDbTable',
-        ],
-        'tablePreferenceRest' => [
-            'class' => 'victorynox\DataStore\TablePreferenceList\TablePreferenceListMiddleware',
-            'dataStore' => 'tablePreferenceList'
         ]
     ],
 
@@ -85,15 +81,6 @@ return [
             'tableGateway' => 'filters_list'
         ],
 
-        'tablePreferenceList' => [
-            'dataStore' => 'tablePreferenceListDbTable',
-            'class' => 'victorynox\DataStore\TablePreferenceList\TablePreferenceListAspect'
-        ],
-
-        'tablePreferenceListDbTable' => [
-            'tableName' => 'table_preference'
-        ],
-
         'allNotification' => [
             'tableName' => 'ebay_notification'
         ],
@@ -115,7 +102,22 @@ return [
         'typeNotification' => [
             'dataSource' => 'typeNotificationDataSource',
             'class' => 'victorynox\DataStore\Notification\NotificationCacheable'
+        ],
+
+        "configurationTable" => [
+            'tableName' => 'table_preference'
+        ],
+
+        'configuration' => [
+            'dataStore' => 'configurationTable',
+            'configureGeneratorFactory' => 'configGenFactory'
         ]
 
     ],
+
+    'configureGeneratorFactory' => [
+        'configGenFactory' => [
+            'class' => 'victorynox\Configurator\ConfigureGeneratorFactory',
+        ]
+    ]
 ];
