@@ -78,7 +78,7 @@ return [
 
         'filtersList' => [
             'class' => 'zaboy\rest\DataStore\DbTable',
-            'tableGateway' => 'filters_list'
+            'tableName' => 'filters_list'
         ],
 
         'allNotification' => [

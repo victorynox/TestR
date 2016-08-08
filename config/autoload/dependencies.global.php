@@ -23,9 +23,11 @@ return [
             'notificationDataSource' => victorynox\DataStore\Notification\DataSource\NotificationDataSourceFactory::class,
             'configurationTable' => 'victorynox\Configurator\ConfigurationTableFactory',
             'configuration' => 'victorynox\Configurator\DataStore\ConfigurationAspectFactory',
+            'Zend\Session\Config\ConfigInterface' => 'Zend\Session\Service\SessionConfigFactory',
         ],
         'abstract_factories' => [
             'victorynox\DataStore\CDSAbstractFactory',
+            'victorynox\AnalyticReports\DataStore\ReportsDSFactory',
             'zaboy\rest\DataStore\Aspect\Factory\AspectAbstractFactory',
             'zaboy\rest\Middleware\Factory\DataStoreAbstractFactory',
             'zaboy\rest\DataStore\Factory\HttpClientAbstractFactory',

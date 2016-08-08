@@ -56,6 +56,8 @@ class CDSAbstractFactory extends AbstractFactoryAbstract
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
+        //todo add using class in config
+
         $config = $container->get('config');
         if (!isset($config['dataStore']['cachingDataStore'])) {
             throw new DataStoreException('cachingDataStore not found');
