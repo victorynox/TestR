@@ -1,4 +1,4 @@
-define(['dojo/dom',
+define(["dojo/dom",
         "dojo/on",
         "dojo",
         "dojo/request",

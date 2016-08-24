@@ -39,6 +39,15 @@
             "Rscript/scriptListConfigNew",
             "Rscript/RDataWidget/RDataWidget",
             "Rscript/Smart/TableControlPanel/TableControlPanelFactory",
+
+            "Rscript/Smart/Composite/widget/Composite",
+            'Rscript/Smart/FilterControlPanel/widget/FilterControlPanel',
+            'Rscript/Smart/FilteredGrid/widget/FilteredGrid',
+            'Rscript/Smart/TableWithConfiguration/widget/TableWithConfiguration',
+            'Rscript/Smart/DataPreviewControlPanel/widget/DataPreviewControlPanel',
+
+            'Rscript/Smart/extensions/Store/StoreRqlFilter',
+
             'dstore/RequestMemory',
             "dstore/Rest",
             'dstore/Trackable',
@@ -63,6 +72,12 @@
                      scriptListConfig,
                      RDataWidget,
                      TableControlPanelFactory,
+                     Composite,
+                     FilterControlPanel,
+                     FilteredGrid,
+                     TableWithConfiguration,
+                     DataPreviewControlPanel,
+                     StoreRqlFilter,
                      RequestMemory,
                      Rest,
                      Trackable,
@@ -79,15 +94,137 @@
                      lang,
                      domStyle) {
 
-            var group = new TitleGroup();
-            var firstTable = new TitlePane({open: true, title: "All Notification"});
+            /* var group = new TitleGroup();
+             var firstTable = new TitlePane({open: true, title: "All Notification"});
 
-            group.addChild(firstTable);
-            dom.byId("grid").appendChild(group.domNode);
+             group.addChild(firstTable);
+             dom.byId("grid").appendChild(group.domNode);
 
-            var notyficationGrid = null;
-            var oldType = null;
-            var secondTable = null;
+             var notyficationGrid = null;
+             var oldType = null;
+             var secondTable = null;
+
+             var dialog = new Dialog({
+             title: "",
+             style: "width: 500px;",
+             content: ""
+             });
+
+             var tempFilteredGrid = new TableControlPanelFactory('typeNotification');
+
+             on(tempFilteredGrid, "dgrid-select", function (event) {
+             var type = event.rows[0].data.type;
+             if (oldType !== type) {
+             oldType = type;
+
+             if (notyficationGrid === null) {
+             secondTable = new TitlePane({open: false, title: ""});
+             group.addChild(secondTable);
+             }
+
+             secondTable.set("title", type);
+
+             if (notyficationGrid !== null) {
+             notyficationGrid.destroy();
+             domConstruct.destroy(notyficationGrid.domNode);
+             }
+
+             notyficationGrid = new TableControlPanelFactory(type);
+
+
+             on(notyficationGrid, "dgrid-select", function (event) {
+             var xmlData = event.rows[0].data.data;
+             var jsonobj = DomParser.parse(xmlData);
+
+             var parse = function (node) {
+
+             var str;
+             var nodeStr;
+             if (node.childNodes !== undefined
+             && node.childNodes !== null) {
+
+             str = "<ul>";
+             nodeStr = "<li>";
+             nodeStr += "<b>" + node.nodeName + ":</b>";
+
+             array.forEach(node.childNodes, function (item) {
+             nodeStr += parse(item);
+             });
+
+             if (node.attributes !== null &&
+             node.attributes !== undefined &&
+             node.attributes.length > 0) {
+             nodeStr += "<br>";
+             array.forEach(node.attributes, function (item) {
+             nodeStr += "<i>" + parse(item) + "</i><br>";
+             });
+             }
+
+             str += nodeStr += "</li>";
+             str += "</ul>";
+             } else {
+             str = node.nodeName !== "#text" ? node.nodeName + ": " + node.nodeValue : node.nodeValue;
+             }
+
+             return str
+             };
+
+             dialog.set("title", type);
+             dialog.set("content", new ContentPane({
+             content: parse(jsonobj),
+             }));
+             /!*dialog.set("content", parse(jsonobj));*!/
+             dialog.show();
+             });
+             notyficationGrid.startup();
+             secondTable.set("content", notyficationGrid.domNode);
+             }
+             });
+
+             tempFilteredGrid.startup();
+             firstTable.set("content", tempFilteredGrid.domNode);*/
+            var centralDataStore = new (declare([StoreRqlFilter, Trackable]))({
+                'headers': {
+                    'Accept': 'application/json'
+                },
+                'useRangeHeaders': true,
+                "target": "/rest/typeNotification"
+            });
+
+            var typeNotificationFilterControlPanel = new FilterControlPanel({
+                "title": "Панель управления фильтрами ",
+                "id": "tableFilter",
+                "name": "typeNotification",
+                "store": new (declare([Rest, RequestMemory, Trackable]))({
+                    'headers': {
+                        'Accept': 'application/json'
+                    },
+                    "target": "/rest/filters_list"
+                })
+            });
+
+            var typeNotificationFilterGrid = new FilteredGrid({
+                "title": "Гистограмма цены выставленных товаров(табличное предствление)",
+                "name": "typeNotification",
+                "collection": centralDataStore
+            });
+
+            var typeNotificationFilterGridTableWithConfiguration = new TableWithConfiguration({
+                title: "Спико Уведомлений Ebay",
+                table: typeNotificationFilterGrid
+            });
+
+            var typeNotificationTableDataPreviewControlPanel = new DataPreviewControlPanel({
+                title: "Спико Уведомлений Ebay",
+                filterControlPanel: typeNotificationFilterControlPanel,
+                dataViewer: typeNotificationFilterGridTableWithConfiguration
+            });
+
+            var composite = new Composite({
+                components: [typeNotificationTableDataPreviewControlPanel]
+            }).placeAt(dom.byId('grid'));
+
+            composite.startup();
 
             var dialog = new Dialog({
                 title: "",
@@ -95,29 +232,67 @@
                 content: ""
             });
 
-            var tempFilteredGrid = new TableControlPanelFactory('typeNotification');
+            var oldType = null;
+            var secondTable = null;
+            var notificationTableDataPreviewControlPanel = null;
 
-            on(tempFilteredGrid, "dgrid-select", function (event) {
+            on(typeNotificationFilterGrid, "dgrid-select", function (event) {
                 var type = event.rows[0].data.type;
                 if (oldType !== type) {
                     oldType = type;
 
-                    if (notyficationGrid === null) {
+                    if (notificationTableDataPreviewControlPanel === null) {
                         secondTable = new TitlePane({open: false, title: ""});
-                        group.addChild(secondTable);
+                        composite.addTitlePane(secondTable);
                     }
 
                     secondTable.set("title", type);
 
-                    if (notyficationGrid !== null) {
-                        notyficationGrid.destroy();
-                        domConstruct.destroy(notyficationGrid.domNode);
+                    if (notificationTableDataPreviewControlPanel !== null) {
+                        notificationTableDataPreviewControlPanel.destroy();
+                        domConstruct.destroy(notificationTableDataPreviewControlPanel.domNode);
                     }
 
-                    notyficationGrid = new TableControlPanelFactory(type);
+                    var notificationDataStore = new (declare([StoreRqlFilter, Trackable]))({
+                        'headers': {
+                            'Accept': 'application/json'
+                        },
+                        'useRangeHeaders': true,
+                        "target": "/rest/" + type
+                    });
 
+                    var notificationFilterControlPanel = new FilterControlPanel({
+                        "title": "Панель управления фильтрами ",
+                        "id": "notificationTableFilter" + type,
+                        "name": type,
+                        "store": new (declare([Rest, RequestMemory, Trackable]))({
+                            'headers': {
+                                'Accept': 'application/json'
+                            },
+                            "target": "/rest/filters_list"
+                        })
+                    });
 
-                    on(notyficationGrid, "dgrid-select", function (event) {
+                    var notificationFilterGrid = new FilteredGrid({
+                        "title": "Гистограмма цены выставленных товаров(табличное предствление)",
+                        "name": type,
+                        "collection": notificationDataStore
+                    });
+
+                    var notificationFilterGridTableWithConfiguration = new TableWithConfiguration({
+                        name: "notification" + type,
+                        title: "Спико Уведомлений Ebay",
+                        table: notificationFilterGrid
+                    });
+
+                    notificationTableDataPreviewControlPanel = new DataPreviewControlPanel({
+                        name: "notificasaqtiondTableFilter" + type,
+                        title: "Спико Уведомлений Ebay",
+                        filterControlPanel: notificationFilterControlPanel,
+                        dataViewer: notificationFilterGridTableWithConfiguration
+                    });
+
+                    on(notificationFilterGrid, "dgrid-select", function (event) {
                         var xmlData = event.rows[0].data.data;
                         var jsonobj = DomParser.parse(xmlData);
 
@@ -158,22 +333,18 @@
                         dialog.set("content", new ContentPane({
                             content: parse(jsonobj),
                         }));
-                        /*dialog.set("content", parse(jsonobj));*/
                         dialog.show();
                     });
-                    notyficationGrid.startup();
-                    secondTable.set("content", notyficationGrid.domNode);
+                    notificationTableDataPreviewControlPanel.startup();
+                    secondTable.set("content", notificationTableDataPreviewControlPanel.domNode);
                 }
             });
-
-            tempFilteredGrid.startup();
-            firstTable.set("content", tempFilteredGrid.domNode);
-
         });
     </script>
 {% endblock javascripts %}
 
  {% block mainSideMenu %}
+
  {% endblock mainSideMenu %}
 
 

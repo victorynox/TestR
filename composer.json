@@ -44,18 +44,12 @@
     },
     "autoload": {
         "psr-4": {
-            "victorynox\\Auth\\": "src/Auth/",
-            "victorynox\\DataStore\\": "src/DataStore/",
-            "victorynox\\Ebay\\": "src/Ebay/",
-            "victorynox\\AnalyticReports\\": "src/AnalyticReports/",
-            "victorynox\\View\\": "src/View/",
-            "victorynox\\Util\\": "src/Util/",
-            "victorynox\\Configurator\\": "src/Configurator/"
+            "victorynox\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "victorynox\\AppTest\\": "test/AppTest/"
+            "victorynox\\test\\": "test/"
         }
     },
     "scripts": {

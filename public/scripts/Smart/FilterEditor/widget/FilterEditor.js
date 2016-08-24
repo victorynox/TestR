@@ -428,6 +428,8 @@ define([
                 return this.filterTree.selectedItem;
             },
             destroy: function () {
+                this.inherited(arguments);
+
                 var self = this;
 
                 if (self.saveFilterBtn !== null && self.saveFilterBtn !== undefined) {

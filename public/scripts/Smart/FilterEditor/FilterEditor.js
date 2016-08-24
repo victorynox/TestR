@@ -25,7 +25,8 @@ define([
         "./util/FilterParser",
         "./Entity/SmartFilterNode",
         "./widget/FilterEditor",
-    "dijit/registry"
+    "dijit/registry",
+    "dijit"
     ],
     function (declare,
               lang,
@@ -50,7 +51,8 @@ define([
               FilterParser,
               SmartFilterNode,
               FilterEditor,
-              registry) {
+              registry,
+              dijit) {
         return declare([], {
 
             conditionEditorDialog: null,
@@ -91,6 +93,15 @@ define([
                     var onCancel = e.onCancel !== null && e.onCancel !== undefined ? e.onCancel : null;
                     self._setConditionEditorHandler(onOk, onCancel);
                 });
+
+                on(this.menu, "_openMyself", function (event){
+                    var tn = dijit.getEnclosingWidget(event.target);
+                    console.debug(tn);
+                });
+
+
+                self.conditionEditorDialogFormId = "filterCreateDialogForm" + self.id;
+                self.conditionEditorDialogId = "filterCreateDialog" + self.id;
                 //aspect.around(this.filter, "showConditionEditForm", lang.hitch(this, "showConditionEditForm"), true);
                 //aspect.around(this.filter, "_setConditionEditorHandler", lang.hitch(this, "_setConditionEditorHandler"), true);
             },
@@ -227,6 +238,7 @@ define([
                         label: "Добавиь обьеденение ",
                         popup: filterEditLogicSubMenu,
                     }));
+
                 }
                 this.menu.startup()
             },
@@ -260,7 +272,7 @@ define([
                 var self = this;
 
                 if (!self.conditionEditorDialog) {
-                    //domConstruct.destroy('filterCreateDialogForm');
+                    //domConstruct.destroy(self.conditionEditorDialogFormId);
 
                     var getValue = function (param) {
                         var self = this;
@@ -268,7 +280,7 @@ define([
                         switch (param.value.field.type) {
                             case 'Select': {
                                 return new Select({
-                                    id: "formWithFilterValue",
+                                    //id: "formWithFilterValue",
                                     label: "Значение",
                                     name: "value",
                                     options: param.value.field.option
@@ -276,7 +288,7 @@ define([
                             }
                             case 'TextBox': {
                                 return new TextBox({
-                                    id: "formWithFilterValue",
+                                    //id: "formWithFilterValue",
                                     label: "Значение",
                                     name: "value"
                                 });
@@ -300,7 +312,7 @@ define([
                     };
 
                     self.conditionEditorDialogForm = new Form({
-                        id: "filterCreateDialogForm",
+                        id: self.conditionEditorDialogFormId,
                         doLayout: true
                     });
 
@@ -322,7 +334,7 @@ define([
 
                     if (self.filteredStoreDataOption) {
                         self.editor.name = new Select({
-                            id: "formWithFilterName",
+                            //id: "formWithFilterName",
                             label: "Поле",
                             name: "field",
                             options: selectOptions
@@ -347,12 +359,12 @@ define([
                         });
                     } else {
                         self.editor.name = new TextBox({
-                            id: "formWithFilterName",
+                            //id: "formWithFilterName",
                             label: "Поле",
                             name: "field",
                         });
                         self.editor.valueType = new TextBox({
-                            id: "formWithFilterValueType",
+                            //id: "formWithFilterValueType",
                             label: "Тип значения",
                             name: "type",
                         });
@@ -361,7 +373,7 @@ define([
 
                     //todo create load filter by config if set
                         self.editor.type = new Select({
-                        id: "formWithFilterType",
+                            //id: "formWithFilterType",
                         label: "Фильтр",
                         name: "filter",
                         options: [
@@ -378,7 +390,7 @@ define([
                     });
 
                     self.editor.value = new TextBox({
-                        id: "formWithFilterValue",
+                        //id: "formWithFilterValue",
                         label: "Значение",
                         name: "value",
                     });
@@ -394,7 +406,7 @@ define([
 
 
                     self.conditionEditorDialog = new ConfirmDialog({
-                        id: 'filterCreateDialog',
+                        id: self.conditionEditorDialogId,
                         title: "Фильтр",
                         style: 'width:600px;',
                         content: self.conditionEditorDialogForm,
@@ -448,23 +460,23 @@ define([
 
                 if (self.conditionEditorDialogForm !== null &&
                     self.conditionEditorDialogForm !== undefined &&
-                    dom.byId("filterCreateDialogForm")) {
+                    dom.byId(self.conditionEditorDialogFormId)) {
 
                     self.conditionEditorDialogForm.destroyRecursive();
 
                     try {
-                        domConstruct.destroy("filterCreateDialogForm");
+                        domConstruct.destroy(self.conditionEditorDialogFormId);
                     } catch (e) {
                     }
                 }
                 if (self.conditionEditorDialog !== null &&
                     self.conditionEditorDialog !== undefined &&
-                    dom.byId("filterCreateDialog")) {
+                    dom.byId(self.conditionEditorDialogId)) {
 
                     self.conditionEditorDialog.destroyRecursive();
 
                     try {
-                        domConstruct.destroy("filterCreateDialog");
+                        domConstruct.destroy(self.conditionEditorDialogId);
                     } catch (e) {
                     }
                 }

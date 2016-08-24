@@ -3,6 +3,52 @@
  */
 define([], function () {
     return {
+        "_default" : {
+            "title": "__",
+            "name": "__",
+            "filteredGridOption": {
+                "store": {
+
+                },
+                "grid": {
+                    "options": {
+                        "selectionMode": "single",
+                        "pagingLinks": false,
+                        "pagingTextBox": true,
+                        "firstLastArrows": true,
+                        "rowsPerPage": 15,
+                        "pageSizeOptions": [10, 15, 25]
+                    },
+                    "declare": [
+                        "Grid",
+                        "Keyboard",
+                        "Selection",
+                        "Pagination",
+                        "ColumnHider",
+                        "ColumnResizer",
+                        "GridRqlFilter"
+                    ]
+                }
+            },
+            "filterControlPanelOption": {
+                "store": {
+                    "options": {
+                        'headers': {
+                            'Accept': 'application/json'
+                        },
+                        "target": "/rest/filters_list"
+                    },
+                    "declare": [
+                        "Rest",
+                        "RequestMemory",
+                        "Trackable"
+                    ]
+                },
+                "options": {
+
+                }
+            }
+        },
         "typeNotification": {
             "title": "Уведомления Ebay",
             "name": "typeNotification",
@@ -334,6 +380,21 @@ define([], function () {
                         }
                     ]
                 }
+
+            },
+
+            "filterChart": {
+                "store": {},
+
+                "series": {
+
+                },
+                "axis": {
+
+                },
+
+
+
 
             }
         },

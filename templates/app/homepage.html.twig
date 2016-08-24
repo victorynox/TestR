@@ -39,6 +39,25 @@
             "Rscript/scriptListConfigNew",
             "Rscript/RDataWidget/RDataWidget",
             "Rscript/Smart/TableControlPanel/TableControlPanelFactory",
+
+            "Rscript/Smart/Composite/widget/Composite",
+            'Rscript/Smart/FilterControlPanel/widget/FilterControlPanel',
+            'Rscript/Smart/FilteredGrid/widget/FilteredGrid',
+            'Rscript/Smart/TableWithConfiguration/widget/TableWithConfiguration',
+            'Rscript/Smart/DataPreviewControlPanel/widget/DataPreviewControlPanel',
+            'Rscript/Smart/Chart/widget/Chart',
+
+            'dstore/Store',
+            'dstore/Memory',
+            'dstore/Request',
+            'dstore/LocalDB',
+            'dstore/Cache',
+            'dstore/Tree',
+            'Rscript/Smart/extensions/Store/StoreRqlFilter',
+            "dojox/charting/plot2d/Columns",
+
+            "dijit/form/Button",
+
             'dstore/RequestMemory',
             "dstore/Rest",
             'dstore/Trackable',
@@ -55,6 +74,21 @@
                      scriptListConfig,
                      RDataWidget,
                      TableControlPanelFactory,
+                     Composite,
+                     FilterControlPanel,
+                     FilteredGrid,
+                     TableWithConfiguration,
+                     DataPreviewControlPanel,
+                     Chart,
+                     Store,
+                     Memory,
+                     Request,
+                     LocalDB,
+                     Cache,
+                     Tree,
+                     StoreRqlFilter,
+                     Columns,
+                     Button,
                      RequestMemory,
                      Rest,
                      Trackable,
@@ -64,7 +98,6 @@
                      request,
                      lang,
                      domStyle) {
-
             var scriptsList = scriptListConfig;
 
             var myStore = new declare([Rest, RequestMemory, Trackable])({
@@ -128,10 +161,12 @@
 
             var rDataWidget = new RDataWidget({
 
-                store: myStore,
-                scriptList: scriptsList
+             store: myStore,
+             scriptList: scriptsList
 
-            }).placeAt(document.body);
+             }).placeAt(document.body);
+
+            /**/
         });
     </script>
 {% endblock javascripts %}

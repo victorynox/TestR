@@ -10,8 +10,6 @@ namespace victorynox\AnalyticReports\DataStore;
 
 use Interop\Container\ContainerInterface;
 use victorynox\AnalyticReports\Middleware\CDSManagerMiddleware;
-use victorynox\DataStore\CachingDataStore;
-use victorynox\DataStore\CDSAbstractFactory;
 use zaboy\rest\DataStore\DataStoreException;
 
 class ReportsDSFactory extends CDSAbstractFactory

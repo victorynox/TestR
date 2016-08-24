@@ -19,7 +19,7 @@ return [
 
     'middleware' => [
         'cdsManager' => [
-            'class' => 'victorynox\AnalyticReports\Middleware\CDSManagerMiddleware',
+            'class' => victorynox\AnalyticReports\Middleware\CDSManagerMiddleware::class,
             'cdsManagerStore' => 'cdsManagerDbTable',
             'dataStore' => 'rHttpClient',
             'cds' => 'cachingDbTable',
@@ -28,7 +28,7 @@ return [
 
     'tableGateway' => [
         'cds_table' => [
-            'sql' => 'zaboy\rest\TableGateway\DbSql\MultiInsertSql'
+            'sql' => zaboy\rest\TableGateway\DbSql\MultiInsertSql::class
         ]
     ],
 
@@ -37,47 +37,47 @@ return [
 
         //*********************************
         'cachingDataStore' => [
-            'class' => 'victorynox\DataStore\CachingDataStore',
+            'class' => victorynox\AnalyticReports\DataStore\CachingDataStore::class,
             'cachingDbTable' => 'cachingDbTable'
         ],
 
         'cachingDbTable' => [
-            'class' => 'zaboy\rest\DataStore\DbTable',
+            'class' => zaboy\rest\DataStore\DbTable::class,
             'tableGateway' => 'cds_table'
         ],
 
         'cdsManagerDbTable' => [
-            'class' => 'zaboy\rest\DataStore\DbTable',
+            'class' => zaboy\rest\DataStore\DbTable::class,
             'tableName' => 'cds_manager'
         ],
 
         'rHttpClient' => [
-            'class' => 'zaboy\rest\DataStore\HttpClient',
+            'class' => zaboy\rest\DataStore\HttpClient::class,
             'url' => 'http://192.168.122.22:11999/',
             #'url' => 'http://localhost:11999/',
             'options' => ['timeout' => 30]
         ],
 
         'getCategory' => [
-            'class' => 'victorynox\DataStore\GetCategoryAspect',
+            'class' => victorynox\AnalyticReports\DataStore\GetCategoryAspect::class,
             'dataStore' => 'rHttpClient',
         ],
 
         'getBrand' => [
-            'class' => 'victorynox\DataStore\GetBrandAspect',
+            'class' => victorynox\AnalyticReports\DataStore\GetBrandAspect::class,
             'dataStore' => 'rHttpClient',
         ],
 
         //*********************************
 
         'ebay-category' => [
-            'class' => 'zaboy\rest\DataStore\HttpClient',
+            'class' => zaboy\rest\DataStore\HttpClient::class,
             #'url' => 'http://192.168.122.22:7080/',
             'url' => 'http://localhost:7080/',
         ],
 
         'filtersList' => [
-            'class' => 'zaboy\rest\DataStore\DbTable',
+            'class' => zaboy\rest\DataStore\DbTable::class,
             'tableName' => 'filters_list'
         ],
 
@@ -87,21 +87,21 @@ return [
 
         'notificationCacheable' => [
             'dataSource' => 'notificationDataSource',
-            'class' => 'victorynox\DataStore\Notification\NotificationCacheable'
+            'class' => victorynox\Notification\DataStore\NotificationCacheable::class
         ],
 
         # Notification CacheableDS
 
         'NotificationItemListed' => [
-            'class' => 'victorynox\DataStore\Notification\NotificationTypeDataStore\ItemListedDataStore'
+            'class' => victorynox\Notification\DataStore\NotificationType\ItemListedDataStore::class
         ],
         'NotificationTypeNotification' => [
-            'class' => 'victorynox\DataStore\Notification\NotificationTypeDataStore\TypeNotificationDataStore'
+            'class' => victorynox\Notification\DataStore\NotificationType\TypeNotificationDataStore::class
         ],
 
         'typeNotification' => [
             'dataSource' => 'typeNotificationDataSource',
-            'class' => 'victorynox\DataStore\Notification\NotificationCacheable'
+            'class' => victorynox\Notification\DataStore\NotificationCacheable::class
         ],
 
         "configurationTable" => [
@@ -117,7 +117,7 @@ return [
 
     'configureGeneratorFactory' => [
         'configGenFactory' => [
-            'class' => 'victorynox\Configurator\ConfigureGeneratorFactory',
+            'class' => victorynox\Configurator\ConfigureGeneratorFactory::class,
         ]
     ]
 ];

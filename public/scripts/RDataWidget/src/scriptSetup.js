@@ -27,6 +27,17 @@ define([
     "dojo/dom-style",
     "dojo/dom-class",
     "Rscript/Smart/TableControlPanel/TableControlPanelFactory",
+
+    "Rscript/Smart/Composite/widget/Composite",
+    'Rscript/Smart/FilterControlPanel/widget/FilterControlPanel',
+    'Rscript/Smart/FilteredGrid/widget/FilteredGrid',
+    'Rscript/Smart/TableWithConfiguration/widget/TableWithConfiguration',
+    'Rscript/Smart/DataPreviewControlPanel/widget/DataPreviewControlPanel',
+    'Rscript/Smart/DataPreviewControlPanel/util/GridWithChartFactory',
+    'Rscript/Smart/Chart/widget/Chart',
+    "dojox/charting/plot2d/Columns",
+
+
     "Rscript/Smart/extensions/Store/StoreRqlFilter",
     "dojox/widget/TitleGroup",
     "dijit/TitlePane",
@@ -60,6 +71,14 @@ define([
              domStyle,
              domClass,
              TableControlPanelFactory,
+             Composite,
+             FilterControlPanel,
+             FilteredGrid,
+             TableWithConfiguration,
+             DataPreviewControlPanel,
+             GridWithChartFactory,
+             Chart,
+             Columns,
              StoreRqlFilter,
              TitleGroup,
              TitlePane) {
@@ -91,6 +110,7 @@ define([
         firstTable: null,
         factoryTable: null,
         tablePublishTimeWithFactory: null,
+        composite: null,
 
         constructor: function (scriptsList, store, chart) {
             if (scriptsList != null && store instanceof Store) {
@@ -125,7 +145,6 @@ define([
             }
         },
 
-
         __createSelectionForm: function (listForSelect) {
             this.__scriptSelectionForm = new Form({
                 id: 'scriptSelectionForm',
@@ -146,6 +165,7 @@ define([
             }).placeAt(this.__scriptSelectionForm.containerNode);
 
             var self = this;
+
             on(button, "click", function () {
                 var f = query("#scriptSelectionForm")[0];
                 self.__name = f['select'].value;
@@ -158,146 +178,179 @@ define([
             this.__scriptSelectionForm.placeAt(divForm);
         },
 
-        __renderPlotWithGrid: function (filter, store) {
+        __render: function (store) {
+
             var self = this;
             if (!(store instanceof Memory)) {
                 store = self.__cashStore;
             }
 
-            var chartDiv = dom.byId("simplechart");
+            var compositeDiv = dom.byId("grid");
             //var gridDiv = dom.byId("grid");
 
-            chartDiv.innerHTML = "";
+            compositeDiv.innerHTML = "";
             //gridDiv.innerHTML = "";
 
-            var group = new TitleGroup();
-            dom.byId("grid").appendChild(group.domNode);
-
-
-
-            var setting = {
-                title: self.__scriptsList.scripts[self.__name]['reportName'],
-                return: {
-                    fieldNames: self.__scriptsList["scripts"][self.__name]["return"]['fieldNames'],
-                    fieldLabel: self.__scriptsList["scripts"][self.__name]["return"]['fieldLabel']
+            if (self.composite) {
+                self.composite.destroyRecursive();
+                if(dom.byId(self.composite.domNode)){
+                    domConstruct.destroy(dom.byId(self.composite.domNode));
                 }
-            };
+                self.composite = null;
+            }
 
             if (self.__scriptsList["scripts"][self.__name]["return"]['type'] === "plot") {
-                domStyle.set(chartDiv, {
-
-                    width: self.__chart.width,
-                    height: self.__chart.height,
-                    margin: self.__chart.margin
-                });
-                setting.axis = self.__scriptsList.scripts[self.__name]['axis'];
-                self.plot = new plotCreate('simplechart', store.filter(filter), setting);
-                if (self.plot.isError) {
-                    return false;
-                }
-                self.plot.render();
+                self.composite = GridWithChartFactory(self.__name, store, true);
             } else {
-                domStyle.set(chartDiv, {
-
-                    width: 0,
-                    height: 0,
-                    margin: 0
-                });
+                self.composite = GridWithChartFactory(self.__name, store, false);
             }
+            self.composite.placeAt(dom.byId(compositeDiv));
+            self.composite.startup();
+            return self.composite !== null;
+        },
 
-            if (self.__dgrid) {
-                self.__dgrid.destroy();
+        __renderPlotWithGrid: function (filter, store) {
+            var self = this;
 
-                if (dom.byId(self.__dgrid.domNode)) {
-                    domConstruct.destroy(self.__dgrid.domNode);
-                }
-            }
+            /*if (!(store instanceof Memory)) {
+             store = self.__cashStore;
+             }
 
-            if(self.__name === "tablePublishTime"){
-                var button = new Button({
-                    "label": "Установить количество товаров",
-                });
+             var chartDiv = dom.byId("simplechart");
+             //var gridDiv = dom.byId("grid");
 
-                dom.byId("menuContainer").appendChild(button.domNode);
+             chartDiv.innerHTML = "";
+             //gridDiv.innerHTML = "";
 
-                on(button, "click", function(event){
-                    var countLotNumberTextBox = new NumberTextBox({
-                        name: "countLot"
-                    });
-                    var dialog = new confirmDialog({
-                        title: "Количество товаров которые будут выставлены",
-                        style: "width: 500px;",
-                        content: countLotNumberTextBox.domNode,
-                        execute: function(){
-                            if(self.tablePublishTimeWithFactory !== null){
-                                domConstruct.destroy(dom.byId(self.tablePublishTimeWithFactory.domNode));
-                                self.tablePublishTimeWithFactory.destroyRecursive();
-                            }
-                            var factor = countLotNumberTextBox.get('value');
-                            var asyncLoader = function(){
-                                var deferred = new Deferred();
-                                
-                                store.fetch().then(function(items){
-                                    var data = [];
+             var group = new TitleGroup();
+             dom.byId("grid").appendChild(group.domNode);
 
-                                    items.forEach(function(item){
-                                        for(var key in item){
-                                            if(item.hasOwnProperty(key) && key !== 'id'){
-                                                item[key] *= factor;
-                                                item[key] = item[key].toFixed(3);
-                                            }
-                                        }
-                                        data.push(item);
-                                    });
+             var setting = {
+             title: self.__scriptsList.scripts[self.__name]['reportName'],
+             return: {
+             fieldNames: self.__scriptsList["scripts"][self.__name]["return"]['fieldNames'],
+             fieldLabel: self.__scriptsList["scripts"][self.__name]["return"]['fieldLabel']
+             }
+             };
 
-                                    var analogStore = new Memory({
-                                        data: data
-                                    });
+             if (self.__scriptsList["scripts"][self.__name]["return"]['type'] === "plot") {
+             domStyle.set(chartDiv, {
 
-                                    deferred.resolve(analogStore)
-                                });
-                                
-                                return deferred.promise;
-                            };
-                            asyncLoader().then(function(storeWithFactory){
-                                self.tablePublishTimeWithFactory = TableControlPanelFactory("tablePublishTimeWithFactory", storeWithFactory);
-                                self.tablePublishTimeWithFactory.startup();
+             width: self.__chart.width,
+             height: self.__chart.height,
+             margin: self.__chart.margin
+             });
+             setting.axis = self.__scriptsList.scripts[self.__name]['axis'];
+             self.plot = new plotCreate('simplechart', store.filter(filter), setting);
+             if (self.plot.isError) {
+             return false;
+             }
+             self.plot.render();
+             } else {
+             domStyle.set(chartDiv, {
 
-                                if(self.factoryTable === null || self.factoryTable === undefined){
-                                    self.factoryTable = new TitlePane({open: true, title: self.__name});
-                                    self.firstTable.set('open', false);
-                                    group.addChild(self.factoryTable);
-                                }
+             width: 0,
+             height: 0,
+             margin: 0
+             });
+             }
 
-                                self.factoryTable.set("content", self.tablePublishTimeWithFactory.domNode);
-                                self.factoryTable.startup();
+             if (self.__dgrid) {
+             self.__dgrid.destroy();
 
-                                //dom.byId("grid").appendChild(self.tablePublishTimeWithFactory.domNode);
+             if (dom.byId(self.__dgrid.domNode)) {
+             domConstruct.destroy(self.__dgrid.domNode);
+             }
+             }
 
-                            });
-                        }
-                    });
-                    dialog.show();
-                });
-            }else{
-                dom.byId("menuContainer").innerHTML = "";
-            }
+             if (self.__name === "tablePublishTime") {
+             var button = new Button({
+             "label": "Установить количество товаров",
+             });
 
-            self.__dgrid = new TableControlPanelFactory(self.__name, store);
-            if (self.__dgrid !== null) {
-                self.__dgrid.startup();
+             dom.byId("menuContainer").appendChild(button.domNode);
 
-                if(self.firstTable === null || self.firstTable === undefined){
-                    self.firstTable = new TitlePane({open: true, title: self.__name});
-                    group.addChild(self.firstTable);
-                }
+             on(button, "click", function (event) {
+             var countLotNumberTextBox = new NumberTextBox({
+             name: "countLot"
+             });
+             var dialog = new confirmDialog({
+             title: "Количество товаров которые будут выставлены",
+             style: "width: 500px;",
+             content: countLotNumberTextBox.domNode,
+             execute: function () {
+             if (self.tablePublishTimeWithFactory !== null) {
+             domConstruct.destroy(dom.byId(self.tablePublishTimeWithFactory.domNode));
+             self.tablePublishTimeWithFactory.destroyRecursive();
+             }
+             var factor = countLotNumberTextBox.get('value');
+             var asyncLoader = function () {
+             var deferred = new Deferred();
 
-                self.firstTable.set("content", self.__dgrid.domNode);
-                self.firstTable.startup();
-                //dom.byId("grid").appendChild(self.__dgrid.domNode);
-            }
-            return self.__dgrid !== null;
+             store.fetch().then(function (items) {
+             var data = [];
 
+             items.forEach(function (item) {
+             for (var key in item) {
+             if (item.hasOwnProperty(key) && key !== 'id') {
+             item[key] *= factor;
+             item[key] = item[key].toFixed(3);
+             }
+             }
+             data.push(item);
+             });
+
+             var analogStore = new Memory({
+             data: data
+             });
+
+             deferred.resolve(analogStore)
+             });
+
+             return deferred.promise;
+             };
+             asyncLoader().then(function (storeWithFactory) {
+             self.tablePublishTimeWithFactory = TableControlPanelFactory("tablePublishTimeWithFactory", storeWithFactory);
+             self.tablePublishTimeWithFactory.startup();
+
+             if (self.factoryTable === null || self.factoryTable === undefined) {
+             self.factoryTable = new TitlePane({open: true, title: self.__name});
+             self.firstTable.set('open', false);
+             group.addChild(self.factoryTable);
+             }
+
+             self.factoryTable.set("content", self.tablePublishTimeWithFactory.domNode);
+             self.factoryTable.startup();
+
+             //dom.byId("grid").appendChild(self.tablePublishTimeWithFactory.domNode);
+
+             });
+             }
+             });
+             dialog.show();
+             });
+             } else {
+             dom.byId("menuContainer").innerHTML = "";
+             }
+
+             self.__dgrid = new TableControlPanelFactory(self.__name, store);
+
+             if (self.__dgrid !== null) {
+             self.__dgrid.startup();
+
+             if (self.firstTable === null || self.firstTable === undefined) {
+             self.firstTable = new TitlePane({open: true, title: self.__name});
+             group.addChild(self.firstTable);
+             }
+
+             self.firstTable.set("content", self.__dgrid.domNode);
+             self.firstTable.startup();
+             //dom.byId("grid").appendChild(self.__dgrid.domNode);
+             }
+
+             return self.__dgrid !== null;*/
+
+            return self.__render(store);
         },
 
         __createConfigDialog: function () {
@@ -344,8 +397,8 @@ define([
                                 array.forEach(self.__scriptsList["scripts"][self.__name]["paramsName"], function (name) {
                                     var item = f[name];
 
-                                    if (item !== null && item !== undefined &&item.value !== "") {
-                                        if(!(name === 'brand' && item.value === '0')){
+                                    if (item !== null && item !== undefined && item.value !== "") {
+                                        if (!(name === 'brand' && item.value === '0')) {
                                             data.params.push({name: name, value: item.value});
                                         }
                                     }

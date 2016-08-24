@@ -62,7 +62,16 @@ define(
 
             store: null,
 
-            columns: null,
+            columns: [
+                {"label": "id", "field": "id"},
+                {
+                    "label": "Название",
+                    "field": "name",
+                    "editor": "text",
+                    "editOn": "dblclick",
+                    "autoSave": true
+                }
+            ],
             selectionMode: "single",
             pagingLinks: false,
             pagingTextBox: true,
@@ -114,6 +123,13 @@ define(
                     label: "Применить фильтр к таблице",
                 }, self.setFilterBtnNode);
 
+                /**
+                 * onClick emit set-filter notification
+                 */
+                /*this.setFilterToStoreBtn = new Button({
+                 label: "Применить фильтр к хранилищу",
+                 }, self.setFilterToStoreBtnNode);*/
+
                 this.filterListGrid = new (declare([OnDemandGrid, Selection, Editor]))({
                     collection: this.store.filter({'tableName': self.name}),
                     columns: self.columns,
@@ -145,7 +161,6 @@ define(
                             alert("Фильтр для удаления не выбраны");
                         }
                     })),
-
                     on(self.filterListGrid, "dgrid-select", function (event) {
                         self._rowSelected = event.rows[0].data;
 
@@ -180,7 +195,7 @@ define(
                                     name: selectedRow.name,
                                     filter: event.filter.rql
                                 }, {overwrite: true})
-                            }else{
+                            } else {
                                 console.log("not set fild in event");
                             }
                         });
@@ -211,21 +226,38 @@ define(
             },
 
             destroy: function () {
+                this.inherited(arguments);
+
                 var self = this;
                 if (self.newFilterBtn !== undefined) {
                     self.newFilterBtn.destroy();
+                    if (dom.byId(self.newFilterBtn.domNode)) {
+                        domConstruct.destroy(dom.byId(self.newFilterBtn.domNode));
+                    }
                 }
                 if (self.removeFilterBtn !== undefined) {
                     self.removeFilterBtn.destroy();
+                    if (dom.byId(self.removeFilterBtn.domNode)) {
+                        domConstruct.destroy(dom.byId(self.removeFilterBtn.domNode));
+                    }
                 }
                 if (self.setFilterBtn !== undefined) {
                     self.setFilterBtn.destroy();
+                    if (dom.byId(self.setFilterBtn.domNode)) {
+                        domConstruct.destroy(dom.byId(self.setFilterBtn.domNode));
+                    }
                 }
                 if (self.filterListGrid !== undefined) {
                     self.filterListGrid.destroy();
+                    if (dom.byId(self.filterListGrid.domNode)) {
+                        domConstruct.destroy(dom.byId(self.filterListGrid.domNode));
+                    }
                 }
                 if (self.filterEditor !== undefined) {
                     self.filterEditor.destroy();
+                    if (dom.byId(self.filterEditor.domNode)) {
+                        domConstruct.destroy(dom.byId(self.filterEditor.domNode));
+                    }
                 }
             }
 
