@@ -26,6 +26,8 @@ class AuthorizationMiddleware
         switch ($path) {
             case preg_match("/\\/auth/", $path) > 0:
                 break;
+            case preg_match("/\\/ebay\\/notification/", $path) > 0:
+                break;
             case preg_match("/^\\/rest[\\w\\W]+/", $path) > 0:
                 if ($role != 'admin' && $role != 'rest' && $role != 'guest') {
                     throw new \Exception("You are not authorized", 403);
