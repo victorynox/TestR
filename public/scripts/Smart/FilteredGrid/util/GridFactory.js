@@ -27,11 +27,9 @@ define(
         'dstore/RequestMemory',
         'dstore/Trackable',
         'dstore/Filter',
-        
+
         '../../Util/GetTableColumnWithConfig',
-        '../../extensions/Grid/GridRqlFilter',
-
-
+        '../../extensions/Grid/GridRqlFilter'
     ],
     function (declare,
               lang,
@@ -40,7 +38,6 @@ define(
               domConstruct,
               on,
               parser,
-
               Grid,
               Keyboard,
               Selection,
@@ -49,15 +46,12 @@ define(
               ColumnReorder,
               ColumnResizer,
               _StoreMixin,
-              
               Rest,
               RequestMemory,
               Trackable,
               Filter,
-              
               GetTableColumnWithConfig,
-              GridRqlFilter
-    ) {
+              GridRqlFilter) {
 
         var gridMixinNameToConstructor = {
             "Grid": Grid,
@@ -71,7 +65,7 @@ define(
             "GridRqlFilter": GridRqlFilter
         };
 
-        
+
         /*
          conf{
          name: "",
@@ -93,18 +87,22 @@ define(
             array.forEach(conf.declare, function (item) {
                 declareArray.push(gridMixinNameToConstructor[item]);
             });
-            
-            var getTableConf = new GetTableColumnWithConfig({name: conf.name});
 
-            var columnWithConf = getTableConf.getColumn(conf.configName, conf.name);
+            if (option.columns === null || option.columns === undefined) {
+                var getTableConf = new GetTableColumnWithConfig({name: conf.name});
+                var columnWithConf = getTableConf.getColumn(conf.configName, conf.name);
+            }
 
             grid = new (declare(declareArray))(option, conf.domNode);
 
-            columnWithConf.then(function (columns) {
-                if(columns !== null){
-                    grid.set('columns', columns);
-                }
-            });
+            if (option.columns === null || option.columns === undefined) {
+                columnWithConf.then(function (columns) {
+                    if (columns !== null) {
+                        grid.set('columns', columns);
+                    }
+                });
+            }
+
             return grid;
         }
     }

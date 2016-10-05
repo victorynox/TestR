@@ -17,6 +17,7 @@ use zaboy\rest\DataStore\Interfaces\DataStoresInterface;
 use zaboy\rest\Middleware;
 use zaboy\rest\RestException;
 use zaboy\rest\RqlParser\RqlParser;
+use Zend\Authentication\Storage\Session;
 
 
 class CDSManagerMiddleware extends Middleware\DataStoreAbstract
@@ -93,7 +94,8 @@ class CDSManagerMiddleware extends Middleware\DataStoreAbstract
             $this->cdsManagerStore->create([
                 'cds_id' => $cdsId,
                 'script_name' => $scriptName,
-                'query' => $queryString
+                'query' => $queryString,
+                'freshness_date' => (new \DateTime())->format("Y-m-d H:i:s")
             ]);
 
             foreach ($data as &$item) {
@@ -103,7 +105,17 @@ class CDSManagerMiddleware extends Middleware\DataStoreAbstract
             }
 
             $this->cds->create($data);
+        }else{
+            $cdsConf = $this->getCdsConf($cdsId);
+            $freshnessDate = \DateTime::createFromFormat("Y-m-d H:i:s", $cdsConf['freshness_date']);
+            $currentDate = new \DateTime();
+            $dateDiff = $currentDate->diff($freshnessDate);
+            if($dateDiff->days > 0){
+                $request = $request->withAttribute('Primary-Key-Value', $cdsId);
+                return $this->methodPatchWithId($request, $response);
+            }
         }
+
 
         $request = $request->withAttribute('CDS-ID', $cdsId);
         $request = $request->withAttribute('Response-Body',['cdsId' => $cdsId]);
@@ -113,7 +125,7 @@ class CDSManagerMiddleware extends Middleware\DataStoreAbstract
         return array($request, $response);
     }
 
-    protected function generateCsdId($scriptName, $query)
+    public function generateCsdId($scriptName, $query)
     {
         //TODO generate token by query string and scriptName
         $cdsId = md5("{$scriptName}{$query}");
@@ -165,16 +177,35 @@ class CDSManagerMiddleware extends Middleware\DataStoreAbstract
             $query = new Query();
         }
 
-        $data = $this->getData($cdsConf['scriptName'], $query);
+        $data = $this->getData($cdsConf['script_name'], $query);
 
-        foreach ($data as $item) {
+        $query = new Query();
+        $query->setQuery(new EqNode('cds_id', $cdsId));
+        $items = $this->cds->query($query);
+
+        foreach ($items as $item){
+            $this->cds->delete($item['id']);
+        }
+
+        foreach ($data as &$item) {
             $item['cds_id'] = $cdsId;
             $item['data_id'] = $item['id'];
             unset($item['id']);
-            $this->cds->create($item, true);
         }
 
+        $this->cds->create($data);
+
+        $this->cdsManagerStore->update([
+            'id' => $cdsConf['id'],
+            /*'cds_id' => $cdsConf['cds_id'],
+            'script_name' => $cdsConf['script_name'],
+            'query' => $cdsConf['query'],*/
+            'freshness_date' => (new \DateTime())->format("Y-m-d H:i:s")
+        ]);
+
         $request = $request->withAttribute('CDS-ID', $cdsId);
+        $request = $request->withAttribute('Response-Body',['cdsId' => $cdsId]);
+
         $response = $response->withStatus(200);
 
         return array($request, $response);

@@ -443,7 +443,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["liketitle", "begadd_date", "endadd_date"]
+                "paramsName": ["liketitle", "begstart_time", "endstart_time"]
             },
 
             "NNSold": {
@@ -461,7 +461,7 @@ define([], function () {
                     },
                     "fieldNames": ['id', 'x', "y"]
                 },
-                "paramsName": ["liketitle", "begadd_date", "endadd_date"]
+                "paramsName": ["liketitle", "begstart_time", "endstart_time"]
             },
 
             "soldProducts": {

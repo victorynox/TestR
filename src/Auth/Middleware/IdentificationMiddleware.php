@@ -62,11 +62,13 @@ class IdentificationMiddleware
         if ($auth->hasIdentity()) {
             $identity = $auth->getIdentity();
             $role = $identity['role'];
+            $request = $request->withAttribute('login', $identity['login']);
         } else {
             $role = 'guest';
         }
 
         $request = $request->withAttribute('role', $role);
+
         return $next($request, $response);
     }
 }

@@ -41,21 +41,26 @@ define([
             store: null,
 
             //==========================
-            columns: null,
-
-            selectionMode: "single",
-
-            pagingLinks: false,
-            pagingTextBox: true,
-            firstLastArrows: true,
-            rowsPerPage: 15,
-            pageSizeOptions: [10, 15, 25],
+            options: {
+                "selectionMode": "single",
+                "pagingLinks": false,
+                "pagingTextBox": true,
+                "firstLastArrows": true,
+                "rowsPerPage": 15,
+                "pageSizeOptions": [10, 15, 25]
+            },
+            declare: [
+                "Grid",
+                "Keyboard",
+                "Selection",
+                "Pagination",
+                "ColumnHider",
+                "ColumnResizer",
+                "GridRqlFilter"
+            ],
             //==========================
 
             grid: null,
-
-            declare: null,
-            options: null,
 
             constructor: function (object) {
                 this.inherited(arguments);
@@ -67,12 +72,12 @@ define([
                             self[index] = object[index];
                         }
                     }
-                    if (object.options !== null &&
-                        object.options !== undefined &&
-                        object.options.collection !== null &&
-                        object.options.collection !== undefined) {
+
+                    if (object.collection !== null &&
+                        object.collection !== undefined) {
                         if (this.store === null || this.store === undefined) {
-                            this.store = object.options.collection;
+                            this.store = object.collection;
+                            self.options.collection = object.collection
                         }
                     }
                 }
@@ -97,7 +102,6 @@ define([
                 var self = this;
 
                 // Get a DOM node reference for the root of our widget
-                var domNode = this.domNode;
 
                 // Run any parent postCreate processes - can be done at any point
                 this.inherited(arguments);
@@ -111,7 +115,6 @@ define([
                         on.emit(self, "dgrid-deselect", e);
                     })
                 );
-
             },
 
             startup: function () {
@@ -144,9 +147,10 @@ define([
             clear: function () {
                 var self = this;
                 //
+                self.grid.setRqlFilter(null);
+
                 if(self.grid.benchmarkColumns !== undefined &&
                     self.grid.benchmarkColumns !== null){
-                    self.grid.setRqlFilter(null);
                     self.grid.refresh();
                     self.setColumns(self.grid.benchmarkColumns);
                 }else{
@@ -194,11 +198,15 @@ define([
                         self.filterActiveNode.innerHTML = "";
                     }
                 );
-
                 domConstructor.place("<span class='glyphicon glyphicon-remove' style='float:right;'></span><p>" + filterName + "</p>", filterNode);
-
                 self.filterActiveNode.innerHTML = "";
                 self.filterActiveNode.appendChild(filterNode);
+            },
+
+            destroyRecursive: function () {
+                this.inherited(arguments);
+                var self = this;
+                self.grid.destroy();
             }
 
         });

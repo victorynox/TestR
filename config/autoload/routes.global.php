@@ -13,9 +13,8 @@ return [
             victorynox\Auth\Action\LogoutAction::class =>   victorynox\Auth\Action\LogoutActionFactory::class,
             zaboy\rest\Pipe\RestRql::class => victorynox\DataStore\Pipes\Factory\RestPipeFactory::class,
             victorynox\Ebay\Category\Action\CategoryTreeAction::class => victorynox\Ebay\Category\Action\CategoryTreeFactory::class,
-            victorynox\Ebay\Notification\Action\NotificationViewAction::class => \victorynox\Ebay\Notification\Action\NotificationViewFactory::class,
-            victorynox\Ebay\Notification\Action\NotificationAction::class => \victorynox\Ebay\Notification\Action\NotificationFactory::class,
-            victorynox\Ebay\Notification\Action\GetNotificationDataAction::class => \victorynox\Ebay\Notification\Action\GetNotificationDataFactory::class,
+            victorynox\Notification\Action\NotificationViewAction::class => \victorynox\Notification\Action\NotificationViewFactory::class,
+            victorynox\Notification\Action\NotificationAction::class => \victorynox\Notification\Action\NotificationFactory::class,
             victorynox\Ebay\Trading\Action\GetItemTransactionsAction::class => victorynox\Ebay\Trading\Action\GetItemTransactionsFactory::class,
         ],
     ],
@@ -60,14 +59,14 @@ return [
         [
             'name' => 'notification',
             'path' => '/ebay/notification',
-            'middleware' =>  victorynox\Ebay\Notification\Action\NotificationAction::class,
+            'middleware' =>  victorynox\Notification\Action\NotificationAction::class,
             'allowed_method' => ['GET'],
         ],
 
         [
             'name' => 'notification.view',
             'path' => '/ebay/notifications/view',
-            'middleware' =>  victorynox\Ebay\Notification\Action\NotificationViewAction::class,
+            'middleware' =>  victorynox\Notification\Action\NotificationViewAction::class,
             'allowed_method' => ['GET'],
         ],
 
@@ -77,13 +76,6 @@ return [
             'middleware' =>  victorynox\Ebay\Category\Action\CategoryTreeAction::class,
             'allowed_method' => ['GET'],
         */
-
-        [
-            'name' => 'get.notification.data',
-            'path' => '/ebay/notifications/data/{id}',
-            'middleware' =>  victorynox\Ebay\Notification\Action\GetNotificationDataAction::class,
-            'allowed_method' => ['GET'],
-        ],
 
         [
             'name' => 'findItemByStore',

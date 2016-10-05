@@ -187,7 +187,7 @@ define(["../main", "dojo/_base/lang", "dojo/_base/array","dojo/_base/declare", "
 			// create a surface
 			this.node = dom.byId(node);
 			var box = domGeom.getMarginBox(node);
-			this.surface = g.createSurface(this.node, box.w || 400, box.h || 300);
+			this.surface = g.createSurface(this.node, box.w || 800, box.h || 600);
 			if(this.surface.declaredClass.indexOf("vml") == -1){
 				// except if vml use native clipping
 				this._nativeClip = true;

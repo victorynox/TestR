@@ -71,7 +71,10 @@ define(["dojox/charting/Chart",
                     this._chart.setTheme(MiamiNice);
 
                     this._chart.addAxis("x", {
-                        majorTickStep: 1, minorTicks: false, title: settings.axis.xAxis, titleOrientation: "away",
+                        majorTickStep: 1,
+                        minorTicks: false,
+                        title: settings.axis.xAxis,
+                        titleOrientation: "away",
                         labelFunc: function (index) {
                             var column = self.series.objects[index-1].x;
                             return column;
@@ -90,14 +93,17 @@ define(["dojox/charting/Chart",
                         }
                     }
 
-                    this._chart.addAxis("y", {
+                    this._chart.addAxis(
+                        "y", {
                         vertical: true,
                         min: 0,
                         title: yAxisLabel,
                         titleFont: "normal normal normal 9pt Arial"
                     });
 
-                    this._chart.addSeries("Series 1", series, {
+                    this._chart.addSeries(
+                        "Series 1",
+                        series, {
                         plot: "columnsPlot",
                         stroke: {
                             color: "red",
