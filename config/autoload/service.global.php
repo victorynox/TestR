@@ -95,6 +95,9 @@ return [
         'NotificationItemListed' => [
             'class' => victorynox\Notification\DataStore\NotificationType\ItemListedDataStore::class
         ],
+        'NotificationAuctionCheckoutComplete' => [
+            'class' => victorynox\Notification\DataStore\NotificationType\AuctionCheckoutCompleteDataStore::class
+        ],
         'NotificationTypeNotification' => [
             'class' => victorynox\Notification\DataStore\NotificationType\TypeNotificationDataStore::class
         ],
