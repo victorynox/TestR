@@ -34,7 +34,11 @@ return [
 
     'dataStore' => [
 
-
+        'ebayNotification' =>
+        [
+            'class' => zaboy\rest\DataStore\DbTable::class,
+            'ebay_notification' => 'cds_table'
+        ],
         //*********************************
         'cachingDataStore' => [
             'class' => victorynox\AnalyticReports\DataStore\CachingDataStore::class,
